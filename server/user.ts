@@ -12,19 +12,4 @@ const users = [
   }
 ];
 
-const identities = [
-{
-    id: 0,
-    userId: 0,
-    type: "local",
-    validationData: "balls"
-  },
-  {
-    id: 1,
-    userId: 0,
-    type: "github",
-    validationData: "32138988"
-  }
-]
-
-export { users, identities };
+export { users };

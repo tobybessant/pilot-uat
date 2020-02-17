@@ -4,7 +4,7 @@ import { Logger } from '@overnightjs/logger';
 import * as passport from 'passport';
 import { checkAuthentication } from '../middleware/checkAuthentication';
 
-@Controller('')
+@Controller('auth')
 export class Auth {
 
   @Post('login')

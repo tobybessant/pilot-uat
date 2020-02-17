@@ -17,8 +17,11 @@ export class Local {
         }
   
         // check password
-        const identity = data.identities.find(i => i.userId === u.id && i.validationData === password)
-        if (identity) return done(null, u);
+        const identity = u.password === password;
+        if (identity) {
+          delete u.password;
+          return done(null, u);
+        }
   
         // wrong password
         return done(null, false);
