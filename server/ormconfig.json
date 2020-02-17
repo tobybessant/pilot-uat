@@ -1,0 +1,19 @@
+{
+  "type": "mssql",
+  "host": "localhost",
+  "port": 1433,
+  "username": "sa",
+  "password": "d3vel0pmentPassw0rd",
+  "database": "UAT_APP_DEV",
+  "synchronize": true,
+  "logging": true,
+  "entities": [
+     "server/database/entity/**/*.ts"
+  ],
+  "migrations": [
+     "server/database/migration/**/*.ts"
+  ],
+  "subscribers": [
+     "serverd/database/subscriber/**/*.ts"
+  ]
+}
