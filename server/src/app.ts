@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import UATPlatformServer from "./Server";
+import UATPlatformServer from "./server";
 import { MSSQLDatabase } from "./database";
 import { Connection } from 'typeorm';
 

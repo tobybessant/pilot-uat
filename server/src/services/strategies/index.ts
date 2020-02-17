@@ -1,2 +1,1 @@
-
-export * from './Local';
+export * from './local';

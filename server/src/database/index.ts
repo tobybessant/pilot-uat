@@ -5,10 +5,15 @@ import { Logger } from '@overnightjs/logger';
 
 export class MSSQLDatabase {
 
+  private connection: Connection | null = null;
+
+  constructor() {
+  }
+
   public async openConnection(): Promise<Connection> {
-    return new Promise<Connection>((resolve, reject) => {
+    return new Promise<Connection>(async (resolve, reject) => {
       try {
-        const connection = createConnection({
+        const conn = await createConnection({
           type: "mssql",
           host: "localhost",
           port: 1433,
@@ -21,12 +26,17 @@ export class MSSQLDatabase {
           synchronize: true,
           logging: false
         })
+        this.connection = conn;
   
         Logger.Info("Database connection established...")
-        resolve(connection);
+        resolve(conn);
       } catch(err) {
         reject(err);
       }
     })
+  }
+
+  public getConnection(): Connection | null {
+    return this.connection;
   }
 }
