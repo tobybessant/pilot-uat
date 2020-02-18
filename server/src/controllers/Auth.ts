@@ -6,21 +6,28 @@ import { checkAuthentication } from '../middleware/checkAuthentication';
 
 import { Repository } from 'typeorm';
 import { User } from '../database/entity/user';
+import { Katana } from '../katana';
+import { injectable, inject } from 'inversify';
 
+@injectable()
 @Controller('auth')
-export class Auth {
+export class AuthController {
+
+  private k: Katana;
 
   constructor(
-    private userRepository: Repository<User>
+    private katana: Katana
   ) {
+    this.k = katana;
   }
 
   @Post('createaccount')
   private createAccount(req: Request, res: Response) {
     // validate
 
-    this.userRepository.create({ });
-
+    // this.userRepository.create({ });
+    console.log(this.k.hit());
+    console.log("hellow");
     res.status(200).json({
       message: req.user
     });

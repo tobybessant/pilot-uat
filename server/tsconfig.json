@@ -5,11 +5,12 @@
     "outDir": "dist",
     "removeComments": true,
     "experimentalDecorators": true,
-    "target": "es6",
     "emitDecoratorMetadata": true,
+    "target": "es6",
+    "lib": ["es6"],
     "moduleResolution": "node",
     "importHelpers": true,
-    "types": ["node"]
+    "types": ["node", "reflect-metadata"]
   },
   "include": ["./src/**/*.ts"]
 }

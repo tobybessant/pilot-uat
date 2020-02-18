@@ -8,8 +8,10 @@ import * as strategies from "./services/strategies";
 
 import { Server } from '@overnightjs/core';
 import { Logger } from '@overnightjs/logger';
+import {  Container } from "inversify";
 
 import * as data from "../user";
+import { AuthController } from './controllers';
 
 class UATPlatformServer extends Server {
 
@@ -17,7 +19,7 @@ class UATPlatformServer extends Server {
   private readonly COOKIE_EXPIRY_DAYS = 7;
   private readonly COOKIE_EXPIRY_DURATION = (1000 * 60 * 60 * 24) * this.COOKIE_EXPIRY_DAYS;
 
-  constructor() {
+  constructor(container: Container) {
     super(true);
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,12 +38,13 @@ class UATPlatformServer extends Server {
     this.app.use(passport.session())
 
     this.setupAuthStrategies();
-    this.setupControllers();
+    this.setupControllers(container);
   }
 
-  private setupControllers(): void {
+  private setupControllers(container: Container): void {
     Logger.Info("Loading controllers...")
 
+    /*
     const ctlrInstances = [];
     for (const name in controllers) {
       if (controllers.hasOwnProperty(name)) {
@@ -50,6 +53,10 @@ class UATPlatformServer extends Server {
       }
     }
     super.addControllers(ctlrInstances);
+    */
+   const authController = container.get<AuthController>(AuthController);
+   super.addControllers([authController]);
+    
   }
 
   private setupAuthStrategies(): void {
