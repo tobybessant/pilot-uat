@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import * as passport from "passport";
 import { Logger } from '@overnightjs/logger';
 
 export const checkAuthentication = function(req: Request, res: Response, next: NextFunction) {
+  Logger.Info(req.user);
   if(req.isAuthenticated()) {
     Logger.Info("Authorized..." + JSON.stringify(req.user));
     return next();

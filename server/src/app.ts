@@ -1,16 +1,17 @@
 import "reflect-metadata";
 import UATPlatformServer from "./server";
 import { MSSQLDatabase } from "./database";
-import {  injectable, Container } from "inversify";
-import { AuthController } from './controllers';
-import { Katana } from './katana';
+import { container } from 'tsyringe';
+import { User } from './database/entity/User';
+import {RepositoryService} from "./database/repositories/repositoryservice";
+import { Repository } from 'typeorm';
 
+async function main() {
 const database = new MSSQLDatabase();
-const connection = database.openConnection();
-
-const container = new Container();
-container.bind<AuthController>(AuthController).toSelf();
-container.bind<Katana>(Katana).toSelf();
+const connection = await database.openConnection();
 
 const server: UATPlatformServer = new UATPlatformServer(container);
 server.start(8080);
+}
+
+main();

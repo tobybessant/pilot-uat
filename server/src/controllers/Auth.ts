@@ -3,33 +3,32 @@ import { Controller, Middleware, Get, Post } from '@overnightjs/core';
 import { Logger } from '@overnightjs/logger';
 import * as passport from 'passport';
 import { checkAuthentication } from '../middleware/checkAuthentication';
-
+import { injectable, inject } from 'tsyringe';
+import { User } from '../database/entity/User';
+import { RepositoryService } from '../database/repositories/repositoryservice';
 import { Repository } from 'typeorm';
-import { User } from '../database/entity/user';
-import { Katana } from '../katana';
-import { injectable, inject } from 'inversify';
+import { Bcrypt } from "../services/utils/bcrypt-hash";
 
 @injectable()
 @Controller('auth')
 export class AuthController {
 
-  private k: Katana;
+  private userRepository: Repository<User>
 
   constructor(
-    private katana: Katana
+    private repositoryService: RepositoryService
   ) {
-    this.k = katana;
+    this.userRepository = repositoryService.getRepositoryFor<User>(User);
   }
 
   @Post('createaccount')
-  private createAccount(req: Request, res: Response) {
-    // validate
+  private async createAccount(req: Request, res: Response) {
+    const { email, password, firstName } = req.body; 
+    const passwordHash = Bcrypt.hash(password);
 
-    // this.userRepository.create({ });
-    console.log(this.k.hit());
-    console.log("hellow");
+    const user: User = await this.userRepository.save({ email, passwordHash, firstName });
     res.status(200).json({
-      message: req.user
+      email
     });
   }
 

@@ -2,12 +2,16 @@ import { createConnection, Repository, Connection } from "typeorm";
 import { User } from "./entity/user";
 import { connect } from 'http2';
 import { Logger } from '@overnightjs/logger';
+import { injectable } from 'tsyringe';
 
+@injectable()
 export class MSSQLDatabase {
 
   private connection: Connection | null = null;
+  private sync: boolean = process.env.TYPEORM_SYNC === "true";
 
   constructor() {
+
   }
 
   public async openConnection(): Promise<Connection> {
@@ -23,10 +27,13 @@ export class MSSQLDatabase {
           entities: [
             __dirname + "/entity/*.ts"
           ],
-          synchronize: true,
+          synchronize: this.sync,
           logging: false
         })
         this.connection = conn;
+        const u = this.connection.getRepository(User).find({});
+        console.log(JSON.stringify(u));
+
   
         Logger.Info("Database connection established...")
         resolve(conn);
