@@ -4,7 +4,7 @@ import { MSSQLDatabase } from "./database";
 import { container } from "tsyringe";
 
 async function main() {
-  const database = new MSSQLDatabase();
+  const database = container.resolve<MSSQLDatabase>(MSSQLDatabase);
   await database.openConnection();
 
   const server: UATPlatformServer = new UATPlatformServer(container);

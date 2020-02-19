@@ -1,11 +1,16 @@
-import { getRepository, Connection, ObjectLiteral, EntitySchema } from "typeorm";
+import { getRepository, Connection, ObjectLiteral, EntitySchema, Repository } from "typeorm";
 import { injectable } from "tsyringe";
+import { MSSQLDatabase } from "../";
 
 @injectable()
 export class RepositoryService {
 
-  public getRepositoryFor<T>(dbo: any) {
-    return getRepository<T>(dbo);
+  constructor(
+    public database: MSSQLDatabase
+  ) { }
+
+  public getRepositoryFor<T>(dbo: any): Repository<T> {
+    return this.database.getConnection().getRepository<T>(dbo)
   }
 
 }

@@ -1,12 +1,12 @@
 import { createConnection, Connection, ConnectionOptions } from "typeorm";
 import { DBConfig } from "./dbconfig";
 import { Logger } from "@overnightjs/logger";
-import { injectable } from "tsyringe";
+import { singleton } from "tsyringe";
 
-@injectable()
+@singleton()
 export class MSSQLDatabase {
 
-  private connection: Connection | null = null;
+  private connection!: Connection;
   private sync: boolean = process.env.TYPEORM_SYNC === "true";
 
   public async openConnection(): Promise<void> {
@@ -14,11 +14,11 @@ export class MSSQLDatabase {
         this.connection = await createConnection(DBConfig as ConnectionOptions);
         Logger.Info("Database connection established...");
       } catch(err) {
-        Logger.Err(err);
+        throw new Error(err);
       }
   }
 
-  public getConnection(): Connection | null {
+  public getConnection(): Connection {
     return this.connection;
   }
 }
