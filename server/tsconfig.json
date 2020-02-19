@@ -12,5 +12,6 @@
     "importHelpers": true,
     "types": ["node", "reflect-metadata"]
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["./node_modules", "src/database/migration/**/*.ts"]
 }

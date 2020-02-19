@@ -3,17 +3,13 @@
   "host": "localhost",
   "port": 1433,
   "username": "sa",
-  "password": "d3vel0pmentPassw0rd",
+  "password": "d3vel0pmentPassword",
   "database": "UAT_APP_DEV",
-  "synchronize": true,
   "logging": true,
-  "entities": [
-     "server/database/entity/**/*.ts"
-  ],
-  "migrations": [
-     "server/database/migration/**/*.ts"
-  ],
-  "subscribers": [
-     "serverd/database/subscriber/**/*.ts"
-  ]
+  "entities": ["src/database/entity/**/*.ts"],
+  "subscribers": ["src/database/subscriber/**/*.ts"],
+  "migrations": ["src/database/migration/*.ts"],
+  "cli": {
+    "migrationsDir": "src/database/migration"
+  }
 }

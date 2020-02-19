@@ -28,11 +28,15 @@ export class AuthController {
     const { email, password, firstName } = req.body;
     const passwordHash = Bcrypt.hash(password);
 
-    // save user details to
-    const user: User = await this.userRepository.save({ email, passwordHash, firstName });
-    res.status(200).json({
-      email
-    });
+    // save user details to database
+    try {
+      const user: User = await this.userRepository.save({ email, passwordHash, firstName });
+      res.status(200).json({
+        email
+      });
+    } catch(err) {
+      res.status(500).json({ err });
+    }
   }
 
   @Post("login")

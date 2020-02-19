@@ -9,6 +9,6 @@ async function main() {
 
   const server: UATPlatformServer = new UATPlatformServer(container);
   server.start(8080);
-  }
+}
 
 main();

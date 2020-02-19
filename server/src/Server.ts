@@ -1,24 +1,24 @@
-import * as bodyParser from 'body-parser';
+import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
-import * as controllers from './controllers';
+import * as controllers from "./controllers";
 import * as session from "express-session";
 
-import { Server } from '@overnightjs/core';
-import { Logger } from '@overnightjs/logger';
+import { Server } from "@overnightjs/core";
+import { Logger } from "@overnightjs/logger";
 import { DependencyContainer } from "tsyringe"
 
 import { Passport } from "./services/passport/passport";
 
 class UATPlatformServer extends Server {
 
-  private readonly SERVER_STARTED = 'Server started on port: ';
+  private readonly SERVER_STARTED = "Server started on port: ";
   private readonly COOKIE_EXPIRY_DAYS = 7;
   private readonly COOKIE_EXPIRY_DURATION = (1000 * 60 * 60 * 24) * this.COOKIE_EXPIRY_DAYS;
 
   constructor(container: DependencyContainer) {
     super(true);
 
-    // configure express
+    // configure express∏
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
@@ -53,7 +53,7 @@ class UATPlatformServer extends Server {
   }
 
   public start(port: number): void {
-    this.app.get('*', (req, res) => {
+    this.app.get("*", (req, res) => {
       res.send(this.SERVER_STARTED + port);
     });
 

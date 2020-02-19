@@ -6,6 +6,6 @@ export const DBConfig = {
   password : process.env.db_password || "d3vel0pmentPassword",
   database : process.env.db_database || "UAT_APP_DEV",
   entities : [__dirname + "/entity/*.ts"],
-  synchronize : process.env.db_sync === "true",
+  synchronize : true,
   logging : process.env.db_logging ? true : false,
 }

@@ -8,5 +8,8 @@
     "ordered-imports": false,
     "quotemark": [true, "double"],
     "only-arrow-functions": false
+  },
+  "linterOptions": {
+    "exclude": ["src/database/migration/1582135410777-Migration.ts"]  
   }
 }
