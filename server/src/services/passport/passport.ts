@@ -1,11 +1,11 @@
-import * as passport from 'passport';
-import { Repository } from 'typeorm';
-import { User } from '../../database/entity/User';
-import { RepositoryService } from '../../database/repositories/repositoryservice';
-import { Logger } from '@overnightjs/logger';
-import { container, injectable } from 'tsyringe';
-import { Local } from './strategies';
-import { Application } from 'express';
+import * as passport from "passport";
+import { Repository } from "typeorm";
+import { User } from "../../database/entity/User";
+import { RepositoryService } from "../../database/repositories/repositoryservice";
+import { Logger } from "@overnightjs/logger";
+import { container, injectable } from "tsyringe";
+import { Local } from "./strategies";
+import { Application } from "express";
 
 @injectable()
 export class Passport {
@@ -17,7 +17,7 @@ export class Passport {
   ) {
     this.userRepository = repositoryService.getRepositoryFor<User>(User);
   }
-  
+
   public initialise(app: Application) {
     app.use(passport.initialize())
     app.use(passport.session())
@@ -35,7 +35,7 @@ export class Passport {
 
     passport.deserializeUser(async function (email: string, done) {
       const user: User | undefined = await userRepo.findOne({ email });
-      
+
       if (user) {
         delete user.passwordHash;
         delete user.id;

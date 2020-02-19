@@ -9,8 +9,6 @@ import { DependencyContainer } from "tsyringe"
 
 import { Passport } from "./services/passport/passport";
 
-import { AuthController, UserController } from './controllers';
-
 class UATPlatformServer extends Server {
 
   private readonly SERVER_STARTED = 'Server started on port: ';
@@ -44,18 +42,14 @@ class UATPlatformServer extends Server {
   private setupControllers(container: DependencyContainer): void {
     Logger.Info("Loading controllers...");
 
-    // const ctlrInstances = [];
-    // for (const name in controllers) {
-    //   if (controllers.hasOwnProperty(name)) {
-    //     const controller = (controllers as any)[name];
-    //     ctlrInstances.push(new controller());
-    //   }
-    // }
-    // super.addControllers(ctlrInstances);
-
-    const authController = container.resolve(AuthController);
-    const userController = container.resolve(UserController);
-    super.addControllers([ authController, userController ]);
+    const ctlrInstances = [];
+    for (const name in controllers) {
+      if (controllers.hasOwnProperty(name)) {
+        const controller = (controllers as any)[name];
+        ctlrInstances.push(container.resolve(controller));
+      }
+    }
+    super.addControllers(ctlrInstances);
   }
 
   public start(port: number): void {

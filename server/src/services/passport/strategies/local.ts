@@ -1,14 +1,13 @@
-import { Logger } from "@overnightjs/logger";
-import { Strategy } from 'passport-local';
-import { Repository } from 'typeorm';
-import { injectable } from 'tsyringe';
-import { User } from '../../../database/entity/User';
-import { RepositoryService } from '../../../database/repositories/repositoryservice';
-import { Bcrypt } from '../../utils/bcrypt-hash';
+import { Strategy } from "passport-local";
+import { Repository } from "typeorm";
+import { injectable } from "tsyringe";
+import { User } from "../../../database/entity/User";
+import { RepositoryService } from "../../../database/repositories/repositoryservice";
+import { Bcrypt } from "../../utils/bcrypt-hash";
 
 @injectable()
 export class Local {
-  
+
   private userRepository: Repository<User>;
 
   constructor(
@@ -32,7 +31,7 @@ export class Local {
           delete user.passwordHash;
           return done(null, user);
         }
-  
+
         // wrong password
         return done(null, false);
       }
