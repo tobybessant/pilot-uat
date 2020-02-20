@@ -1,6 +1,6 @@
 import * as passport from "passport";
 import { Repository } from "typeorm";
-import { User } from "../../database/entity/User";
+import { UserDbo } from "../../database/entity/User";
 import { RepositoryService } from "../../database/repositories/repositoryservice";
 import { Logger } from "@overnightjs/logger";
 import { container, injectable } from "tsyringe";
@@ -10,12 +10,12 @@ import { Application } from "express";
 @injectable()
 export class Passport {
 
-  private userRepository: Repository<User>;
+  private userRepository: Repository<UserDbo>;
 
   constructor(
     private repositoryService: RepositoryService
   ) {
-    this.userRepository = repositoryService.getRepositoryFor<User>(User);
+    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
   public initialise(app: Application) {
@@ -34,7 +34,7 @@ export class Passport {
     });
 
     passport.deserializeUser(async function (email: string, done) {
-      const user: User | undefined = await userRepo.findOne({ email });
+      const user: UserDbo | undefined = await userRepo.findOne({ email });
 
       if (user) {
         delete user.passwordHash;

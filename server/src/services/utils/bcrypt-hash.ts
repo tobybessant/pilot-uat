@@ -1,11 +1,15 @@
 import * as bcrypt from "bcrypt";
 
-const saltRounds = 10;
-
 export class Bcrypt {
+  private static readonly saltRounds = 10;
 
   static hash(password: string) {
-    return bcrypt.hashSync(password, saltRounds);
+
+    if(!password) {
+      throw new Error("No password provided");
+    }
+
+    return bcrypt.hashSync(password, this.saltRounds);
   }
 
   static verify(password: string, hash: string): boolean {

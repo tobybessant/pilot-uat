@@ -1,7 +1,7 @@
 import { OK } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, ClassMiddleware, Get } from "@overnightjs/core";
-import { checkAuthentication } from "../middleware/checkAuthentication";
+import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { injectable } from "tsyringe";
 
 @injectable()
@@ -10,7 +10,7 @@ import { injectable } from "tsyringe";
 export class UserController {
 
   @Get("account")
-  private getAccountDetails(req: Request, res: Response) {
+  public getAccountDetails(req: Request, res: Response) {
     res.status(OK).json({
       message: req.user
     });

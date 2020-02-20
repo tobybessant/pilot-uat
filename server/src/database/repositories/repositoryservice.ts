@@ -1,4 +1,4 @@
-import { getRepository, Connection, ObjectLiteral, EntitySchema, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { injectable } from "tsyringe";
 import { MSSQLDatabase } from "../";
 
