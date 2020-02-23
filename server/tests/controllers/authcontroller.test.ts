@@ -4,7 +4,7 @@ import { RepositoryService } from "../../src/database/repositories/repositoryser
 import { Repository } from "typeorm";
 import { UserDbo } from "../../src/database/entity/User";
 import { Request, Response } from "express";
-import { CREATED } from "http-status-codes";
+import { CREATED, BAD_REQUEST } from "http-status-codes";
 
 suite("Auth Controller", () => {
   let userRepository: IMock<Repository<UserDbo>>;
@@ -72,10 +72,48 @@ suite("Auth Controller", () => {
 
         res.verify(r => r.status(CREATED), Times.once());
       });
+    });
 
+    suite("Account already exists with email provided", async () => {
+      test("Body returns error 'Account already exists with that email'", async () => {
+        const createUser = {
+          email: "toby@me.com",
+          password: "CorrectHorseBatteryStaple",
+          firstName: "Toby"
+        };
+
+        const createUserResponse = new UserDbo();
+        createUserResponse.email = createUser.email;
+
+        given_UserRepository_count_returns(1);
+        given_UserRepository_save_returns(createUserResponse);
+        given_Request_requestModel_is(createUser);
+
+        await subject.createAccount(req.object, res.object);
+
+        res.verify(r => r.json({ error: "Account already exists with that email"}), Times.once());
+      });
+
+      test("Status code 400", async () => {
+        const createUser = {
+          email: "toby@me.com",
+          password: "CorrectHorseBatteryStaple",
+          firstName: "Toby"
+        };
+
+        const createUserResponse = new UserDbo();
+        createUserResponse.email = createUser.email;
+
+        given_UserRepository_count_returns(1);
+        given_UserRepository_save_returns(createUserResponse);
+        given_Request_requestModel_is(createUser);
+
+        await subject.createAccount(req.object, res.object);
+
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
+      });
     });
   });
-
 
   function given_RepositoryService_getRepositoryFor_returns_whenGiven<T>(returns: Repository<T>, whenGiven: any): void {
     repositoryService
@@ -100,13 +138,6 @@ suite("Auth Controller", () => {
       .setup(u => u.save(It.isAny()))
       .returns(async () => user);
   }
-
-  function given_UserRepository_save_throws(ex: Error): void {
-    userRepository
-      .setup(ur => ur.save(It.isAny()))
-      .throws(ex);
-  }
-
 });
 
 
