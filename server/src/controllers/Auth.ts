@@ -1,4 +1,4 @@
-import { OK, BAD_REQUEST } from "http-status-codes";
+import { OK, BAD_REQUEST, CREATED } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
@@ -30,6 +30,8 @@ export class AuthController {
   public async createAccount(req: Request, res: Response) {
 
     // extract details and hash password
+    // NOTE: req.requestModel should never be undefined due to the middleware catching
+    // invalid model data.
     const { email, password, firstName } = JSON.parse(req.requestModel!);
 
     // hash password
@@ -46,9 +48,9 @@ export class AuthController {
       // add user credentials
       const user: UserDbo = await this.userRepository.save({ email, passwordHash, firstName });
 
-      res.status(OK);
+      res.status(CREATED);
       res.json({
-        email
+        email: user.email
       });
     } catch (error) {
       res.status(BAD_REQUEST);
