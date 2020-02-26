@@ -35,8 +35,8 @@
     </div>
   </nb-card-body>
 
-  <nb-card-body class="form-inputs" *ngIf="accountCreated">
-    <div class="welcome">
+  <nb-card-body *ngIf="accountCreated">
+    <div>
       <h3>Welcome, {{ name }}.</h3>
       <p>A verification email will be sent to {{ email }} shortly.</p>
     </div>
