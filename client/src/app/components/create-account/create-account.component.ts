@@ -15,13 +15,22 @@ export class CreateAccountComponent {
   public password: string;
   public organisation: string;
 
+  public accountCreated: boolean = false;
+
   constructor(private supplierAuthService: SupplierAuthService) { }
 
-  submit() {
-    this.supplierAuthService.createUser({
+  async submit() {
+    const createdAccount = await this.supplierAuthService.createUser({
       email: this.email,
       password: this.password,
       firstName: this.name
     } as ISupplierCreateAccountRequest);
+
+    if (createdAccount.errors.length > 0) {
+      console.log(createdAccount.errors);
+      return;
+    }
+
+    this.accountCreated = true;
   }
 }

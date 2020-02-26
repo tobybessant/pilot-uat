@@ -2,8 +2,7 @@
   <nb-card-header>
     <h6>Sign Up</h6>
   </nb-card-header>
-  <nb-card-body class="form-inputs">
-
+  <nb-card-body class="form-inputs" *ngIf="!accountCreated">
     <input
       type="text"
       nbInput
@@ -29,12 +28,21 @@
     />
 
     <div class="buttons">
-      <button nbButton status="primary" (click)="submit()">Create Account</button>
+      <button nbButton status="primary" (click)="submit()">
+        Create Account
+      </button>
       <button nbButton status="basic">Cancel</button>
     </div>
   </nb-card-body>
 
-  <nb-card-footer>
+  <nb-card-body class="form-inputs" *ngIf="accountCreated">
+    <div class="welcome">
+      <h3>Welcome, {{ name }}.</h3>
+      <p>A verification email will be sent to {{ email }} shortly.</p>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer *ngIf="!accountCreated">
     Already signed up? Log in <a routerLink="/login">here</a>.
   </nb-card-footer>
 </nb-card>

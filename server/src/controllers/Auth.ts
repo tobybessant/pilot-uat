@@ -12,6 +12,8 @@ import { Bcrypt } from "../services/utils/bcrypt-hash";
 import { bodyDoesMatch } from "../services/middleware/bodyDoesMatch";
 import { ICreateUserRequest } from "../models/request/createuser";
 import { ILoginRequest } from "../models/request/login";
+import { IUserResponse } from "../models/response/user";
+import { IApiResponse } from "../models/response/apiresponse";
 
 @injectable()
 @Controller("auth")
@@ -41,7 +43,7 @@ export class AuthController {
     try {
       // query for existing user
       const exists: number = await this.userRepository.count({ email });
-      if(exists) {
+      if (exists) {
         throw new Error("Account already exists with that email");
       }
 
@@ -50,11 +52,17 @@ export class AuthController {
 
       res.status(CREATED);
       res.json({
-        email: user.email
-      });
+        errors: [],
+        payload: {
+          email: user.email,
+          firstName: user.firstName
+        }
+      } as IApiResponse<IUserResponse>);
     } catch (error) {
       res.status(BAD_REQUEST);
-      res.json({ error: error.message });
+      res.json({
+        errors: [ error.message ]
+      } as IApiResponse<IUserResponse>);
     }
   }
 
