@@ -7,7 +7,9 @@ import { CreateAccountComponent } from "./components/create-account/create-accou
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule, NbCardModule, NbInputModule } from "@nebular/theme";
-import { LoginComponent } from './components/login/login.component';
+import { HttpClientModule } from "@angular/common/http";
+
+import { LoginComponent } from "./components/login/login.component";
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import { LoginComponent } from './components/login/login.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,

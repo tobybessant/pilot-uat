@@ -8,6 +8,14 @@
       type="text"
       nbInput
       fullWidth
+      placeholder="Your name"
+      [(ngModel)]="name"
+    />
+
+    <input
+      type="text"
+      nbInput
+      fullWidth
       placeholder="Email"
       [(ngModel)]="email"
     />
@@ -19,15 +27,6 @@
       placeholder="Password"
       [(ngModel)]="password"
     />
-
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Organisation"
-      [(ngModel)]="organisation"
-    />
-    <span class="caption-2 text-hint">Your company name</span>
 
     <div class="buttons">
       <button nbButton status="primary" (click)="submit()">Create Account</button>

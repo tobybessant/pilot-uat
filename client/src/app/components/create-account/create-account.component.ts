@@ -1,4 +1,7 @@
 import { Component, OnInit } from "@angular/core";
+import { SupplierAuthService } from "src/app/services/api/supplier-auth-service.service";
+import { ISupplierCreateAccountRequest } from "src/app/models/request/supplier/create-account.interface";
+import { ThrowStmt } from "@angular/compiler";
 
 @Component({
   selector: "app-create-account",
@@ -7,13 +10,18 @@ import { Component, OnInit } from "@angular/core";
 })
 export class CreateAccountComponent {
 
+  public name: string;
   public email: string;
   public password: string;
   public organisation: string;
 
-  constructor() { }
+  constructor(private supplierAuthService: SupplierAuthService) { }
 
   submit() {
-    console.log(this.email, this.organisation, this.password);
+    this.supplierAuthService.createUser({
+      email: this.email,
+      password: this.password,
+      firstName: this.name
+    } as ISupplierCreateAccountRequest);
   }
 }

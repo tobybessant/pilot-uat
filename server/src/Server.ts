@@ -2,6 +2,7 @@ import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as controllers from "./controllers";
 import * as session from "express-session";
+import * as cors from "cors";
 
 import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
@@ -22,6 +23,8 @@ class UATPlatformServer extends Server {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
+
+    this.app.use(cors());
 
     this.app.use(session({
       secret: "keyboard cat",
