@@ -1,0 +1,33 @@
+<nb-card class="create-account-card">
+  <nb-card-header>
+    <h6>Log In</h6>
+  </nb-card-header>
+  
+  <nb-card-body class="form-inputs">
+
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Email"
+      [(ngModel)]="email"
+    />
+
+    <input
+      type="password"
+      nbInput
+      fullWidth
+      placeholder="Password"
+      [(ngModel)]="password"
+    />
+
+    <div class="buttons">
+      <button nbButton status="primary" (click)="submit()">Log In</button>
+      <button nbButton status="basic">Cancel</button>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer>
+    Don't have an account? Sign up <a routerLink="/signup">here</a>.
+  </nb-card-footer>
+</nb-card>

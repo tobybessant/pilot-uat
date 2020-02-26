@@ -1,1 +1,15 @@
+@import 'themes';
+
+@import '~@nebular/theme/styles/globals';
+
+// import Nebular Theme System and the default theme
+@import '~@nebular/theme/styles/theming';
+@import '~@nebular/theme/styles/themes/default';
+@import '~@nebular/theme/styles/themes/dark';
+@import '~@nebular/theme/styles/themes/cosmic';
+@import '~@nebular/theme/styles/themes/corporate';
+
+@include nb-install() {
+  @include nb-theme-global();
+};
 /* You can add global styles to this file, and also import other style files */

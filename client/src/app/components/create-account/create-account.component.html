@@ -1,0 +1,41 @@
+<nb-card class="create-account-card">
+  <nb-card-header>
+    <h6>Sign Up</h6>
+  </nb-card-header>
+  <nb-card-body class="form-inputs">
+
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Email"
+      [(ngModel)]="email"
+    />
+
+    <input
+      type="password"
+      nbInput
+      fullWidth
+      placeholder="Password"
+      [(ngModel)]="password"
+    />
+
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Organisation"
+      [(ngModel)]="organisation"
+    />
+    <span class="caption-2 text-hint">Your company name</span>
+
+    <div class="buttons">
+      <button nbButton status="primary" (click)="submit()">Create Account</button>
+      <button nbButton status="basic">Cancel</button>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer>
+    Already signed up? Log in <a routerLink="/login">here</a>.
+  </nb-card-footer>
+</nb-card>
