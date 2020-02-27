@@ -13,5 +13,10 @@ export const ICreateUserRequest = joi.object({
   firstName: joi
     .string()
     .max(30)
+    .required(),
+
+  lastName: joi
+    .string()
+    .max(30)
     .required()
 });

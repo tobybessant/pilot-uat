@@ -1,9 +1,10 @@
 import { Strategy } from "passport-local";
 import { Repository } from "typeorm";
 import { injectable } from "tsyringe";
-import { UserDbo } from "../../../database/entity/User";
-import { RepositoryService } from "../../../database/repositories/repositoryservice";
+
 import { Bcrypt } from "../../utils/bcrypt-hash";
+import { UserDbo } from "../../../database/entities/userDbo";
+import { RepositoryService } from "../../repositoryservice";
 
 @injectable()
 export class Local {

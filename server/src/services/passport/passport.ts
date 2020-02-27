@@ -1,11 +1,11 @@
 import * as passport from "passport";
 import { Repository } from "typeorm";
-import { UserDbo } from "../../database/entity/User";
-import { RepositoryService } from "../../database/repositories/repositoryservice";
 import { Logger } from "@overnightjs/logger";
 import { container, injectable } from "tsyringe";
 import { Local } from "./strategies";
 import { Application } from "express";
+import { UserDbo } from "../../database/entities/userDbo";
+import { RepositoryService } from "../repositoryservice";
 
 @injectable()
 export class Passport {

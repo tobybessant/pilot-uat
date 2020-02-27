@@ -1,10 +1,12 @@
 import { IMock, Mock, It, Times } from "typemoq";
 import { AuthController } from "../../src/controllers/auth";
-import { RepositoryService } from "../../src/database/repositories/repositoryservice";
+
 import { Repository } from "typeorm";
-import { UserDbo } from "../../src/database/entity/User";
+import { RepositoryService } from "../../src/services/repositoryservice";
+
 import { Request, Response } from "express";
 import { CREATED, BAD_REQUEST } from "http-status-codes";
+import { UserDbo } from "../../src/database/entities/userDbo";
 
 suite("Auth Controller", () => {
   let userRepository: IMock<Repository<UserDbo>>;

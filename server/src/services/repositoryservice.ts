@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { injectable } from "tsyringe";
-import { MSSQLDatabase } from "../";
+import { MSSQLDatabase } from "../database";
 
 @injectable()
 export class RepositoryService {

@@ -5,8 +5,6 @@ import { Logger } from "@overnightjs/logger";
 import * as passport from "passport";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { injectable } from "tsyringe";
-import { UserDbo } from "../database/entity/User";
-import { RepositoryService } from "../database/repositories/repositoryservice";
 import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcrypt-hash";
 import { bodyDoesMatch } from "../services/middleware/bodyDoesMatch";
@@ -14,6 +12,8 @@ import { ICreateUserRequest } from "../models/request/createuser";
 import { ILoginRequest } from "../models/request/login";
 import { IUserResponse } from "../models/response/user";
 import { IApiResponse } from "../models/response/apiresponse";
+import { UserDbo } from "../database/entities/userDbo";
+import { RepositoryService } from "../services/repositoryservice";
 
 @injectable()
 @Controller("auth")
@@ -34,7 +34,7 @@ export class AuthController {
     // extract details and hash password
     // NOTE: req.requestModel should never be undefined due to the middleware catching
     // invalid model data.
-    const { email, password, firstName } = JSON.parse(req.requestModel!);
+    const { email, password, firstName, lastName } = JSON.parse(req.requestModel!);
 
     // hash password
     const passwordHash = Bcrypt.hash(password);
@@ -48,7 +48,13 @@ export class AuthController {
       }
 
       // add user credentials
-      const user: UserDbo = await this.userRepository.save({ email, passwordHash, firstName });
+      const user: UserDbo = await this.userRepository.save({
+        email,
+        passwordHash,
+        firstName,
+        lastName,
+        userType: { id: 1 }
+      });
 
       res.status(CREATED);
       res.json({
