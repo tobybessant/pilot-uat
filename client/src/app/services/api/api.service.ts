@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { IApiResponse } from "src/app/models/response/api-response.interface";
 
 @Injectable({
@@ -22,7 +22,11 @@ export class ApiService {
     try {
       response.payload = await this.httpClient.post<T>(this.root + path, body).toPromise();
     } catch (ex) {
-      response.errors.push(ex.error?.errors);
+      if (ex.error?.errors) {
+        response.errors.push(ex.error?.errors);
+        return;
+      }
+      response.errors.push("Something went wrong...");
     }
 
     return response;
