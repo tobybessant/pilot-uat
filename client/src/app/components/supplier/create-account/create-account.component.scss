@@ -11,6 +11,15 @@ nb-card-body.form-inputs {
   justify-content: space-evenly;
 }
 
+.name-fields {
+  display: flex;
+  justify-content: space-between;
+}
+
+.name-fields > input {
+  max-width: 48%;
+}
+
 .buttons > button {
   margin: 10px 20px 0 0;
 }

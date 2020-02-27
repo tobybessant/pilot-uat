@@ -3,13 +3,14 @@ import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { CreateAccountComponent } from "./components/create-account/create-account.component";
+
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule, NbCardModule, NbInputModule } from "@nebular/theme";
 import { HttpClientModule } from "@angular/common/http";
 
-import { LoginComponent } from "./components/login/login.component";
+import { LoginComponent } from "./components/supplier/login/login.component";
+import { CreateAccountComponent } from "./components/supplier/create-account/create-account.component";
 
 @NgModule({
   declarations: [

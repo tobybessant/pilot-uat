@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ObjectSchema } from "joi";
 import { BAD_REQUEST } from "http-status-codes";
+import { IApiResponse } from "../../models/response/apiresponse";
 
 export function bodyDoesMatch(model: ObjectSchema) {
   return function(req: Request, res: Response, next: NextFunction) {
@@ -14,7 +15,7 @@ export function bodyDoesMatch(model: ObjectSchema) {
       res.status(BAD_REQUEST);
       res.json({
         errors
-      });
+      } as IApiResponse<void>);
       return;
     }
 

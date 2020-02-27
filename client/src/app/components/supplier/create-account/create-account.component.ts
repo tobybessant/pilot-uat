@@ -10,7 +10,8 @@ import { ThrowStmt } from "@angular/compiler";
 })
 export class CreateAccountComponent {
 
-  public name: string;
+  public firstName: string;
+  public lastName: string;
   public email: string;
   public password: string;
   public organisation: string;
@@ -20,10 +21,12 @@ export class CreateAccountComponent {
   constructor(private supplierAuthService: SupplierAuthService) { }
 
   async submit() {
+    console.log(this.lastName);
     const createdAccount = await this.supplierAuthService.createUser({
       email: this.email,
       password: this.password,
-      firstName: this.name
+      firstName: this.firstName,
+      lastName: this.lastName
     } as ISupplierCreateAccountRequest);
 
     if (createdAccount.errors.length > 0) {

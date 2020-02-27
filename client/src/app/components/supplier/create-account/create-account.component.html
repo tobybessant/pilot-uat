@@ -3,13 +3,22 @@
     <h6>Sign Up</h6>
   </nb-card-header>
   <nb-card-body class="form-inputs" *ngIf="!accountCreated">
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Your name"
-      [(ngModel)]="name"
-    />
+    <div class="name-fields">
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="First name"
+        [(ngModel)]="firstName"
+      />
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Last name"
+        [(ngModel)]="lastName"
+      />
+    </div>
 
     <input
       type="text"
@@ -37,7 +46,7 @@
 
   <nb-card-body *ngIf="accountCreated">
     <div>
-      <h3>Welcome, {{ name }}.</h3>
+      <h3>Welcome, {{ firstName }}.</h3>
       <p>A verification email will be sent to {{ email }} shortly.</p>
     </div>
   </nb-card-body>
