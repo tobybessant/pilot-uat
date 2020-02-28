@@ -23,9 +23,7 @@ export class LoginComponent implements OnInit {
       password: this.password
     } as ISignInRequest);
 
-    console.log("login: ", response);
-
-    const authCheck = await this.authService.checkAuth();
-    console.log(authCheck);
+    const currentUser = await this.authService.getCurrentUser();
+    console.log("THE ACTIVE USER IS: ", currentUser);
   }
 }

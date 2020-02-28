@@ -9,8 +9,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule, NbCardModule, NbInputModule } from "@nebular/theme";
 import { HttpClientModule } from "@angular/common/http";
 
-import { LoginComponent } from "./components/supplier/login/login.component";
-import { CreateAccountComponent } from "./components/supplier/create-account/create-account.component";
+import { LoginComponent } from "./components/common/login/login.component";
+import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
 
 @NgModule({
   declarations: [
