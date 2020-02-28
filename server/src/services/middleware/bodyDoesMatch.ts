@@ -18,8 +18,6 @@ export function bodyDoesMatch(model: ObjectSchema) {
       } as IApiResponse<void>);
       return;
     }
-
-    req.requestModel = JSON.stringify(check.value);
     next();
   }
 }

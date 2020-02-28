@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 import { MSSQLDatabase } from "../";
-import { TABLE_NAME } from "../entities/userTypeEnum";
+
 import { getConnection } from "typeorm";
 import { Logger } from "@overnightjs/logger";
 
+import { TABLE_NAME } from "../entities/userTypeDbo";
 let database: MSSQLDatabase;
 
 const records = [

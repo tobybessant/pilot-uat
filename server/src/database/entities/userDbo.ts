@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, RelationId } from "typeorm";
-import { UserTypeEnumDbo } from "./userTypeEnum";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, RelationId, JoinColumn } from "typeorm";
+import { UserTypeDbo } from "./userTypeDbo";
+
 
 export const TABLE_NAME: string = "User";
 @Entity({
@@ -12,7 +13,7 @@ export class UserDbo {
     @Column({ type: "varchar", length: 255, unique: true })
     email!: string;
 
-    @Column()
+    @Column({ select: false })
     passwordHash!: string;
 
     @Column({ type: "varchar", length: 255 })
@@ -21,11 +22,9 @@ export class UserDbo {
     @Column({ type: "varchar", length: 255 })
     lastName!: string;
 
-    @ManyToOne(type => UserTypeEnumDbo)
-    userType!: UserTypeEnumDbo;
-
-    @RelationId((user: UserDbo) => user.userType)
-    userTypeId!: number;
+    @ManyToOne(type => UserTypeDbo)
+    @JoinColumn()
+    userType!: UserTypeDbo;
 
     @CreateDateColumn()
     createdDate!: Date;

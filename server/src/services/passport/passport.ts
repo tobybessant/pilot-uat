@@ -37,8 +37,6 @@ export class Passport {
       const user: UserDbo | undefined = await userRepo.findOne({ email });
 
       if (user) {
-        delete user.passwordHash;
-        delete user.id;
         done(null, user);
       }
     });

@@ -7,11 +7,10 @@ import { singleton } from "tsyringe";
 export class MSSQLDatabase {
 
   private connection!: Connection;
-  private sync: boolean = process.env.TYPEORM_SYNC === "true";
 
   public async openConnection(): Promise<void> {
       try {
-        this.connection = await createConnection(DBConfig as ConnectionOptions);
+        this.connection = await createConnection(DBConfig);
         Logger.Info("Database connection established...");
       } catch(err) {
         throw new Error(err);

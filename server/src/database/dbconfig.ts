@@ -1,4 +1,6 @@
-export const DBConfig = {
+import { ConnectionOptions } from "typeorm";
+
+export const DBConfig: ConnectionOptions = {
   type: "mssql",
   host: process.env.db_host || "localhost",
   port: Number(process.env.db_port) || 1433,

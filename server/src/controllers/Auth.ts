@@ -10,21 +10,25 @@ import { Bcrypt } from "../services/utils/bcrypt-hash";
 import { bodyDoesMatch } from "../services/middleware/bodyDoesMatch";
 import { ICreateUserRequest } from "../models/request/createuser";
 import { ILoginRequest } from "../models/request/login";
-import { IUserResponse } from "../models/response/user";
 import { IApiResponse } from "../models/response/apiresponse";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryservice";
+import { UserTypeDbo } from "../database/entities/userTypeDbo";
+import { IUserToken } from "../models/response/usertoken";
+import { ICreateUserResponse } from "../models/response/createUser";
 
 @injectable()
 @Controller("auth")
 export class AuthController {
 
   private userRepository: Repository<UserDbo>
+  private userTypeRepository: Repository<UserTypeDbo>
 
   constructor(
     private repositoryService: RepositoryService,
   ) {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
+    this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
   }
 
   @Post("createaccount")
@@ -32,9 +36,7 @@ export class AuthController {
   public async createAccount(req: Request, res: Response) {
 
     // extract details and hash password
-    // NOTE: req.requestModel should never be undefined due to the middleware catching
-    // invalid model data.
-    const { email, password, firstName, lastName } = JSON.parse(req.requestModel!);
+    const { email, password, firstName, lastName } = JSON.parse(req.body);
 
     // hash password
     const passwordHash = Bcrypt.hash(password);
@@ -48,12 +50,13 @@ export class AuthController {
       }
 
       // add user credentials
+      const userType: UserTypeDbo | undefined  = await this.userTypeRepository.findOne({ type: "Supplier" });
       const user: UserDbo = await this.userRepository.save({
         email,
         passwordHash,
         firstName,
         lastName,
-        userType: { id: 1 }
+        userType
       });
 
       res.status(CREATED);
@@ -61,14 +64,15 @@ export class AuthController {
         errors: [],
         payload: {
           email: user.email,
-          firstName: user.firstName
+          firstName: user.firstName,
+          type: userType?.type
         }
-      } as IApiResponse<IUserResponse>);
+      } as IApiResponse<ICreateUserResponse>);
     } catch (error) {
       res.status(BAD_REQUEST);
       res.json({
         errors: [ error.message ]
-      } as IApiResponse<IUserResponse>);
+      } as IApiResponse<ICreateUserResponse>);
     }
   }
 
@@ -80,9 +84,7 @@ export class AuthController {
   public login(req: Request, res: Response) {
     Logger.Info("Authenticated local");
     res.status(OK);
-    res.json({
-      message: req.user
-    });
+    res.json(req.user as IUserToken);
   }
 
   @Get("logout")

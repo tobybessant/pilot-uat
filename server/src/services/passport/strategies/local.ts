@@ -1,10 +1,11 @@
 import { Strategy } from "passport-local";
-import { Repository } from "typeorm";
+import { Repository, AdvancedConsoleLogger } from "typeorm";
 import { injectable } from "tsyringe";
 
 import { Bcrypt } from "../../utils/bcrypt-hash";
 import { UserDbo } from "../../../database/entities/userDbo";
 import { RepositoryService } from "../../repositoryservice";
+import { IUserToken } from "../../../models/response/usertoken";
 
 @injectable()
 export class Local {
@@ -25,12 +26,20 @@ export class Local {
         usernameField: "email"
       },
       async function(email, password, done) {
-
         // check for user & check password
-        const user: UserDbo | undefined = await userRepository.findOne({ email });
+        const user: UserDbo | undefined = await userRepository
+          .createQueryBuilder("user")
+          .addSelect("user.passwordHash")
+          .leftJoinAndSelect("user.userType", "type")
+          .where("user.email = :email", { email })
+          .getOne();
+
         if (user && Bcrypt.verify(password, user.passwordHash)) {
-          delete user.passwordHash;
-          return done(null, user);
+          const u: IUserToken = {
+            email: user.email,
+            type: user.userType.type
+          }
+          return done(null, u);
         }
 
         // wrong password
