@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { SupplierAuthService } from "src/app/services/api/supplier-auth-service.service";
-import { ISupplierCreateAccountRequest } from "src/app/models/request/supplier/create-account.interface";
-import { ThrowStmt } from "@angular/compiler";
+import { AuthService } from "src/app/services/api/auth-service.service";
+import { ICreateAccountRequest } from "src/app/models/request/common/create-account.interface";
 
 @Component({
   selector: "app-create-account",
@@ -18,16 +17,16 @@ export class CreateAccountComponent {
 
   public accountCreated: boolean = false;
 
-  constructor(private supplierAuthService: SupplierAuthService) { }
+  constructor(private authService: AuthService) { }
 
   async submit() {
     console.log(this.lastName);
-    const createdAccount = await this.supplierAuthService.createUser({
+    const createdAccount = await this.authService.createUser({
       email: this.email,
       password: this.password,
       firstName: this.firstName,
       lastName: this.lastName
-    } as ISupplierCreateAccountRequest);
+    } as ICreateAccountRequest);
 
     if (createdAccount.errors.length > 0) {
       console.log(createdAccount.errors);

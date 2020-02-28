@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthService } from "src/app/services/api/auth-service.service";
-import { ISignInRequest } from "src/app/models/request/unauth/sign-in.interface";
+import { ISignInRequest } from "src/app/models/request/common/sign-in.interface";
 
 @Component({
   selector: "app-login",

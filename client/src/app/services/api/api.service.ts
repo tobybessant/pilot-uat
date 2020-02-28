@@ -10,8 +10,22 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public async get<T>(endpoint: string): Promise<T> {
-    return await this.httpClient.get<T>(this.root + endpoint, { withCredentials: true }).toPromise();
+  public async get<T>(endpoint: string): Promise<IApiResponse<T>> {
+    const response = {
+      errors: []
+    } as IApiResponse<T>;
+
+    try {
+      response.payload = await this.httpClient.get<T>(this.root + endpoint, { withCredentials: true }).toPromise();
+    } catch (ex) {
+      if (ex.error?.errors) {
+        response.errors.push(ex.error?.errors);
+        return;
+      }
+      response.errors.push("Something went wrong...");
+    }
+
+    return response;
   }
 
   public async post<T>(path: string, body: any): Promise<IApiResponse<T>> {

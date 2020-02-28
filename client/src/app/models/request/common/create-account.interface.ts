@@ -1,4 +1,4 @@
-export interface ISupplierCreateAccountRequest {
+export interface ICreateAccountRequest {
   email: string;
   password: string;
   firstName: string;

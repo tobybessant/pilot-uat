@@ -1,3 +1,4 @@
 export interface ISignInResponse {
-  errors: string[];
+  email: string;
+  type: string;
 }
