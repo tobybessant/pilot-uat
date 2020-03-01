@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule, APP_INITIALIZER } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -12,6 +12,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { LoginComponent } from "./components/common/login/login.component";
 import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
 import { ProjectsDashboardComponent } from "./components/supplier/projects-dashboard/projects-dashboard.component";
+import { initApp } from "./app-initialiser";
+import { AuthService } from "./services/api/auth-service.service";
 
 @NgModule({
   declarations: [
@@ -35,7 +37,14 @@ import { ProjectsDashboardComponent } from "./components/supplier/projects-dashb
     NbThemeModule.forRoot({ name: "default" }),
     NbButtonModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initApp,
+      deps: [AuthService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

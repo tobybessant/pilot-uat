@@ -29,7 +29,7 @@ export class AuthService {
 
     // if user successfully created account then log them in
     if (response !== undefined) {
-      await this.setLoggedInUser();
+      await this.setLoggedInUserFromSession();
     }
 
     return response;
@@ -40,19 +40,19 @@ export class AuthService {
 
     // if user successfully logged in
     if (response !== undefined) {
-      await this.setLoggedInUser();
+      await this.setLoggedInUserFromSession();
     }
 
     return response;
   }
 
-  private async setLoggedInUser() {
+  public async setLoggedInUserFromSession() {
     const response = await this.userService.getLoggedInAccountDetails();
     this.currentUserSubject = new BehaviorSubject<IUserResponse>(response.payload);
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
   public getLoggedInUser(): IUserResponse | undefined {
-      return this.currentUserSubject?.value;
+    return this.currentUserSubject?.value;
   }
 }
