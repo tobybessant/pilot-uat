@@ -1,10 +1,11 @@
-import { AuthService } from "./services/api/auth-service.service";
 
-export function initApp(authService: AuthService) {
+import { SessionService } from "./services/session.service";
+
+export function initApp(sessionService: SessionService) {
   return () => {
     return new Promise(async (resolve) => {
       // check for user session
-      await authService.setLoggedInUserFromSession();
+      await sessionService.setLoggedInUserFromSession();
       resolve();
     });
   };

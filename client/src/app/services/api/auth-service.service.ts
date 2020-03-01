@@ -8,6 +8,7 @@ import { IUserResponse } from "src/app/models/response/common/user.interface";
 import { ICreateAccountResponse } from "src/app/models/response/common/create-account.interface";
 import { Observable, BehaviorSubject } from "rxjs";
 import { UserApiService } from "./user-api.service";
+import { SessionService } from "../session.service";
 
 @Injectable({
   providedIn: "root"
@@ -21,7 +22,7 @@ export class AuthService {
 
   constructor(
     protected apiService: ApiService,
-    protected userService: UserApiService
+    protected sessionService: SessionService
     ) { }
 
   public async createUser(user: ICreateAccountRequest): Promise<IApiResponse<ICreateAccountResponse>> {
@@ -29,7 +30,7 @@ export class AuthService {
 
     // if user successfully created account then log them in
     if (response !== undefined) {
-      await this.setLoggedInUserFromSession();
+      await this.sessionService.setLoggedInUserFromSession();
     }
 
     return response;
@@ -40,19 +41,9 @@ export class AuthService {
 
     // if user successfully logged in
     if (response !== undefined) {
-      await this.setLoggedInUserFromSession();
+      await this.sessionService.setLoggedInUserFromSession();
     }
 
     return response;
-  }
-
-  public async setLoggedInUserFromSession() {
-    const response = await this.userService.getLoggedInAccountDetails();
-    this.currentUserSubject = new BehaviorSubject<IUserResponse>(response.payload);
-    this.currentUser = this.currentUserSubject.asObservable();
-  }
-
-  public getLoggedInUser(): IUserResponse | undefined {
-    return this.currentUserSubject?.value;
   }
 }

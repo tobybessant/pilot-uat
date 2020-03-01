@@ -13,7 +13,7 @@ import { LoginComponent } from "./components/common/login/login.component";
 import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
 import { ProjectsDashboardComponent } from "./components/supplier/projects-dashboard/projects-dashboard.component";
 import { initApp } from "./app-initialiser";
-import { AuthService } from "./services/api/auth-service.service";
+import { SessionService } from "./services/session.service";
 
 @NgModule({
   declarations: [
@@ -41,7 +41,7 @@ import { AuthService } from "./services/api/auth-service.service";
     {
       provide: APP_INITIALIZER,
       useFactory: initApp,
-      deps: [AuthService],
+      deps: [SessionService],
       multi: true
     }
   ],
