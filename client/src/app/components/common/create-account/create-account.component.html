@@ -1,12 +1,10 @@
-<nb-alert
-  class="centered small"
-  status="danger"
-  *ngFor="let err of errors"
->
-  {{ err }}
-</nb-alert>
+<div class="alert-container">
+  <nb-alert class="centered small" status="danger" *ngFor="let err of errors">
+    {{ err }}
+  </nb-alert>
+</div>
 
-<nb-card class="centered small">
+<nb-card class="centered medium">
   <nb-card-header>
     <h6>Sign Up</h6>
   </nb-card-header>

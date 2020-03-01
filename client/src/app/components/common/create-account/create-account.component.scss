@@ -1,3 +1,7 @@
+.alert-container {
+  height: 85px;
+}
+
 nb-alert.small {
   max-width: 500px;
 }
@@ -7,15 +11,9 @@ nb-alert.small {
   margin-right: auto;
 }
 
-nb-card.small {
-  height: 330px;
+nb-card.medium {
+  height: 370px;
   max-width: 500px;
-}
-
-nb-card.create-account-card {
-  height: 400px;
-  max-width: 500px;
-  margin: 0 auto;
 }
 
 nb-card-body.form-inputs {

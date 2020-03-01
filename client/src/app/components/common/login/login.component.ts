@@ -39,4 +39,11 @@ export class LoginComponent implements OnInit {
     //  routes for the given userType.
     this.router.navigate(["/"]);
   }
+
+  keyDownFunction(event) {
+    // capture 'enter' keypress if form is focused
+    if (event.keyCode === 13) {
+      this.submit();
+    }
+  }
 }
