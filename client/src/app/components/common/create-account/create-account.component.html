@@ -1,4 +1,12 @@
-<nb-card class="create-account-card">
+<nb-alert
+  class="centered small"
+  status="danger"
+  *ngFor="let err of errors"
+>
+  {{ err }}
+</nb-alert>
+
+<nb-card class="centered small">
   <nb-card-header>
     <h6>Sign Up</h6>
   </nb-card-header>

@@ -1,22 +1,26 @@
 import * as joi from "joi";
 
 export const ICreateUserRequest = joi.object({
-  email: joi
-    .string()
-    .email()
-    .required(),
-
-  password: joi
-    .string()
-    .required(),
-
   firstName: joi
     .string()
+    .label("First Name")
     .max(30)
     .required(),
 
   lastName: joi
     .string()
+    .label("Last Name")
     .max(30)
+    .required(),
+
+  email: joi
+    .string()
+    .label("Email")
+    .email()
+    .required(),
+
+  password: joi
+    .string()
+    .label("Password")
     .required()
 });

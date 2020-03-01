@@ -11,16 +11,16 @@ export class ApiService {
   constructor(private httpClient: HttpClient) { }
 
   public async get<T>(endpoint: string): Promise<IApiResponse<T>> {
-    const response = {
+    let response = {
       errors: []
     } as IApiResponse<T>;
 
     try {
-      response.payload = await this.httpClient.get<T>(this.root + endpoint, { withCredentials: true }).toPromise();
+      response = await this.httpClient.get<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
-        return;
+        return response;
       }
       response.errors.push("Something went wrong...");
     }
@@ -28,21 +28,20 @@ export class ApiService {
     return response;
   }
 
-  public async post<T>(path: string, body: any): Promise<IApiResponse<T>> {
-    const response = {
+  public async post<T>(endpoint: string, body: any): Promise<IApiResponse<T>> {
+    let response = {
       errors: []
     } as IApiResponse<T>;
 
     try {
-      response.payload = await this.httpClient.post<T>(this.root + path, body, { withCredentials: true }).toPromise();
+      response = await this.httpClient.post<IApiResponse<T>>(this.root + endpoint, body, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
-        return;
+        return response;
       }
       response.errors.push("Something went wrong...");
     }
-
     return response;
   }
 

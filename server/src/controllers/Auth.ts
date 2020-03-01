@@ -36,7 +36,7 @@ export class AuthController {
   public async createAccount(req: Request, res: Response) {
 
     // extract details and hash password
-    const { email, password, firstName, lastName } = JSON.parse(req.body);
+    const { email, password, firstName, lastName } = req.body;
 
     // hash password
     const passwordHash = Bcrypt.hash(password);
@@ -50,7 +50,7 @@ export class AuthController {
       }
 
       // add user credentials
-      const userType: UserTypeDbo | undefined  = await this.userTypeRepository.findOne({ type: "Supplier" });
+      const userType: UserTypeDbo | undefined  = await this.userTypeRepository.findOne({ type: "Client" });
       const user: UserDbo = await this.userRepository.save({
         email,
         passwordHash,
@@ -84,7 +84,12 @@ export class AuthController {
   public login(req: Request, res: Response) {
     Logger.Info("Authenticated local");
     res.status(OK);
-    res.json(req.user as IUserToken);
+    res.json({
+      errors: [],
+      payload: {
+        ...req.user as any
+      }
+    } as IApiResponse<IUserToken>);
   }
 
   @Get("logout")

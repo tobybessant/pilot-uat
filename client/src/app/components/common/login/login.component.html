@@ -1,10 +1,17 @@
-<nb-card class="create-account-card">
+<nb-alert
+  class="centered small"
+  status="danger"
+  *ngFor="let err of errors"
+>
+  {{ err }}
+</nb-alert>
+
+<nb-card class="centered small">
   <nb-card-header>
     <h6>Log In</h6>
   </nb-card-header>
-  
-  <nb-card-body class="form-inputs">
 
+  <nb-card-body class="form-inputs">
     <input
       type="text"
       nbInput
@@ -26,7 +33,6 @@
       <button nbButton status="basic">Cancel</button>
     </div>
   </nb-card-body>
-
   <nb-card-footer>
     Don't have an account? Sign up <a routerLink="/signup">here</a>.
   </nb-card-footer>

@@ -15,12 +15,12 @@ export class CreateAccountComponent {
   public password: string;
   public organisation: string;
 
+  public errors: string[];
   public accountCreated: boolean = false;
 
   constructor(private authService: AuthService) { }
 
   async submit() {
-    console.log(this.lastName);
     const createdAccount = await this.authService.createUser({
       email: this.email,
       password: this.password,
@@ -29,7 +29,7 @@ export class CreateAccountComponent {
     } as ICreateAccountRequest);
 
     if (createdAccount.errors.length > 0) {
-      console.log(createdAccount.errors);
+      this.errors = createdAccount.errors;
       return;
     }
 
