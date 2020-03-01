@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthService } from "src/app/services/api/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/request/common/create-account.interface";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-create-account",
@@ -18,9 +19,9 @@ export class CreateAccountComponent {
   public errors: string[];
   public accountCreated: boolean = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
-  async submit() {
+  public async submit() {
     const createdAccount = await this.authService.createUser({
       email: this.email,
       password: this.password,
@@ -34,5 +35,9 @@ export class CreateAccountComponent {
     }
 
     this.accountCreated = true;
+  }
+
+  public goToDashboard() {
+    this.router.navigate(["/"]);
   }
 }

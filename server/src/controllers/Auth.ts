@@ -50,7 +50,7 @@ export class AuthController {
       }
 
       // add user credentials
-      const userType: UserTypeDbo | undefined  = await this.userTypeRepository.findOne({ type: "Client" });
+      const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type: "Client" });
       const user: UserDbo = await this.userRepository.save({
         email,
         passwordHash,
@@ -58,6 +58,18 @@ export class AuthController {
         lastName,
         userType
       });
+
+      req.login(
+        {
+          email,
+          type: userType?.type
+        } as IUserToken,
+        function (err) {
+          if (err) {
+            console.log(err);
+          }
+        }
+      );
 
       res.status(CREATED);
       res.json({
@@ -71,7 +83,7 @@ export class AuthController {
     } catch (error) {
       res.status(BAD_REQUEST);
       res.json({
-        errors: [ error.message ]
+        errors: [error.message]
       } as IApiResponse<ICreateUserResponse>);
     }
   }
@@ -82,7 +94,6 @@ export class AuthController {
     passport.authenticate("local")
   ])
   public login(req: Request, res: Response) {
-    Logger.Info("Authenticated local");
     res.status(OK);
     res.json({
       errors: [],

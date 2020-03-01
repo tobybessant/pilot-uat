@@ -25,7 +25,14 @@ export class AuthService {
     ) { }
 
   public async createUser(user: ICreateAccountRequest): Promise<IApiResponse<ICreateAccountResponse>> {
-    return await this.apiService.post<ICreateAccountResponse>(this.baseRoute + "/createaccount", user);
+    const response =  await this.apiService.post<ICreateAccountResponse>(this.baseRoute + "/createaccount", user);
+
+    // if user successfully created account then log them in
+    if (response !== undefined) {
+      await this.setLoggedInUser();
+    }
+
+    return response;
   }
 
   public async login(credentials: ISignInRequest): Promise<IApiResponse<ISignInResponse>> {

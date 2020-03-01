@@ -53,7 +53,7 @@
   <nb-card-body *ngIf="accountCreated">
     <div>
       <h3>Welcome, {{ firstName }}.</h3>
-      <p>A verification email will be sent to {{ email }} shortly.</p>
+      <button nbButton status="primary" (click)="goToDashboard()">Proceed to Dashboard</button>
     </div>
   </nb-card-body>
 
