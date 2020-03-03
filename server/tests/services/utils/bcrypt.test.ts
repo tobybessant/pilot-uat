@@ -38,9 +38,9 @@ suite("Bcrypt Service", () => {
 
   suite("verify", () => {
     const hashes = [
-      { raw: "Password1", hash: "$2a$10$/XWxyV36socnEM9DGTsKEeh4eap9OO8Z4w4gUQCMJU8Z6DSrZH9Ii" },
+      { raw: "Password1",                 hash: "$2a$10$/XWxyV36socnEM9DGTsKEeh4eap9OO8Z4w4gUQCMJU8Z6DSrZH9Ii" },
       { raw: "CorrectHorseBatteryStaple", hash: "$2a$10$YdHXDxpSFNIWjUZH3x22v.blYDn750kd12yXOvmJn7UTYRdXHjS4." },
-      { raw: "FH12b4XXci0381!!::", hash: "$2a$10$35de2tNeVhCDOCoteW2SheeWTxgmbN8vB6yhDYNx9J0lv6ZQwlyMG" }
+      { raw: "FH12b4XXci0381!!::",        hash: "$2a$10$35de2tNeVhCDOCoteW2SheeWTxgmbN8vB6yhDYNx9J0lv6ZQwlyMG" }
     ];
 
     hashes.forEach((password) => {
