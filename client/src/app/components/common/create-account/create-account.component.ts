@@ -26,7 +26,9 @@ export class CreateAccountComponent {
       email: this.email,
       password: this.password,
       firstName: this.firstName,
-      lastName: this.lastName
+      lastName: this.lastName,
+      organisationName: this.organisation,
+      type: "Supplier"
     } as ICreateAccountRequest);
 
     if (createdAccount.errors.length > 0) {

@@ -3,4 +3,6 @@ export interface ICreateAccountRequest {
   password: string;
   firstName: string;
   lastName: string;
+  organisationName: string;
+  type: string;
 }
