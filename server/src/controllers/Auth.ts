@@ -16,6 +16,7 @@ import { RepositoryService } from "../services/repositoryservice";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
 import { IUserToken } from "../models/response/usertoken";
 import { ICreateUserResponse } from "../models/response/createUser";
+import { OrganisationDbo } from "../database/entities/organisationDbo";
 
 @injectable()
 @Controller("auth")
@@ -23,6 +24,7 @@ export class AuthController {
 
   private userRepository: Repository<UserDbo>
   private userTypeRepository: Repository<UserTypeDbo>
+  private organisationRepository: Repository<OrganisationDbo>;
 
   constructor(
     private repositoryService: RepositoryService,
@@ -30,6 +32,7 @@ export class AuthController {
   ) {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
     this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
+    this.organisationRepository = repositoryService.getRepositoryFor<OrganisationDbo>(OrganisationDbo);
   }
 
   @Post("createaccount")
@@ -50,6 +53,11 @@ export class AuthController {
         throw new Error("Account already exists with that email");
       }
 
+      // add organisation
+      const organisation = await this.organisationRepository.save({
+        organisationName: "TestOrg"
+      });
+
       // add user credentials
       const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type: "Client" });
       const user: UserDbo = await this.userRepository.save({
@@ -57,8 +65,9 @@ export class AuthController {
         passwordHash,
         firstName,
         lastName,
-        userType
-      })
+        userType,
+        organisations: [ organisation ]
+      });
 
       req.login(
         {

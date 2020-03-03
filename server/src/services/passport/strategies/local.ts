@@ -35,7 +35,7 @@ export class Local {
           .leftJoinAndSelect("user.userType", "type")
           .where("user.email = :email", { email })
           .getOne();
-
+        
         if (user && bcrypt.verify(password, user.passwordHash)) {
           const u: IUserToken = {
             email: user.email,

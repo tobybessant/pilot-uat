@@ -29,6 +29,7 @@ export class UserController {
       const user: UserDbo | undefined = await this.userRepository
           .createQueryBuilder("user")
           .leftJoinAndSelect("user.userType", "type")
+          .leftJoinAndSelect("user.organisations", "organisations")
           .where("user.email = :email", { email })
           .getOne();
 
