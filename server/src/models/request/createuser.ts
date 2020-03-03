@@ -13,6 +13,11 @@ export const ICreateUserRequest = joi.object({
     .max(30)
     .required(),
 
+  organisationName: joi
+    .string()
+    .label("Organisation")
+    .required(),
+
   email: joi
     .string()
     .label("Email")
@@ -22,5 +27,9 @@ export const ICreateUserRequest = joi.object({
   password: joi
     .string()
     .label("Password")
+    .required(),
+
+  type: joi
+    .string()
     .required()
 });

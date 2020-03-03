@@ -40,10 +40,7 @@ export class AuthController {
   public async createAccount(req: Request, res: Response) {
 
     // extract details and hash password
-    const { email, password, firstName, lastName } = req.body;
-
-    // hash password
-    const passwordHash = this.bcrypt.hash(password);
+    const { email, password, firstName, lastName, organisationName, type } = req.body;
 
     // save user details to database
     try {
@@ -54,12 +51,13 @@ export class AuthController {
       }
 
       // add organisation
-      const organisation = await this.organisationRepository.save({
-        organisationName: "TestOrg"
-      });
+      const organisation = await this.organisationRepository.save({ organisationName });
 
       // add user credentials
-      const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type: "Client" });
+      const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type });
+
+      // hash password
+      const passwordHash = this.bcrypt.hash(password);
       const user: UserDbo = await this.userRepository.save({
         email,
         passwordHash,
