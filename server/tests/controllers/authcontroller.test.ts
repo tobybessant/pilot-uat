@@ -10,10 +10,12 @@ import { UserDbo } from "../../src/database/entities/userDbo";
 import { UserTypeDbo } from "../../src/database/entities/userTypeDbo";
 import { Bcrypt } from "../../src/services/utils/bcrypt-hash";
 import { ICreateUserResponse } from "../../src/models/response/createUser";
+import { OrganisationDbo } from "../../src/database/entities/organisationDbo";
 
 suite("Auth Controller", () => {
   let userRepository: IMock<Repository<UserDbo>>;
   let userTypeRepository: IMock<Repository<UserTypeDbo>>;
+  let organisationRepository: IMock<Repository<OrganisationDbo>>;
 
   let repositoryService: IMock<RepositoryService>;
 
@@ -26,6 +28,7 @@ suite("Auth Controller", () => {
   suiteSetup(() => {
     userRepository = Mock.ofType<Repository<UserDbo>>();
     userTypeRepository = Mock.ofType<Repository<UserTypeDbo>>();
+    organisationRepository = Mock.ofType<Repository<OrganisationDbo>>();
     repositoryService = Mock.ofType<RepositoryService>();
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
@@ -34,6 +37,7 @@ suite("Auth Controller", () => {
     // setup mock repository to return requested repositories
     given_RepositoryService_getRepositoryFor_returns_whenGiven(userRepository.object, UserDbo);
     given_RepositoryService_getRepositoryFor_returns_whenGiven(userTypeRepository.object, UserTypeDbo);
+    given_RepositoryService_getRepositoryFor_returns_whenGiven(organisationRepository.object, OrganisationDbo);
 
     subject = new AuthController(repositoryService.object, bcrypt.object);
   });
@@ -74,7 +78,8 @@ suite("Auth Controller", () => {
           firstName: createUserBody.firstName,
           lastName: createUserBody.lastName,
           createdDate: new Date(),
-          userType: userType as UserTypeDbo
+          userType: userType as UserTypeDbo,
+          organisations: []
         }
 
         createUserResponse = {
@@ -136,7 +141,8 @@ suite("Auth Controller", () => {
           firstName: createUserBody.firstName,
           lastName: createUserBody.lastName,
           createdDate: new Date(),
-          userType: userType as UserTypeDbo
+          userType: userType as UserTypeDbo,
+          organisations: []
         }
 
         createUserResponse = {
