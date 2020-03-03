@@ -4,7 +4,7 @@ import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
 import * as passport from "passport";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { checkBodyDoesMatch } from "../services/middleware/checkBodyDoesMatch";
+import { BodyMatches } from "../services/middleware/bodyMatches";
 import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcrypt-hash";
@@ -33,7 +33,7 @@ export class AuthController {
   }
 
   @Post("createaccount")
-  @Middleware(checkBodyDoesMatch(ICreateUserRequest))
+  @Middleware(BodyMatches.modelSchema(ICreateUserRequest))
   public async createAccount(req: Request, res: Response) {
 
     // extract details and hash password
@@ -91,7 +91,7 @@ export class AuthController {
 
   @Post("login")
   @Middleware([
-    checkBodyDoesMatch(ILoginRequest),
+    BodyMatches.modelSchema(ILoginRequest),
     passport.authenticate("local")
   ])
   public login(req: Request, res: Response) {
