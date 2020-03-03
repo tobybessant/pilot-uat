@@ -13,13 +13,15 @@ export class Local {
   private userRepository: Repository<UserDbo>;
 
   constructor(
-    private repositoryService: RepositoryService
+    private repositoryService: RepositoryService,
+    private bcrypt: Bcrypt
   ) {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
 	public init (this: Local, _passport: any): any {
     const userRepository = this.userRepository;
+    const bcrypt = this.bcrypt;
 
 		_passport.use(new Strategy(
       {
@@ -34,7 +36,7 @@ export class Local {
           .where("user.email = :email", { email })
           .getOne();
 
-        if (user && Bcrypt.verify(password, user.passwordHash)) {
+        if (user && bcrypt.verify(password, user.passwordHash)) {
           const u: IUserToken = {
             email: user.email,
             type: user.userType.type

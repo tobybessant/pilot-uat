@@ -1,18 +1,20 @@
 import * as bcrypt from "bcrypt";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class Bcrypt {
   private static readonly saltRounds = 10;
 
-  static hash(password: string) {
+  hash(password: string) {
 
     if(!password) {
       throw new Error("No password provided");
     }
 
-    return bcrypt.hashSync(password, this.saltRounds);
+    return bcrypt.hashSync(password, Bcrypt.saltRounds);
   }
 
-  static verify(password: string, hash: string): boolean {
+  verify(password: string, hash: string): boolean {
     return bcrypt.compareSync(password, hash);
   }
 
