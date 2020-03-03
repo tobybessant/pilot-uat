@@ -8,6 +8,6 @@ export const DBConfig: ConnectionOptions = {
   password: process.env.db_password || "d3vel0pmentPassword",
   database: process.env.db_database || "UAT_APP_DEV",
   entities: [__dirname + "/entities/*.ts"],
-  synchronize: true,
+  synchronize: false,
   logging: process.env.db_logging ? true : false,
 }
