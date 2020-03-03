@@ -3,7 +3,7 @@ import { ObjectSchema } from "joi";
 import { BAD_REQUEST } from "http-status-codes";
 import { IApiResponse } from "../../models/response/apiresponse";
 
-export function bodyDoesMatch(model: ObjectSchema) {
+export function checkBodyDoesMatch(model: ObjectSchema) {
   return function(req: Request, res: Response, next: NextFunction) {
     const check = model.validate(req.body);
 

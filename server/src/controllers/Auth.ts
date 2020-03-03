@@ -4,10 +4,10 @@ import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
 import * as passport from "passport";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
+import { checkBodyDoesMatch } from "../services/middleware/checkBodyDoesMatch";
 import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcrypt-hash";
-import { bodyDoesMatch } from "../services/middleware/bodyDoesMatch";
 import { ICreateUserRequest } from "../models/request/createuser";
 import { ILoginRequest } from "../models/request/login";
 import { IApiResponse } from "../models/response/apiresponse";
@@ -26,20 +26,21 @@ export class AuthController {
 
   constructor(
     private repositoryService: RepositoryService,
+    private bcrypt: Bcrypt
   ) {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
     this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
   }
 
   @Post("createaccount")
-  @Middleware(bodyDoesMatch(ICreateUserRequest))
+  @Middleware(checkBodyDoesMatch(ICreateUserRequest))
   public async createAccount(req: Request, res: Response) {
 
     // extract details and hash password
     const { email, password, firstName, lastName } = req.body;
 
     // hash password
-    const passwordHash = Bcrypt.hash(password);
+    const passwordHash = this.bcrypt.hash(password);
 
     // save user details to database
     try {
@@ -57,7 +58,7 @@ export class AuthController {
         firstName,
         lastName,
         userType
-      });
+      })
 
       req.login(
         {
@@ -90,7 +91,7 @@ export class AuthController {
 
   @Post("login")
   @Middleware([
-    bodyDoesMatch(ILoginRequest),
+    checkBodyDoesMatch(ILoginRequest),
     passport.authenticate("local")
   ])
   public login(req: Request, res: Response) {

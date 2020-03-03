@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-export const TABLE_NAME: string = "UserType";
+export const TABLE_NAME: string = "UserTypeEnum";
 @Entity({
     name: TABLE_NAME
 })
