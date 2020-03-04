@@ -79,7 +79,8 @@ suite("Auth Controller", () => {
           lastName: createUserBody.lastName,
           createdDate: new Date(),
           userType: userType as UserTypeDbo,
-          organisations: []
+          organisations: [],
+          projects: []
         }
 
         createUserResponse = {
@@ -142,7 +143,8 @@ suite("Auth Controller", () => {
           lastName: createUserBody.lastName,
           createdDate: new Date(),
           userType: userType as UserTypeDbo,
-          organisations: []
+          organisations: [],
+          projects: []
         }
 
         createUserResponse = {
