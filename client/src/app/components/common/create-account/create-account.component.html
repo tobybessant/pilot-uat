@@ -1,0 +1,71 @@
+<div class="alert-container">
+  <nb-alert class="centered small" status="danger" *ngFor="let err of errors">
+    {{ err }}
+  </nb-alert>
+</div>
+
+<nb-card class="centered medium">
+  <nb-card-header>
+    <h6>Sign Up</h6>
+  </nb-card-header>
+  <nb-card-body class="form-inputs" *ngIf="!accountCreated">
+    <div class="name-fields">
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="First name"
+        [(ngModel)]="firstName"
+      />
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Last name"
+        [(ngModel)]="lastName"
+      />
+    </div>
+
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Organisation Name"
+      [(ngModel)]="organisation"
+    />
+
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Email"
+      [(ngModel)]="email"
+    />
+
+    <input
+      type="password"
+      nbInput
+      fullWidth
+      placeholder="Password"
+      [(ngModel)]="password"
+    />
+
+    <div class="buttons">
+      <button nbButton status="primary" (click)="submit()">
+        Create Account
+      </button>
+      <button nbButton status="basic">Cancel</button>
+    </div>
+  </nb-card-body>
+
+  <nb-card-body *ngIf="accountCreated">
+    <div>
+      <h3>Welcome, {{ firstName }}.</h3>
+      <button nbButton status="primary" (click)="goToDashboard()">Proceed to Dashboard</button>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer *ngIf="!accountCreated">
+    Already signed up? Log in <a routerLink="/login">here</a>.
+  </nb-card-footer>
+</nb-card>

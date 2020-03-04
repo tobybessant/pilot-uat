@@ -1,0 +1,40 @@
+.alert-container {
+  height: 85px;
+}
+
+nb-alert.small {
+  max-width: 500px;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+nb-card.medium {
+  height: 420px;
+  max-width: 500px;
+}
+
+nb-card-body.form-inputs {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.name-fields {
+  display: flex;
+  justify-content: space-between;
+}
+
+.name-fields > input {
+  max-width: 48%;
+}
+
+.buttons > button {
+  margin: 10px 20px 0 0;
+}
+
+.buttons > button:last-child {
+  margin-right: 0px;
+}

@@ -180,3 +180,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/node,vuejs,macos,windows,visualstudiocode
+
+# database migrations
+server/src/database/migration
