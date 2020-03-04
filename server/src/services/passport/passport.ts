@@ -6,6 +6,7 @@ import { Local } from "./strategies";
 import { Application } from "express";
 import { UserDbo } from "../../database/entities/userDbo";
 import { RepositoryService } from "../repositoryservice";
+import { IUserToken } from "../../models/response/usertoken";
 
 @injectable()
 export class Passport {
@@ -29,16 +30,12 @@ export class Passport {
     Logger.Info("Loading auth strategies...");
     const userRepo = this.userRepository;
 
-    passport.serializeUser(function (user: any, done) {
-      done(null, user.email);
+    passport.serializeUser(function (user: IUserToken, done) {
+      done(null, user);
     });
 
-    passport.deserializeUser(async function (email: string, done) {
-      const user: UserDbo | undefined = await userRepo.findOne({ email });
-
-      if (user) {
-        done(null, user);
-      }
+    passport.deserializeUser(async function (user: IUserToken, done) {
+      done(null, user);
     });
 
     const localStrategy = container.resolve<Local>(Local);
