@@ -14,7 +14,7 @@ import { IApiResponse } from "../models/response/apiresponse";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryservice";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
-import { IUserToken } from "../models/response/usertoken";
+import { IUserToken } from "../models/response/userToken";
 import { ICreateUserResponse } from "../models/response/createUser";
 import { OrganisationDbo } from "../database/entities/organisationDbo";
 

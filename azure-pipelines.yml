@@ -1,0 +1,25 @@
+trigger:
+- develop
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UseNode@1
+  displayName: 'Environment Setup'
+  inputs:
+    version: '10.16.3'
+
+- task: Npm@1
+  displayName: 'Installing Server Dependencies'
+  inputs:
+    command: 'install'
+    workingDir: 'server'
+
+- task: Npm@1
+  displayName: 'Server Unit Tests'
+  inputs:
+    command: 'custom'
+    workingDir: 'server'
+    customCommand: 'run test'
