@@ -100,13 +100,13 @@ export class ProjectController {
       res.json({
         errors: [],
         payload: projects
-      } as IApiResponse<any>);
+      } as IApiResponse<IProjectResponse[]>);
       res.status(OK);
     } catch (error) {
       res.status(BAD_REQUEST);
       res.json({
         errors: [error.message]
-      } as IApiResponse<void>);
+      } as IApiResponse<IProjectResponse>);
     }
   }
 }
