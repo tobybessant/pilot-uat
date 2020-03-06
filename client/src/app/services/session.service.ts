@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { IUserResponse } from "../models/response/common/user.interface";
 import { UserApiService } from "./api/user-api.service";
 
@@ -8,18 +8,22 @@ import { UserApiService } from "./api/user-api.service";
 })
 export class SessionService {
 
-  private currentUserSubject: BehaviorSubject<IUserResponse>;
-  public currentUser: Observable<IUserResponse>;
+  private subject = new Subject<IUserResponse>();
+  private currentUser: IUserResponse;
 
   constructor(protected userService: UserApiService) { }
 
-  public async setLoggedInUserFromSession() {
+  async setUser() {
     const response = await this.userService.getLoggedInAccountDetails();
-    this.currentUserSubject = new BehaviorSubject<IUserResponse>(response.payload);
-    this.currentUser = this.currentUserSubject.asObservable();
+    this.currentUser = response.payload;
+    this.subject.next(this.currentUser);
   }
 
-  public getLoggedInUser(): IUserResponse | undefined {
-    return this.currentUserSubject?.value;
+  public getSubject(): Observable<IUserResponse> {
+    return this.subject.asObservable();
+  }
+
+  public getCurrentUser() {
+    return this.currentUser;
   }
 }

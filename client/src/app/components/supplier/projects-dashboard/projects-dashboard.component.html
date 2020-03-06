@@ -1,1 +1,7 @@
-<p>projects dashboard- only accessible by suppliers!!</p>
+<div class="projects">
+    <nb-card class="project" *ngFor="let project of projects">
+      <nb-card-body>
+        <h4>{{ project.projectName }}</h4>
+      </nb-card-body>
+    </nb-card>
+</div>

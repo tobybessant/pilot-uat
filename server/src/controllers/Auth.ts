@@ -39,7 +39,7 @@ export class AuthController {
   @Middleware(BodyMatches.modelSchema(ICreateUserRequest))
   public async createAccount(req: Request, res: Response) {
 
-    // extract details and hash password
+    // extract details 
     const { email, password, firstName, lastName, organisationName, type } = req.body;
 
     // save user details to database

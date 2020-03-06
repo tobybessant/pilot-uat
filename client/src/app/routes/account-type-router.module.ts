@@ -22,7 +22,7 @@ export class HandlerModule { }
 
 export function getRouterForAccountType(sessionService: SessionService, router: Router) {
   let routes: Routes = [];
-  const user = sessionService.getLoggedInUser();
+  const user = sessionService.getCurrentUser();
   if (!user) {
     router.navigate(["/login"]);
     return;

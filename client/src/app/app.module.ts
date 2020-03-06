@@ -6,7 +6,8 @@ import { AppComponent } from "./app.component";
 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule, NbCardModule, NbInputModule, NbAlertModule } from "@nebular/theme";
+import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule,
+          NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule, NbMenuModule } from "@nebular/theme";
 import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from "./components/common/login/login.component";
@@ -14,13 +15,15 @@ import { CreateAccountComponent } from "./components/common/create-account/creat
 import { ProjectsDashboardComponent } from "./components/supplier/projects-dashboard/projects-dashboard.component";
 import { initApp } from "./app-initialiser";
 import { SessionService } from "./services/session.service";
+import { NavComponent } from "./components/common/nav/nav.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateAccountComponent,
     LoginComponent,
-    ProjectsDashboardComponent
+    ProjectsDashboardComponent,
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,10 @@ import { SessionService } from "./services/session.service";
     NbLayoutModule,
     NbCardModule,
     NbInputModule,
+    NbUserModule,
     NbAlertModule,
+    NbContextMenuModule,
+    NbMenuModule.forRoot(),
     NbSidebarModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),
     NbButtonModule

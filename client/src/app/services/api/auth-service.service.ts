@@ -15,10 +15,7 @@ import { SessionService } from "../session.service";
 })
 export class AuthService {
 
-  protected readonly baseRoute: string = "/auth";
-
-  private currentUserSubject: BehaviorSubject<IUserResponse>;
-  public currentUser: Observable<IUserResponse>;
+  protected readonly baseUrl: string = "/auth";
 
   constructor(
     protected apiService: ApiService,
@@ -26,22 +23,22 @@ export class AuthService {
     ) { }
 
   public async createUser(user: ICreateAccountRequest): Promise<IApiResponse<ICreateAccountResponse>> {
-    const response =  await this.apiService.post<ICreateAccountResponse>(this.baseRoute + "/createaccount", user);
+    const response =  await this.apiService.post<ICreateAccountResponse>(this.baseUrl + "/createaccount", user);
 
     // if user successfully created account then log them in
     if (response !== undefined) {
-      await this.sessionService.setLoggedInUserFromSession();
+      await this.sessionService.setUser();
     }
 
     return response;
   }
 
   public async login(credentials: ISignInRequest): Promise<IApiResponse<ISignInResponse>> {
-    const response = await this.apiService.post<ISignInResponse>(this.baseRoute + "/login", credentials);
+    const response = await this.apiService.post<ISignInResponse>(this.baseUrl + "/login", credentials);
 
     // if user successfully logged in
     if (response !== undefined) {
-      await this.sessionService.setLoggedInUserFromSession();
+      await this.sessionService.setUser();
     }
 
     return response;

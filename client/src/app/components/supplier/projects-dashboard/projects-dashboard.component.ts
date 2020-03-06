@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { ProjectApiService } from "src/app/services/api/project-api.service";
+import { IProjectResponse } from "src/app/models/response/common/project.interface";
 
 @Component({
   selector: "app-projects-dashboard",
@@ -7,9 +9,13 @@ import { Component, OnInit } from "@angular/core";
 })
 export class ProjectsDashboardComponent implements OnInit {
 
-  constructor() { }
+  public projects: IProjectResponse[];
 
-  ngOnInit(): void {
+  constructor(private projectsApiService: ProjectApiService) { }
+
+  async ngOnInit(): Promise<void> {
+    const response = await this.projectsApiService.getProjects();
+    this.projects = response.payload;
   }
 
 }
