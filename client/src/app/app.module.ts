@@ -19,6 +19,7 @@ import { ProjectsDashboardComponent } from "./components/supplier/projects-dashb
 import { initApp } from "./app-initialiser";
 import { SessionService } from "./services/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
+import { ProjectComponent } from "./components/supplier/project/project.component";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { NavComponent } from "./components/common/nav/nav.component";
     CreateAccountComponent,
     LoginComponent,
     ProjectsDashboardComponent,
-    NavComponent
+    NavComponent,
+    ProjectComponent
   ],
   imports: [
     BrowserModule,

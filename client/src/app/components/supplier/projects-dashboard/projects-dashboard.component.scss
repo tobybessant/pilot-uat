@@ -1,12 +1,17 @@
 .projects {
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
 }
 
 .project {
-  width:300px;
+  min-width:300px;
   height: 100px;
   text-decoration: none;
+}
+
+.project-add:hover {
+  cursor: pointer;
 }
 
 .project > nb-card {
@@ -19,4 +24,10 @@
 
 .project-title {
   font-size: 1.5em;
+}
+
+nb-card-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -1,5 +1,30 @@
 <div class="projects">
-  <a *ngFor="let project of projects" [href]="'project/'+ project.id" class="project">
+  <nb-card class="project project-add">
+    <nb-card-body  
+      (click)="setIsAddingProject(true)"
+      >
+      <span class="project-title" *ngIf="!getIsAddingProject()">
+        <nb-icon icon="plus-outline"></nb-icon> New Project
+      </span>
+      <span class="new-project" *ngIf="getIsAddingProject()">
+        <input
+          #projectNameInput
+          type="text"
+          nbInput
+          fullWidth
+          placeholder="Project Name"
+          [(ngModel)]="newProjectName"
+          (blur)="setIsAddingProject(false)"
+          (keyup.enter)="addProject()"
+        />
+      </span>
+    </nb-card-body>
+  </nb-card>
+  <a
+    *ngFor="let project of projects"
+    [routerLink]="'/project/' + project.id"
+    class="project"
+  >
     <nb-card>
       <nb-card-body>
         <span class="project-title">{{ project.projectName }}</span>

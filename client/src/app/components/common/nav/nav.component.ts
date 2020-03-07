@@ -23,15 +23,14 @@ export class NavComponent implements OnInit {
   ) {
     this.user = this.sessionService.getCurrentUser();
     if (this.user) {
-      this.fullName = `${this.user.firstName} ${this.user.lastName}`;
+      this.setDetails(this.user);
     }
   }
 
   ngOnInit(): void {
     // subscribe to logged in user changes
     this.sessionService.getSubject().subscribe(user => {
-      console.log("new user!", user);
-      this.user = user;
+      this.setDetails(user);
     });
 
     // subscribe to profile menu events
@@ -41,6 +40,11 @@ export class NavComponent implements OnInit {
         map(({ item }) => item),
       )
       .subscribe(item => this.router.navigate([ item.url ]));
+  }
+
+  private setDetails(user: IUserResponse) {
+    this.user = user;
+    this.fullName = `${this.user.firstName} ${this.user.lastName}`;
   }
 
 }
