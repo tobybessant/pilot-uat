@@ -8,6 +8,7 @@ export class PermittedAccountTypes {
 
       if (!types.includes(type)) {
         res.status(UNAUTHORIZED);
+        res.redirect("/");
         return;
       }
 
