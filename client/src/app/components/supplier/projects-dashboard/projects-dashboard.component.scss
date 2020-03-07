@@ -8,6 +8,7 @@
   min-width:300px;
   height: 100px;
   text-decoration: none;
+  margin: 20px;
 }
 
 .project-add:hover {
@@ -16,10 +17,6 @@
 
 .project > nb-card {
   height: 100%;
-}
-
-.projects > .project:not(:last-child) {
-  margin-right:30px;
 }
 
 .project-title {
