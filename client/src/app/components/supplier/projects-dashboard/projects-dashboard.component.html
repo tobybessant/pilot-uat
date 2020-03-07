@@ -1,7 +1,9 @@
 <div class="projects">
-    <nb-card class="project" *ngFor="let project of projects">
+  <a *ngFor="let project of projects" [href]="'project/'+ project.id" class="project">
+    <nb-card>
       <nb-card-body>
-        <h4>{{ project.projectName }}</h4>
+        <span class="project-title">{{ project.projectName }}</span>
       </nb-card-body>
     </nb-card>
+  </a>
 </div>

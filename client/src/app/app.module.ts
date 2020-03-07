@@ -7,7 +7,10 @@ import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule,
-          NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule, NbMenuModule } from "@nebular/theme";
+          NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
+          NbMenuModule, NbIconModule } from "@nebular/theme";
+import { NbEvaIconsModule } from "@nebular/eva-icons";
+
 import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from "./components/common/login/login.component";
@@ -38,6 +41,9 @@ import { NavComponent } from "./components/common/nav/nav.component";
     NbUserModule,
     NbAlertModule,
     NbContextMenuModule,
+    NbMenuModule,
+    NbEvaIconsModule,
+    NbIconModule,
     NbMenuModule.forRoot(),
     NbSidebarModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),

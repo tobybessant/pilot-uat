@@ -1,4 +1,11 @@
 <div class="left">
   <h3>{{ pageTitle }}</h3>
 </div>
-<nb-user shape="rectangle" [nbContextMenu]="items" [name]="fullName" *ngIf="user"></nb-user>
+<nb-user
+  shape="rectangle"
+  [nbContextMenu]="items"
+  [name]="fullName"
+  *ngIf="user"
+  nbContextMenuTag="user-menu"
+></nb-user>
+
