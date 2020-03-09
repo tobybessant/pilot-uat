@@ -16,24 +16,21 @@ import { IApiResponse } from "../models/response/apiresponse";
 import { ICreateProjectResponse } from "../models/response/createProject";
 import { IUserToken } from "../models/response/usertoken";
 import { IProjectResponse } from "../models/response/project";
+import { ProjectRepository } from "../repositories/project.repository";
 
 @injectable()
 @Controller("project")
 @ClassMiddleware(checkAuthentication)
 export class ProjectController {
 
-  private projectRepository: Repository<ProjectDbo>;
+  private projectRepository: ProjectRepository;
   private userRepository: Repository<UserDbo>;
-  private organisationRepository: Repository<OrganisationDbo>;
-  private userProjectRoleRepository: Repository<UserProjectRoleDbo>;
 
   constructor(
     private repositoryService: RepositoryService,
   ) {
-    this.projectRepository = repositoryService.getRepositoryFor<ProjectDbo>(ProjectDbo);
+    this.projectRepository = repositoryService.getCustomRepositoryFor(ProjectRepository);
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
-    this.organisationRepository = repositoryService.getRepositoryFor<OrganisationDbo>(OrganisationDbo);
-    this.userProjectRoleRepository = repositoryService.getRepositoryFor<UserProjectRoleDbo>(UserProjectRoleDbo);
   }
 
   @Post()
@@ -45,7 +42,7 @@ export class ProjectController {
     const { projectName } = req.body;
 
     try {
-      const user: UserDbo | undefined = await this.userRepository
+      const user = await this.userRepository
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.userType", "type")
         .leftJoinAndSelect("user.organisations", "organisations")
@@ -56,23 +53,13 @@ export class ProjectController {
         throw new Error("No user or organisation found.");
       }
 
-      // save new project
-      const project = new ProjectDbo();
-      project.organisation = user.organisations[0];
-      project.projectName = projectName;
-      const savedProject = await this.projectRepository.save(project);
-
-      // save new relationship to user
-      const userProjectRole = new UserProjectRoleDbo();
-      userProjectRole.user = user;
-      userProjectRole.project = savedProject;
-      const savedRole = await this.userProjectRoleRepository.save(userProjectRole);
+      await this.projectRepository.addProject(user, projectName);
 
       res.status(CREATED);
       res.json({
         errors: [],
         payload: {
-          projectName: savedProject.projectName
+          projectName
         }
       } as IApiResponse<ICreateProjectResponse>);
     } catch (error) {
@@ -88,18 +75,11 @@ export class ProjectController {
   public async getProjects(req: Request, res: Response) {
 
     try {
-      const user = this.userRepository.findOne({ email: (req.user as IUserToken).email })
-      const projects: ProjectDbo[] | undefined = await this.projectRepository
-        .createQueryBuilder("project")
-        .leftJoin("project.users", "userRoles")
-        .leftJoin("userRoles.user", "user")
-        .addSelect(["user.email", "user.firstName", "user.lastName"])
-        .where("user.email = :email", { email: (req.user as IUserToken).email })
-        .getMany();
+      const projects = await this.projectRepository.getProjectsforUser((req.user as IUserToken).email);
 
       res.json({
         errors: [],
-        payload: projects
+        payload: projects || []
       } as IApiResponse<IProjectResponse[]>);
       res.status(OK);
     } catch (error) {

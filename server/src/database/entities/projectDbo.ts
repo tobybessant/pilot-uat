@@ -18,4 +18,7 @@ export class ProjectDbo {
 
     @OneToMany(type => UserProjectRoleDbo, role => role.project)
     users!: UserProjectRoleDbo[];
+
+    @CreateDateColumn()
+    createdDate!: Date;
 }
