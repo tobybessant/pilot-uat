@@ -16,7 +16,7 @@ export class ProjectDbo {
     @ManyToOne(type => OrganisationDbo)
     organisation!: OrganisationDbo;
 
-    @OneToMany(type => UserProjectRoleDbo, role => role.project)
+    @OneToMany(type => UserProjectRoleDbo, role => role.project, { onDelete: "CASCADE" })
     users!: UserProjectRoleDbo[];
 
     @CreateDateColumn()

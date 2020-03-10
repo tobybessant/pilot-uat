@@ -9,7 +9,7 @@
     "prod": "tsc && node ./dist/app.ts",
     "build": "tsc",
     "test": "./node_modules/mocha/bin/mocha --require ts-node/register 'tests/**/*.test.ts' --ui tdd",
-    "migration:generate": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -n Migration",
+    "generate-migration": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -n Migration",
     "update-database": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run"
   },
   "keywords": [],

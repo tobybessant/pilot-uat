@@ -45,4 +45,15 @@ export class ProjectRepository {
     return projects;
   }
 
+  public async deleteProjectById(id: string) {
+    const deletedProject = await this.projectRepository.delete({
+      id
+    });
+
+    if(deletedProject.affected === 1) {
+      return;
+    } else {
+      throw new Error("Error in record deletion");
+    }
+  }
 }

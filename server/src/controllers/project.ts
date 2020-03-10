@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Controller, ClassMiddleware, Post, Middleware, Get } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { RepositoryService } from "../services/repositoryservice";
@@ -68,12 +68,10 @@ export class ProjectController {
         errors: [error.message]
       } as IApiResponse<ICreateProjectResponse>);
     }
-
   }
 
   @Get()
   public async getProjects(req: Request, res: Response) {
-
     try {
       const projects = await this.projectRepository.getProjectsforUser((req.user as IUserToken).email);
 
@@ -87,6 +85,26 @@ export class ProjectController {
       res.json({
         errors: [error.message]
       } as IApiResponse<IProjectResponse>);
+    }
+  }
+
+  @Delete()
+  public async deleteProject(req: Request, res: Response) {
+    const { projectId } = req.body;
+
+    try {
+      const deletedProject = await this.projectRepository.deleteProjectById(projectId);
+      res.status(OK);
+      res.json({
+        errors: []
+      } as unknown as IApiResponse<any>);
+      return;
+
+    } catch (error) {
+      res.status(BAD_REQUEST);
+      res.json({
+        errors: [error.message]
+      } as IApiResponse<any>);
     }
   }
 }

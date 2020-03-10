@@ -9,5 +9,5 @@ export const DBConfig: ConnectionOptions = {
   database: process.env.db_database || "UAT_APP_DEV",
   entities: [__dirname + "/entities/*.ts"],
   synchronize: false,
-  logging: process.env.db_logging ? true : false,
+  logging: process.env.db_logging ? true : false
 }

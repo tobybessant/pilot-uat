@@ -11,10 +11,10 @@ export class UserProjectRoleDbo {
     @PrimaryGeneratedColumn()
     id!: string;
 
-    @ManyToOne(type => UserDbo, user => user.projects, { primary: true })
+    @ManyToOne(type => UserDbo, user => user.projects, { primary: true, onDelete: "NO ACTION" })
     user!: UserDbo;
 
-    @ManyToOne(type => ProjectDbo, project => project.users, { primary: true })
+    @ManyToOne(type => ProjectDbo, project => project.users, { primary: true, onDelete: "NO ACTION" })
     project!: ProjectDbo;
 
     @CreateDateColumn()
