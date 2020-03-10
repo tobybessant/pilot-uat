@@ -32,6 +32,11 @@ export class ProjectRepository {
     await this.userProjectRoleRepository.save(userProjectRole);
   }
 
+  public async getProjectById(id: string): Promise<ProjectDbo | undefined> {
+    const project: ProjectDbo | undefined = await this.projectRepository.findOne({ id });
+    return project;
+  }
+
   public async getProjectsforUser(email: string): Promise<ProjectDbo[] | undefined> {
     const projects: ProjectDbo[] | undefined = await this.projectRepository
     .createQueryBuilder("project")

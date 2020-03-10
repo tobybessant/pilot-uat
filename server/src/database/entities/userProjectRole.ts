@@ -14,7 +14,7 @@ export class UserProjectRoleDbo {
     @ManyToOne(type => UserDbo, user => user.projects, { primary: true, onDelete: "NO ACTION" })
     user!: UserDbo;
 
-    @ManyToOne(type => ProjectDbo, project => project.users, { primary: true, onDelete: "NO ACTION" })
+    @ManyToOne(type => ProjectDbo, project => project.users, { primary: true, onDelete: "CASCADE" })
     project!: ProjectDbo;
 
     @CreateDateColumn()

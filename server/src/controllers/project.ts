@@ -33,7 +33,7 @@ export class ProjectController {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
-  @Post()
+  @Post("create")
   @Middleware([
     BodyMatches.modelSchema(ICreateProjectRequest),
     PermittedAccountTypes.are(["Supplier"])
@@ -70,7 +70,27 @@ export class ProjectController {
     }
   }
 
-  @Get()
+  @Post()
+  public async getProjectById(req: Request, res: Response) {
+    const { id } = req.body;
+
+    try {
+      const project = await this.projectRepository.getProjectById(id);
+
+      res.json({
+        errors: [],
+        payload: project
+      } as IApiResponse<IProjectResponse>);
+      res.status(OK);
+    } catch (error) {
+      res.status(BAD_REQUEST);
+      res.json({
+        errors: [error.message]
+      } as IApiResponse<IProjectResponse>);
+    }
+  }
+
+  @Get("all")
   public async getProjects(req: Request, res: Response) {
     try {
       const projects = await this.projectRepository.getProjectsforUser((req.user as IUserToken).email);
@@ -88,11 +108,12 @@ export class ProjectController {
     }
   }
 
-  @Delete()
+  @Delete(":id")
   public async deleteProject(req: Request, res: Response) {
-    const { projectId } = req.body;
+    const projectId = req.params.id;
 
     try {
+
       const deletedProject = await this.projectRepository.deleteProjectById(projectId);
       res.status(OK);
       res.json({
