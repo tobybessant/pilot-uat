@@ -1,0 +1,8 @@
+<nb-card>
+  <nb-card-header>Are you sure?</nb-card-header>
+  <nb-card-body>{{ bodyText }}</nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="danger" (click)="[confirmAction(), close()]">{{ confirmButtonText }}</button>
+    <button nbButton status="basic" (click)="close()">Cancel</button>
+  </nb-card-footer>
+</nb-card>

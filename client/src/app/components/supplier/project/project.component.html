@@ -1,26 +1,39 @@
-<div *ngIf="project">
-  <div class="project-subnav">
-    <button
-      nbButton
-      status="primary"
-      (click)="backToAllProjects()"
-      id="back-button"
-    >
-      <nb-icon icon="arrow-back-outline"></nb-icon>
-    </button>
+<div>
+  <ngx-spinner
+    bdOpacity="0"
+    bdColor="rgba(0,0,0,0)"
+    size="default"
+    color="rgba(0,0,0,0.5)"
+    type="cube-transition"
+    [fullScreen]="false"
+  >
+    <p>Loading...</p>
+  </ngx-spinner>
 
-    <h3>{{ project.projectName }}</h3>
-    <button
-      nbButton
-      status="primary"
-      [nbContextMenu]="projectSettings"
-      nbContextMenuTag="project-settings"
-    >
-      Settings
-    </button>
+  <div *ngIf="project">
+    <div class="project-subnav">
+      <button
+        nbButton
+        status="primary"
+        (click)="backToAllProjects()"
+        id="back-button"
+      >
+        <nb-icon icon="arrow-back-outline"></nb-icon>
+      </button>
+
+      <h3>{{ project.projectName }}</h3>
+      <button
+        nbButton
+        status="primary"
+        [nbContextMenu]="projectSettings"
+        nbContextMenuTag="project-settings"
+      >
+        Settings
+      </button>
+    </div>
   </div>
-</div>
 
-<div *ngIf="!project">
-  <h2>Project not found :(</h2>
+  <div *ngIf="!project && fetchAttemptComplete">
+    <h2>Project not found :(</h2>
+  </div>
 </div>

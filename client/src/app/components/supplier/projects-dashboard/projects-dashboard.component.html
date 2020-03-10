@@ -4,7 +4,7 @@
       (click)="setIsAddingProject(true)"
       >
       <span class="project-title" *ngIf="!getIsAddingProject()">
-        <nb-icon icon="plus-outline"></nb-icon> New Project
+        <nb-icon icon="folder-add-outline"></nb-icon> New Project
       </span>
       <span class="new-project" *ngIf="getIsAddingProject()">
         <input
@@ -12,7 +12,7 @@
           type="text"
           nbInput
           fullWidth
-          placeholder="Project Name"
+          placeholder="Enter Project Name"
           [(ngModel)]="newProjectName"
           (blur)="setIsAddingProject(false)"
           (keyup.enter)="addProject()"

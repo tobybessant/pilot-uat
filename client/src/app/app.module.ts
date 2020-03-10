@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule, APP_INITIALIZER } from "@angular/core";
+import { NgModule, APP_INITIALIZER, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -8,8 +8,10 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbSidebarModule, NbLayoutModule, NbButtonModule, NbThemeModule,
           NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
-          NbMenuModule, NbIconModule } from "@nebular/theme";
+          NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
+
+import { NgxSpinnerModule } from "ngx-spinner";
 
 import { HttpClientModule } from "@angular/common/http";
 
@@ -20,6 +22,7 @@ import { initApp } from "./app-initialiser";
 import { SessionService } from "./services/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
 import { ProjectComponent } from "./components/supplier/project/project.component";
+import { ConfirmationPromptComponent } from './components/common/confirmation-prompt/confirmation-prompt.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,8 @@ import { ProjectComponent } from "./components/supplier/project/project.componen
     LoginComponent,
     ProjectsDashboardComponent,
     NavComponent,
-    ProjectComponent
+    ProjectComponent,
+    ConfirmationPromptComponent
   ],
   imports: [
     BrowserModule,
@@ -46,10 +50,13 @@ import { ProjectComponent } from "./components/supplier/project/project.componen
     NbMenuModule,
     NbEvaIconsModule,
     NbIconModule,
+    NbSpinnerModule,
     NbMenuModule.forRoot(),
     NbSidebarModule.forRoot(),
-    NbThemeModule.forRoot({ name: "cosmic" }),
-    NbButtonModule
+    NbDialogModule.forRoot(),
+    NbThemeModule.forRoot({ name: "default" }),
+    NbButtonModule,
+    NgxSpinnerModule
   ],
   providers: [
     {
@@ -59,6 +66,7 @@ import { ProjectComponent } from "./components/supplier/project/project.componen
       multi: true
     }
   ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
