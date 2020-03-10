@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnDestroy } from "@angular/core";
 import { NbDialogRef } from "@nebular/theme";
 
 @Component({
@@ -6,7 +6,7 @@ import { NbDialogRef } from "@nebular/theme";
   templateUrl: "./confirmation-prompt.component.html",
   styleUrls: ["./confirmation-prompt.component.scss"]
 })
-export class ConfirmationPromptComponent {
+export class ConfirmationPromptComponent implements OnDestroy {
 
   @Input()
   confirmButtonText: string = "";
@@ -21,6 +21,9 @@ export class ConfirmationPromptComponent {
   cancelAction: () => void;
 
   constructor(protected dialogRef: NbDialogRef<any>) {
+  }
+
+  ngOnDestroy(): void {
   }
 
   close() {

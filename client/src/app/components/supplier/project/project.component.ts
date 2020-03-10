@@ -26,13 +26,13 @@ export class ProjectComponent implements OnInit {
     private router: Router,
     private spinner: NgxSpinnerService,
     private dialogService: NbDialogService
-  ) {
-    this.projectSettingsActions.set("Delete", () => { if (this.project) { this.promptDeleteProject(); }});
-    this.activeRoute.params.subscribe((urlParameters) => this.setProjectById(urlParameters.id));
-  }
+  ) { }
 
   ngOnInit(): void {
     this.spinner.show();
+
+    this.projectSettingsActions.set("Delete", () => { if (this.project && this.dialogService) { this.promptDeleteProject(); }});
+    this.activeRoute.params.subscribe((urlParameters) => this.setProjectById(urlParameters.id));
 
     // subscribe to profile menu events
     this.nbMenuService.onItemClick()
@@ -73,6 +73,8 @@ export class ProjectComponent implements OnInit {
   }
 
   public backToAllProjects() {
+    // clear dialog service so dialogs do not appear cross-project
+    this.dialogService = null;
     this.router.navigate(["/"]);
   }
 }
