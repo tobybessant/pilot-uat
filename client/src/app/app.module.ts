@@ -22,7 +22,7 @@ import { initApp } from "./app-initialiser";
 import { SessionService } from "./services/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
 import { ProjectComponent } from "./components/supplier/project/project.component";
-import { ConfirmationPromptComponent } from './components/common/confirmation-prompt/confirmation-prompt.component';
+import { ConfirmationPromptComponent } from "./components/common/confirmation-prompt/confirmation-prompt.component";
 
 @NgModule({
   declarations: [
