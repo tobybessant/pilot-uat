@@ -1,1 +1,26 @@
-<p>project works!</p>
+<div *ngIf="project">
+  <div class="project-subnav">
+    <button
+      nbButton
+      status="primary"
+      (click)="backToAllProjects()"
+      id="back-button"
+    >
+      <nb-icon icon="arrow-back-outline"></nb-icon>
+    </button>
+
+    <h3>{{ project.projectName }}</h3>
+    <button
+      nbButton
+      status="primary"
+      [nbContextMenu]="projectSettings"
+      nbContextMenuTag="project-settings"
+    >
+      Settings
+    </button>
+  </div>
+</div>
+
+<div *ngIf="!project">
+  <h2>Project not found :(</h2>
+</div>

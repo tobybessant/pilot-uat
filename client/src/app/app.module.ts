@@ -48,7 +48,7 @@ import { ProjectComponent } from "./components/supplier/project/project.componen
     NbIconModule,
     NbMenuModule.forRoot(),
     NbSidebarModule.forRoot(),
-    NbThemeModule.forRoot({ name: "default" }),
+    NbThemeModule.forRoot({ name: "cosmic" }),
     NbButtonModule
   ],
   providers: [
