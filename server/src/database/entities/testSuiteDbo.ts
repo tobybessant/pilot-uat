@@ -13,7 +13,7 @@ export class TestSuiteDbo {
     suiteName!: string;
 
     @ManyToOne(type => ProjectDbo)
-    organisation!: ProjectDbo;
+    project!: ProjectDbo;
 
     @CreateDateColumn()
     createdDate!: Date;

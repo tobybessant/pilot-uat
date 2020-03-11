@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { OrganisationDbo } from "./organisationDbo";
 import { UserProjectRoleDbo } from "./userProjectRole";
+import { TestSuiteDbo } from "./testSuiteDbo";
 
 export const TABLE_NAME: string = "Project";
 @Entity({
@@ -18,6 +19,9 @@ export class ProjectDbo {
 
     @OneToMany(type => UserProjectRoleDbo, role => role.project, { onDelete: "CASCADE" })
     users!: UserProjectRoleDbo[];
+
+    @ManyToOne(type => TestSuiteDbo)
+    testSuites!: TestSuiteDbo[];
 
     @CreateDateColumn()
     createdDate!: Date;

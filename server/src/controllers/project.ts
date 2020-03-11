@@ -20,14 +20,10 @@ import { UserRepository } from "../repositories/userRepository";
 @ClassMiddleware(checkAuthentication)
 export class ProjectController {
 
-  private projectRepository: ProjectRepository;
-  private userRepository: UserRepository;
-
   constructor(
-    private repositoryService: RepositoryService,
+    private projectRepository: ProjectRepository,
+    private userRepository: UserRepository
   ) {
-    this.projectRepository = repositoryService.getCustomRepositoryFor(ProjectRepository);
-    this.userRepository = repositoryService.getCustomRepositoryFor(UserRepository);
   }
 
   @Post("create")
