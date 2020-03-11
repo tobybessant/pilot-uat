@@ -13,7 +13,7 @@ import { ICreateProjectResponse } from "../models/response/createProject";
 import { IUserToken } from "../models/response/userToken";
 import { IProjectResponse } from "../models/response/project";
 import { ProjectRepository } from "../repositories/projectRepository";
-import { UserRepository } from "../repositories/user.repository";
+import { UserRepository } from "../repositories/userRepository";
 
 @injectable()
 @Controller("project")
