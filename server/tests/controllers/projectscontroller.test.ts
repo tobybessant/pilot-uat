@@ -10,6 +10,8 @@ import { ICreateProjectResponse } from "../../src/models/response/createProject"
 import { UserRepository } from "../../src/repositories/user.repository";
 import { CREATED, BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
+import { IProjectResponse } from "../../src/models/response/project";
+import { IUserToken } from "../../src/models/response/usertoken";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -99,7 +101,7 @@ suite("Project Controller", () => {
         await subject.createProject(req.object, res.object);
 
         res.verify(r => r.json({
-          errors: [ "Error finding user" ],
+          errors: ["Error finding user"],
         }), Times.once());
       });
 
@@ -116,22 +118,29 @@ suite("Project Controller", () => {
 
   suite("Get Project by ID", async () => {
     let getProjectBody: any;
-    let projectResponse: ProjectDbo;
+    let project: ProjectDbo;
+    let projectResponse: IProjectResponse;
 
     suite("Valid request conditions", () => {
       suiteSetup(() => {
-        getProjectBody = {
-          id: "1209"
-        }
 
-        projectResponse = new ProjectDbo();
-        projectResponse.id = getProjectBody.id;
-        projectResponse.projectName = "GetByIdProject"
+        project = new ProjectDbo();
+        project.id = "4000";
+        project.projectName = "Getted Project Name"
+
+        getProjectBody = {
+          id: project.id
+        };
+
+        projectResponse = {
+          id: project.id,
+          projectName: project.projectName
+        };
 
       });
 
       test("Should return project in response body", async () => {
-        given_projectRepository_getProjectById_returns_whenGiven(projectResponse, It.isAny());
+        given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
@@ -143,7 +152,7 @@ suite("Project Controller", () => {
       });
 
       test("Should have statusCode 200", async () => {
-        given_projectRepository_getProjectById_returns_whenGiven(projectResponse, It.isAny());
+        given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
@@ -152,11 +161,11 @@ suite("Project Controller", () => {
       });
     });
 
-    suite("Find project by id fails (returns undefined)", () => {
+    suite("Find project by id does not find project", () => {
       suiteSetup(() => {
         getProjectBody = {
-          id: "1209"
-        }
+          id: "4000"
+        };
       });
 
       test("Should return project in response body", async () => {
@@ -166,7 +175,7 @@ suite("Project Controller", () => {
         await subject.getProjectById(req.object, res.object);
 
         res.verify(r => r.json({
-          errors: [ "That project does not exist" ],
+          errors: ["That project does not exist"],
         }), Times.once());
       });
 
@@ -181,16 +190,110 @@ suite("Project Controller", () => {
     });
   });
 
+  suite("Get projects", () => {
+    let userToken: IUserToken;
+    const projects: ProjectDbo[] = [];
+    const projectsResponse: IProjectResponse[] = [];
+
+    suite("Valid request conditions", () => {
+      suiteSetup(() => {
+        userToken = {
+          email: "test@me.com",
+          type: "Supplier"
+        };
+
+        for (let i = 0; i < 1; i++) {
+          const p = new ProjectDbo();
+          p.id = i + "";
+          p.projectName = "Project " + i;
+          projects.push(p);
+        }
+
+        for (const project of projects) {
+          projectsResponse.push({
+            id: project.id,
+            projectName: project.projectName
+          });
+        }
+      });
+
+      test("Should return list of projects in response body", async () => {
+        given_Request_user_is(userToken);
+        given_projectRepository_getProjectsForUser_returns_whenGiven(projects, userToken.email);
+
+        await subject.getProjects(req.object, res.object);
+
+        res.verify(r => r.json({
+          errors: [],
+          payload: projectsResponse
+        }), Times.once());
+      });
+
+      test("Should return statusCode of 200", async () => {
+        given_Request_user_is(userToken);
+        given_projectRepository_getProjectsForUser_returns_whenGiven(projects, userToken.email);
+
+        await subject.getProjects(req.object, res.object);
+
+        res.verify(r => r.status(OK), Times.once());
+      });
+    });
+  });
+
+  suite("Delete project", () => {
+    let requestParams: any;
+
+    suite("Valid request condtions", () => {
+      suiteSetup(() => {
+        requestParams =  {
+          id: "10"
+        };
+      });
+
+      test("No errors are returned in the body", async () => {
+        given_projectRepository_deleteProject_returns_whenGiven(undefined, requestParams.id);
+        given_Request_params_are(requestParams);
+
+        await subject.deleteProject(req.object, res.object);
+
+        res.verify(r => r.json({
+          errors: []
+        }), Times.once());
+      });
+
+      test("Status code is 200", async () => {
+        given_projectRepository_deleteProject_returns_whenGiven(undefined, requestParams.id);
+        given_Request_params_are(requestParams);
+
+        await subject.deleteProject(req.object, res.object);
+
+        res.verify(r => r.status(OK), Times.once());
+      });
+    });
+  })
+
   function given_RepositoryService_getCustomRepositoryFor_returns_whenGiven<T>(returns: T, whenGiven: any): void {
     repositoryService
       .setup(rs => rs.getCustomRepositoryFor<T>(whenGiven))
       .returns(() => returns);
   }
 
+  function given_Request_user_is(user: IUserToken) {
+    req
+      .setup(r => r.user)
+      .returns(() => user);
+  }
+
   function given_Request_body_is(body: any): void {
     req
       .setup(r => r.body)
       .returns(() => body);
+  }
+
+  function given_Request_params_are(params: any): void {
+    req
+      .setup(r => r.params)
+      .returns(() => params);
   }
 
   function given_userRepository_getUserByEmail_returns_whenGiven(returns: UserDbo | undefined, whenGiven: any) {
@@ -202,6 +305,18 @@ suite("Project Controller", () => {
   function given_projectRepository_getProjectById_returns_whenGiven(returns: ProjectDbo | undefined, whenGiven: any) {
     projectRepository
       .setup(pr => pr.getProjectById(whenGiven))
+      .returns(async () => returns);
+  }
+
+  function given_projectRepository_getProjectsForUser_returns_whenGiven(returns: ProjectDbo[] | undefined, whenGiven: any) {
+    projectRepository
+      .setup(pr => pr.getProjectsForUser(whenGiven))
+      .returns(async () => returns);
+  }
+
+  function given_projectRepository_deleteProject_returns_whenGiven(returns: any, whenGiven: any) {
+    projectRepository
+      .setup(pr => pr.deleteProjectById(whenGiven))
       .returns(async () => returns);
   }
 });

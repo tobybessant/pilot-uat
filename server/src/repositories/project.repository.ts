@@ -37,7 +37,7 @@ export class ProjectRepository {
     return project;
   }
 
-  public async getProjectsforUser(email: string): Promise<ProjectDbo[] | undefined> {
+  public async getProjectsForUser(email: string): Promise<ProjectDbo[] | undefined> {
     const projects: ProjectDbo[] | undefined = await this.baseProjectRepository
     .createQueryBuilder("project")
     .orderBy("project.createdDate", "DESC")
@@ -54,11 +54,6 @@ export class ProjectRepository {
     const deletedProject = await this.baseProjectRepository.delete({
       id
     });
-
-    if(deletedProject.affected === 1) {
-      return;
-    } else {
-      throw new Error("Error in record deletion");
-    }
+   return;
   }
 }

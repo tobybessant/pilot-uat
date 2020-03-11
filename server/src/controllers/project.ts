@@ -58,7 +58,6 @@ export class ProjectController {
         }
       } as IApiResponse<ICreateProjectResponse>);
     } catch (error) {
-
       const errors: string[] = [
         error.message ? error.message : "Error creating project"
       ];
@@ -81,7 +80,12 @@ export class ProjectController {
 
       res.json({
         errors: [],
-        payload: project
+        payload: ((record: ProjectDbo) =>
+          ({
+            id: record.id,
+            projectName: record.projectName
+          })
+        )(project)
       } as IApiResponse<IProjectResponse>);
       res.status(OK);
     } catch (error) {
@@ -95,13 +99,18 @@ export class ProjectController {
   @Get("all")
   public async getProjects(req: Request, res: Response) {
     try {
-      const projects = await this.projectRepository.getProjectsforUser((req.user as IUserToken).email);
+      let projects = await this.projectRepository.getProjectsForUser((req.user as IUserToken).email);
+      projects = projects ? projects : [];
 
+      res.status(OK);
       res.json({
         errors: [],
-        payload: projects || []
-      } as IApiResponse<IProjectResponse[]>);
-      res.status(OK);
+        payload: projects!.map(r =>
+          ({
+            id: r.id,
+            projectName: r.projectName
+          }))
+      } as IApiResponse<IProjectResponse[]>)
     } catch (error) {
       res.status(BAD_REQUEST);
       res.json({
@@ -115,7 +124,6 @@ export class ProjectController {
     const projectId = req.params.id;
 
     try {
-
       const deletedProject = await this.projectRepository.deleteProjectById(projectId);
       res.status(OK);
       res.json({
