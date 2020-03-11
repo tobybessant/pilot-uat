@@ -1,7 +1,5 @@
 import { EntityRepository, Repository, EntityManager } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryService";
-import { IUserResponse } from "../models/response/user";
 import { injectable } from "tsyringe";
 import { ProjectDbo } from "../database/entities/projectDbo";
 import { UserProjectRoleDbo } from "../database/entities/userProjectRole";

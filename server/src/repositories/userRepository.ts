@@ -1,4 +1,3 @@
-import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
 import { injectable } from "tsyringe";
 import { EntityRepository, Repository, EntityManager } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
