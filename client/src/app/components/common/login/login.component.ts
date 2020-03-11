@@ -35,8 +35,8 @@ export class LoginComponent implements OnInit {
     }
 
     // NOTE: at this stage the logged in user will be set, so
-    // navigating to the root will load the accountType-specific
-    //  routes for the given userType.
+    // navigating to the root will load the account-type-specific
+    // routes for the given userType.
     this.router.navigate(["/"]);
   }
 

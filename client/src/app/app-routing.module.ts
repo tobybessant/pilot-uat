@@ -7,9 +7,10 @@ import { LoginComponent } from "./components/common/login/login.component";
 
 const routes: Routes = [
   { path: "signup", component: CreateAccountComponent },
-  { path: "login", component: LoginComponent          },
+  { path: "login",  component: LoginComponent         },
 
-  { path: "",
+  {
+    path: "",
     loadChildren: () => import("./routes/account-type-router.module").then(mod => mod.HandlerModule)
   }
 ];

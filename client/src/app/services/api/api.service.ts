@@ -45,4 +45,21 @@ export class ApiService {
     return response;
   }
 
+  public async delete<T>(endpoint: string): Promise<IApiResponse<T>> {
+    let response = {
+      errors: []
+    } as IApiResponse<T>;
+
+    try {
+      response = await this.httpClient.delete<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
+    } catch (ex) {
+      if (ex.error?.errors) {
+        response.errors.push(ex.error?.errors);
+        return response;
+      }
+      response.errors.push("Something went wrong...");
+    }
+    return response;
+  }
+
 }

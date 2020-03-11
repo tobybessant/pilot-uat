@@ -22,16 +22,16 @@ export class HandlerModule { }
 
 export function getRouterForAccountType(sessionService: SessionService, router: Router) {
   let routes: Routes = [];
-  const user = sessionService.getLoggedInUser();
+  const user = sessionService.getCurrentUser();
   if (!user) {
     router.navigate(["/login"]);
-    return;
+    return routes;
   }
 
-  if (user.userType === "Supplier") {
+  if (user.userType.type === "Supplier") {
     routes = [
       {
-        path: "", loadChildren: () => import("./supplier-routes.module").then(mod => mod.SupplierRoutingModule)
+        path: "", loadChildren: () => import("./supplier-routes.module").then(mod => mod.SupplierRoutingModule),
       }
     ];
   } else {

@@ -30,7 +30,7 @@ async function seed() {
       .execute();
 
   } catch (ex) {
-    Logger.Err(`Error seeding ${TABLE_NAME}: `, ex);
+    Logger.Err(`Error seeding ${TABLE_NAME}: `, ex.message);
   }
 }
 
