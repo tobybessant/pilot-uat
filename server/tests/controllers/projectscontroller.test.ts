@@ -11,7 +11,7 @@ import { UserRepository } from "../../src/repositories/user.repository";
 import { CREATED, BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IProjectResponse } from "../../src/models/response/project";
-import { IUserToken } from "../../src/models/response/usertoken";
+import { IUserToken } from "../../src/models/response/userToken";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
