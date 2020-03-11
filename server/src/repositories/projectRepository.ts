@@ -65,8 +65,6 @@ export class ProjectRepository {
       .where("project.id = :id", { id })
       .getOne();
 
-    console.log(project);
-
     return project ? project.testSuites : [];
   }
 }

@@ -7,6 +7,7 @@ import { OK, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { IApiResponse } from "../models/response/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
+import { ITestSuiteResponse } from "../models/response/testSuite";
 
 @injectable()
 @Controller("suite")
@@ -49,7 +50,13 @@ export class TestSuiteController {
       const testSuites = await this.projectsRepository.getTestSuitesForProject(projectId);
 
       res.status(OK);
-      res.json({ testSuites });
+      res.json({
+        errors: [],
+        payload: testSuites.map(ts =>
+          ({
+            suiteName: ts.suiteName
+          }))
+      } as IApiResponse<ITestSuiteResponse[]>);
     } catch (error) {
       res.status(BAD_REQUEST);
       res.json({

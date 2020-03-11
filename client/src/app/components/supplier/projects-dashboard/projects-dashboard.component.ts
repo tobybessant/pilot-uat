@@ -48,5 +48,4 @@ export class ProjectsDashboardComponent implements OnInit {
     this.newProjectName = "";
     await this.getUserProjects();
   }
-
 }
