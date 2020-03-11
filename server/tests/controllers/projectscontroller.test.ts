@@ -1,11 +1,11 @@
 import { IMock, Mock, It, Times } from "typemoq";
 import { ProjectController } from "../../src/controllers";
 
-import { RepositoryService } from "../../src/services/repositoryservice";
+import { RepositoryService } from "../../src/services/repositoryService";
 
 import { Request, Response } from "express";
 import { UserDbo } from "../../src/database/entities/userDbo";
-import { ProjectRepository } from "../../src/repositories/project.repository";
+import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { ICreateProjectResponse } from "../../src/models/response/createProject";
 import { UserRepository } from "../../src/repositories/user.repository";
 import { CREATED, BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";

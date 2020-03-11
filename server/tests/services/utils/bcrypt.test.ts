@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { Bcrypt } from "../../../src/services/utils/bcrypt-hash";
+import { Bcrypt } from "../../../src/services/utils/bcryptHash";
 
 suite("Bcrypt Service", () => {
   let bcrypt: Bcrypt;
