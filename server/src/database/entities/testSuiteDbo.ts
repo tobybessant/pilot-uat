@@ -12,7 +12,7 @@ export class TestSuiteDbo {
     @Column()
     suiteName!: string;
 
-    @ManyToOne(type => ProjectDbo)
+    @ManyToOne(type => ProjectDbo, project => project.testSuites)
     project!: ProjectDbo;
 
     @CreateDateColumn()

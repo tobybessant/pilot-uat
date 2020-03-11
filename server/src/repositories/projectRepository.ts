@@ -4,6 +4,7 @@ import { injectable } from "tsyringe";
 import { ProjectDbo } from "../database/entities/projectDbo";
 import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
 import { RepositoryService } from "../services/repositoryService";
+import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
 
 @injectable()
 @EntityRepository()
@@ -54,5 +55,18 @@ export class ProjectRepository {
       id
     });
    return;
+  }
+
+  public async getTestSuitesForProject(id: string): Promise<TestSuiteDbo[]> {
+    const project = await this.baseProjectRepository
+      .createQueryBuilder("project")
+      .leftJoin("project.testSuites", "suites")
+      .addSelect("suites.suiteName")
+      .where("project.id = :id", { id })
+      .getOne();
+
+    console.log(project);
+
+    return project ? project.testSuites : [];
   }
 }

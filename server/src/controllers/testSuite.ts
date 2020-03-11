@@ -1,12 +1,12 @@
 import { injectable } from "tsyringe";
-import { Controller, ClassMiddleware, Post } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Middleware, Get } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/testSuiteRepository";
-import { OK } from "http-status-codes";
+import { OK, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
-import { IUserToken } from "../models/response/userToken";
-
+import { IApiResponse } from "../models/response/apiResponse";
+import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 
 @injectable()
 @Controller("suite")
@@ -19,17 +19,43 @@ export class TestSuiteController {
   ) { }
 
   @Post("create")
+  @Middleware(PermittedAccountTypes.are(["Supplier"]))
   public async createTestSuite(req: Request, res: Response) {
     const { suiteName, projectId } = req.body;
 
-    const project = await this.projectsRepository.getProjectById(projectId);
+    try {
+      const project = await this.projectsRepository.getProjectById(projectId);
+      if (!project) {
+        return;
+      }
 
-    if(project) {
       await this.testSuiteRepository.addTestSuite(project, suiteName);
-    }
 
-    res.status(OK);
-    res.json({ suiteName });
+      res.status(OK);
+      res.json({ suiteName });
+    } catch (error) {
+      res.status(BAD_REQUEST);
+      res.json({
+        errors: [error.message]
+      } as IApiResponse<any>);
+    }
+  }
+
+  @Get("all")
+  public async getTestSuites(req: Request, res: Response) {
+    const { projectId } = req.body;
+
+    try {
+      const testSuites = await this.projectsRepository.getTestSuitesForProject(projectId);
+
+      res.status(OK);
+      res.json({ testSuites });
+    } catch (error) {
+      res.status(BAD_REQUEST);
+      res.json({
+        errors: [error.message]
+      } as IApiResponse<any>);
+    }
   }
 
 }
