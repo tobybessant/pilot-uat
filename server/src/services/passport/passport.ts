@@ -5,8 +5,8 @@ import { container, injectable } from "tsyringe";
 import { Local } from "./strategies";
 import { Application } from "express";
 import { UserDbo } from "../../database/entities/userDbo";
-import { RepositoryService } from "../repositoryservice";
-import { IUserToken } from "../../models/response/usertoken";
+import { RepositoryService } from "../repositoryService";
+import { IUserToken } from "../../models/response/userToken";
 
 @injectable()
 export class Passport {

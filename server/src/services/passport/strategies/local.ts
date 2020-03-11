@@ -2,10 +2,10 @@ import { Strategy } from "passport-local";
 import { Repository, AdvancedConsoleLogger } from "typeorm";
 import { injectable } from "tsyringe";
 
-import { Bcrypt } from "../../utils/bcrypt-hash";
+import { Bcrypt } from "../../utils/bcryptHash";
 import { UserDbo } from "../../../database/entities/userDbo";
-import { RepositoryService } from "../../repositoryservice";
-import { IUserToken } from "../../../models/response/usertoken";
+import { RepositoryService } from "../../repositoryService";
+import { IUserToken } from "../../../models/response/userToken";
 
 @injectable()
 export class Local {

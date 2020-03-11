@@ -5,8 +5,8 @@ import { checkAuthentication } from "../services/middleware/checkAuthentication"
 import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryservice";
-import { IApiResponse } from "../models/response/apiresponse";
+import { RepositoryService } from "../services/repositoryService";
+import { IApiResponse } from "../models/response/apiResponse";
 import { IUserResponse } from "../models/response/user";
 
 @injectable()

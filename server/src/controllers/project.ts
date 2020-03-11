@@ -2,22 +2,18 @@ import { injectable } from "tsyringe";
 import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { RepositoryService } from "../services/repositoryservice";
+import { RepositoryService } from "../services/repositoryService";
 import { BodyMatches } from "../services/middleware/bodyMatches";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { ICreateProjectRequest } from "../models/request/createProject";
-import { Repository } from "typeorm";
 import { ProjectDbo } from "../database/entities/projectDbo";
-import { UserDbo } from "../database/entities/userDbo";
-import { OrganisationDbo } from "../database/entities/organisationDbo";
-import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
 import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
-import { IApiResponse } from "../models/response/apiresponse";
+import { IApiResponse } from "../models/response/apiResponse";
 import { ICreateProjectResponse } from "../models/response/createProject";
-import { IUserToken } from "../models/response/usertoken";
+import { IUserToken } from "../models/response/userToken";
 import { IProjectResponse } from "../models/response/project";
-import { ProjectRepository } from "../repositories/project.repository";
-import { UserRepository } from "../repositories/user.repository";
+import { ProjectRepository } from "../repositories/projectRepository";
+import { UserRepository } from "../repositories/userRepository";
 
 @injectable()
 @Controller("project")

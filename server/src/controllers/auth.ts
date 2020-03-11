@@ -7,12 +7,12 @@ import { checkAuthentication } from "../services/middleware/checkAuthentication"
 import { BodyMatches } from "../services/middleware/bodyMatches";
 import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
-import { Bcrypt } from "../services/utils/bcrypt-hash";
-import { ICreateUserRequest } from "../models/request/createuser";
+import { Bcrypt } from "../services/utils/bcryptHash";
+import { ICreateUserRequest } from "../models/request/createUser";
 import { ILoginRequest } from "../models/request/login";
-import { IApiResponse } from "../models/response/apiresponse";
+import { IApiResponse } from "../models/response/apiResponse";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryservice";
+import { RepositoryService } from "../services/repositoryService";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
 import { IUserToken } from "../models/response/userToken";
 import { ICreateUserResponse } from "../models/response/createUser";

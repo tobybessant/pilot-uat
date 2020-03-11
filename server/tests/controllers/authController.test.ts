@@ -2,13 +2,13 @@ import { IMock, Mock, It, Times } from "typemoq";
 import { AuthController } from "../../src/controllers/auth";
 
 import { Repository } from "typeorm";
-import { RepositoryService } from "../../src/services/repositoryservice";
+import { RepositoryService } from "../../src/services/repositoryService";
 
 import { Request, Response } from "express";
 import { CREATED, BAD_REQUEST } from "http-status-codes";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { UserTypeDbo } from "../../src/database/entities/userTypeDbo";
-import { Bcrypt } from "../../src/services/utils/bcrypt-hash";
+import { Bcrypt } from "../../src/services/utils/bcryptHash";
 import { ICreateUserResponse } from "../../src/models/response/createUser";
 import { OrganisationDbo } from "../../src/database/entities/organisationDbo";
 
