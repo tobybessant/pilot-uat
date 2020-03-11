@@ -114,9 +114,7 @@ export class AuthController {
   @Get("logout")
   @Middleware(checkAuthentication)
   public logout(req: Request, res: Response) {
-    Logger.Info("Logging out");
     req.logOut();
-
     res.status(OK)
     res.json({
       message: "Logged out"

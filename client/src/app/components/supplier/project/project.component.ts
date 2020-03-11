@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
 import { NbMenuService, NbMenuItem, NbDialogService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
@@ -12,7 +12,7 @@ import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/co
   templateUrl: "./project.component.html",
   styleUrls: ["./project.component.scss"]
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent implements OnInit, OnDestroy {
 
   public project: IProjectResponse;
   public fetchAttemptComplete = false;
@@ -41,6 +41,10 @@ export class ProjectComponent implements OnInit {
         map(({ item }) => item)
       )
       .subscribe(item => this.projectSettingsActions.get(item.title)());
+  }
+
+  ngOnDestroy(): void {
+    this.dialogService = null;
   }
 
   private promptDeleteProject() {

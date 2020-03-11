@@ -4,6 +4,7 @@ import { IUserResponse } from "src/app/models/response/common/user.interface";
 import { NbMenuService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
 import { Router } from "@angular/router";
+import { AuthService } from "src/app/services/api/auth-service.service";
 
 @Component({
   selector: "app-nav",
@@ -14,10 +15,12 @@ export class NavComponent implements OnInit {
   public user: IUserResponse = null;
   public pageTitle = "UATPlatform";
   public fullName = "";
-  public items: any[] = [{ title: "Logout", url: "logout", icon: "log-out-outline"}];
+  public userContextMenuItems: any[] = [{ title: "Logout", icon: "log-out-outline"}];
+  private readonly userContextMenuActions: Map<string, () => void> = new Map<string, () => void>();
 
   constructor(
     private sessionService: SessionService,
+    private authService: AuthService,
     private nbMenuService: NbMenuService,
     private router: Router
   ) {
@@ -28,6 +31,10 @@ export class NavComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userContextMenuActions.set("Logout", async () => {
+      this.authService.logout().then(() => this.router.navigate(["/login"]));
+    });
+
     // subscribe to logged in user changes
     this.sessionService.getSubject().subscribe(user => {
       this.setDetails(user);
@@ -39,7 +46,7 @@ export class NavComponent implements OnInit {
         filter(({ tag }) => tag === "user-menu"),
         map(({ item }) => item),
       )
-      .subscribe(item => this.router.navigate([ item.url ]));
+      .subscribe(async (item) => await this.userContextMenuActions.get(item.title)());
   }
 
   private setDetails(user: IUserResponse) {

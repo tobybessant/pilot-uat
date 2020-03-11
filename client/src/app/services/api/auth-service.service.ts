@@ -43,4 +43,9 @@ export class AuthService {
 
     return response;
   }
+
+  public async logout(): Promise<void> {
+    await this.apiService.get<void>(this.baseUrl + "/logout");
+    this.sessionService.logout();
+  }
 }
