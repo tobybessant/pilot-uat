@@ -30,7 +30,7 @@ export class UserDbo {
     userType!: UserTypeDbo;
 
     @ManyToMany(type => OrganisationDbo)
-    @JoinTable()
+    @JoinTable({ name: "UserOrganisations" })
     organisations!: OrganisationDbo[];
 
     @OneToMany(type => UserProjectRoleDbo, role => role.user)
