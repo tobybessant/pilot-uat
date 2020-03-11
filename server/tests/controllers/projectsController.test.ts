@@ -31,11 +31,7 @@ suite("Project Controller", () => {
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
 
-    // setup mock repository to return requested repositories
-    given_RepositoryService_getCustomRepositoryFor_returns_whenGiven(projectRepository.object, ProjectRepository);
-    given_RepositoryService_getCustomRepositoryFor_returns_whenGiven(userRepository.object, UserRepository);
-
-    subject = new ProjectController(repositoryService.object);
+    subject = new ProjectController(projectRepository.object, userRepository.object);
   });
 
   teardown(() => {
