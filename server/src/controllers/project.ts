@@ -2,7 +2,6 @@ import { injectable } from "tsyringe";
 import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { RepositoryService } from "../services/repositoryService";
 import { BodyMatches } from "../services/middleware/bodyMatches";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { ICreateProjectRequest } from "../models/request/createProject";

@@ -3,11 +3,12 @@ import { Controller, ClassMiddleware, Post, Middleware, Get } from "@overnightjs
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/testSuiteRepository";
-import { OK, BAD_REQUEST } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { IApiResponse } from "../models/response/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { ITestSuiteResponse } from "../models/response/testSuite";
+import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
 
 @injectable()
 @Controller("suite")
@@ -27,15 +28,26 @@ export class TestSuiteController {
     try {
       const project = await this.projectsRepository.getProjectById(projectId);
       if (!project) {
-        return;
+        throw new Error("Project does not exist");
       }
 
-      await this.testSuiteRepository.addTestSuite(project, suiteName);
+      const suite = await this.testSuiteRepository.addTestSuite(project, suiteName);
+
+      if(!suite) {
+        throw new Error("Failed to add suite");
+      }
 
       res.status(OK);
-      res.json({ suiteName });
+      res.json({
+        errors: [],
+        payload: ((record: TestSuiteDbo): ITestSuiteResponse =>
+        ({
+          suiteName: record.suiteName
+        })
+      )(suite)
+      } as IApiResponse<ITestSuiteResponse>);
     } catch (error) {
-      res.status(BAD_REQUEST);
+      res.status(INTERNAL_SERVER_ERROR);
       res.json({
         errors: [error.message]
       } as IApiResponse<any>);
@@ -58,7 +70,7 @@ export class TestSuiteController {
           }))
       } as IApiResponse<ITestSuiteResponse[]>);
     } catch (error) {
-      res.status(BAD_REQUEST);
+      res.status(INTERNAL_SERVER_ERROR);
       res.json({
         errors: [error.message]
       } as IApiResponse<any>);

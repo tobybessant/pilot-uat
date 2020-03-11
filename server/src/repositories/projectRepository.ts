@@ -65,6 +65,10 @@ export class ProjectRepository {
       .where("project.id = :id", { id })
       .getOne();
 
-    return project ? project.testSuites : [];
+    if (!project) {
+      throw new Error("Project does not exist");
+    }
+
+    return project.testSuites || [];
   }
 }

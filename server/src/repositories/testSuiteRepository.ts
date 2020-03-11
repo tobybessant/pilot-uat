@@ -13,8 +13,8 @@ export class TestSuiteRepository {
     this.baseTestSuiteRepository = repositoryService.getRepositoryFor(TestSuiteDbo);
   }
 
-  public async addTestSuite(project: ProjectDbo, suiteName: string) {
-    await this.baseTestSuiteRepository.insert({
+  public async addTestSuite(project: ProjectDbo, suiteName: string): Promise<TestSuiteDbo | undefined> {
+    return await this.baseTestSuiteRepository.save({
       project,
       suiteName
     });
