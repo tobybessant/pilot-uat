@@ -10,11 +10,11 @@ import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
 @EntityRepository()
 export class ProjectRepository {
 
-  private projectRepository: Repository<ProjectDbo>;
+  private baseProjectRepository: Repository<ProjectDbo>;
   private userProjectRoleRepository: Repository<UserProjectRoleDbo>;
 
   constructor(private manager: EntityManager) {
-    this.projectRepository = manager.getRepository(ProjectDbo);
+    this.baseProjectRepository = manager.getRepository(ProjectDbo);
     this.userProjectRoleRepository = manager.getRepository(UserProjectRoleDbo);
   }
 
@@ -23,7 +23,7 @@ export class ProjectRepository {
     const project = new ProjectDbo();
     project.organisation = user.organisations[0];
     project.projectName = projectName;
-    const savedProject = await this.projectRepository.save(project);
+    const savedProject = await this.baseProjectRepository.save(project);
 
     // save new relationship to user
     const userProjectRole = new UserProjectRoleDbo();
@@ -33,12 +33,12 @@ export class ProjectRepository {
   }
 
   public async getProjectById(id: string): Promise<ProjectDbo | undefined> {
-    const project: ProjectDbo | undefined = await this.projectRepository.findOne({ id });
+    const project: ProjectDbo | undefined = await this.baseProjectRepository.findOne({ id });
     return project;
   }
 
   public async getProjectsforUser(email: string): Promise<ProjectDbo[] | undefined> {
-    const projects: ProjectDbo[] | undefined = await this.projectRepository
+    const projects: ProjectDbo[] | undefined = await this.baseProjectRepository
     .createQueryBuilder("project")
     .orderBy("project.createdDate", "DESC")
     .leftJoin("project.users", "userRoles")
@@ -51,7 +51,7 @@ export class ProjectRepository {
   }
 
   public async deleteProjectById(id: string) {
-    const deletedProject = await this.projectRepository.delete({
+    const deletedProject = await this.baseProjectRepository.delete({
       id
     });
 

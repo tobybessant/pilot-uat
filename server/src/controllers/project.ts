@@ -11,12 +11,13 @@ import { ProjectDbo } from "../database/entities/projectDbo";
 import { UserDbo } from "../database/entities/userDbo";
 import { OrganisationDbo } from "../database/entities/organisationDbo";
 import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
-import { BAD_REQUEST, CREATED, OK } from "http-status-codes";
+import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
 import { IApiResponse } from "../models/response/apiresponse";
 import { ICreateProjectResponse } from "../models/response/createProject";
 import { IUserToken } from "../models/response/usertoken";
 import { IProjectResponse } from "../models/response/project";
 import { ProjectRepository } from "../repositories/project.repository";
+import { UserRepository } from "../repositories/user.repository";
 
 @injectable()
 @Controller("project")
@@ -24,13 +25,13 @@ import { ProjectRepository } from "../repositories/project.repository";
 export class ProjectController {
 
   private projectRepository: ProjectRepository;
-  private userRepository: Repository<UserDbo>;
+  private userRepository: UserRepository;
 
   constructor(
     private repositoryService: RepositoryService,
   ) {
     this.projectRepository = repositoryService.getCustomRepositoryFor(ProjectRepository);
-    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
+    this.userRepository = repositoryService.getCustomRepositoryFor(UserRepository);
   }
 
   @Post("create")
@@ -42,15 +43,9 @@ export class ProjectController {
     const { projectName } = req.body;
 
     try {
-      const user = await this.userRepository
-        .createQueryBuilder("user")
-        .leftJoinAndSelect("user.userType", "type")
-        .leftJoinAndSelect("user.organisations", "organisations")
-        .where("user.email = :email", { email: (req.user as IUserToken).email })
-        .getOne();
-
+      const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
       if (!user) {
-        throw new Error("No user or organisation found.");
+        throw new Error("Error finding user");
       }
 
       await this.projectRepository.addProject(user, projectName);
@@ -63,10 +58,13 @@ export class ProjectController {
         }
       } as IApiResponse<ICreateProjectResponse>);
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<ICreateProjectResponse>);
+
+      const errors: string[] = [
+        error.message ? error.message : "Error creating project"
+      ];
+
+      res.status(INTERNAL_SERVER_ERROR);
+      res.json({ errors } as IApiResponse<ICreateProjectResponse>);
     }
   }
 
@@ -77,13 +75,17 @@ export class ProjectController {
     try {
       const project = await this.projectRepository.getProjectById(id);
 
+      if (!project) {
+        throw new Error("That project does not exist");
+      }
+
       res.json({
         errors: [],
         payload: project
       } as IApiResponse<IProjectResponse>);
       res.status(OK);
     } catch (error) {
-      res.status(BAD_REQUEST);
+      res.status(NOT_FOUND);
       res.json({
         errors: [error.message]
       } as IApiResponse<IProjectResponse>);
