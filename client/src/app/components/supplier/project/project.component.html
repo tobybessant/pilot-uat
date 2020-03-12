@@ -9,19 +9,19 @@
   >
     <p>Loading...</p>
   </ngx-spinner>
+  <button
+    nbButton
+    status="primary"
+    (click)="backToAllProjects()"
+    id="back-button"
+  >
+    <nb-icon icon="arrow-back-outline"></nb-icon>
+    Exit Project
+  </button>
 
   <div *ngIf="project">
     <div class="project-subnav">
-      <button
-        nbButton
-        status="primary"
-        (click)="backToAllProjects()"
-        id="back-button"
-      >
-        <nb-icon icon="arrow-back-outline"></nb-icon>
-      </button>
-
-      <h3>{{ project.projectName }}</h3>
+      <h2>{{ project.projectName }}</h2>
       <button
         nbButton
         status="primary"
@@ -31,6 +31,18 @@
         Settings
       </button>
     </div>
+
+    <nb-card>
+      <nb-card-body>
+    
+        <nb-tabset>
+          <nb-tab tabTitle="Tests">
+            <p>List of <strong>orders</strong>.</p>
+          </nb-tab>
+        </nb-tabset>
+    
+      </nb-card-body>
+    </nb-card>
   </div>
 
   <div *ngIf="!project && fetchAttemptComplete">

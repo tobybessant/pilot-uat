@@ -13,7 +13,7 @@ import { AuthService } from "src/app/services/api/auth-service.service";
 })
 export class NavComponent implements OnInit {
   public user: IUserResponse = null;
-  public pageTitle = "UATPlatform";
+  public pageTitle = "Pilot";
   public fullName = "";
   public userContextMenuItems: any[] = [{ title: "Logout", icon: "log-out-outline" }];
   private readonly userContextMenuActions: Map<string, () => void> = new Map<string, () => void>();
