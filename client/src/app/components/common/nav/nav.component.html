@@ -2,10 +2,10 @@
   <h3>{{ pageTitle }}</h3>
 </div>
 <nb-user
+  *ngIf="user"
   shape="rectangle"
   [nbContextMenu]="userContextMenuItems"
   [name]="fullName"
-  *ngIf="user"
   nbContextMenuTag="user-menu"
   [title]="user.userType.type"
 ></nb-user>

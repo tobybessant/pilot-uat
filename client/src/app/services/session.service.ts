@@ -30,6 +30,6 @@ export class SessionService {
 
   public logout() {
     this.currentUser = null;
-    this.subject = new Subject<IUserResponse>();
+    this.subject.next(null);
   }
 }
