@@ -131,13 +131,15 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   public async addSuite(): Promise<void> {
-    await this.suiteApiService.addSuite({
-      suiteName: this.newSuiteName,
-      projectId: this.project.id
-    });
+    if (this.newSuiteName) {
+      await this.suiteApiService.addSuite({
+        suiteName: this.newSuiteName,
+        projectId: this.project.id
+      });
 
-    await this.fetchSuites();
-    this.newSuiteName = "";
+      await this.fetchSuites();
+      this.newSuiteName = "";
+    }
   }
 
   public async fetchSuites() {
