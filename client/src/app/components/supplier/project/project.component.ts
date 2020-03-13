@@ -83,7 +83,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.spinner.hide();
   }
 
-  public updateSuiteView($event) {
+  public updateActiveSuite($event) {
     this.activeSuite = this.project.suites.filter(suite => suite.id === $event)[0];
   }
 

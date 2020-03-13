@@ -39,7 +39,7 @@
             <div class="tab-content">
               <app-test-suite-list 
                 [suitesData]="project.suites"
-                (suiteSelected)="updateSuiteView($event)"
+                (suiteSelected)="updateActiveSuite($event)"
                 (suiteAdded)="addSuiteToProject($event)"
               >
               </app-test-suite-list>
