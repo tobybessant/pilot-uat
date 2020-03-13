@@ -30,7 +30,6 @@ export class ProjectApiService {
 
   public async deleteProject(projectId: number) {
     const response = await this.apiService.delete<any>(this.baseUrl + "/" + projectId);
-    console.log(response);
     return response;
   }
 }

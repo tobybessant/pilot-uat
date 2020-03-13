@@ -5,37 +5,46 @@
   align-items: center;
 }
 
-.addSuiteContainer {
+.tabs-view {
+  height:100%;
+}
+
+.add-suite-container {
   padding: var(--menu-item-padding);
   padding-bottom: 20px;
   border-bottom: 1px solid var(--tabset-divider-color);
 }
 
-.addSuiteContainer:hover {
+.add-suite-container:hover {
   background-color: var(--menu-item-hover-background-color);
   color: var(--menu-item-hover-text-color);
   cursor: var(--menu-item-hover-cursor);
 }
 
-.addSuiteContainer p {
+.add-suite-container p {
   padding: 0;
   margin: 0;
 }
 
-#noHPadding {
+#no-h-padding {
   padding-left: 0;
   padding-right: 0;
   padding-top: 0;
   padding-bottom: 0;
 }
 
-#suitesListContainer {
+#suites-list-container {
   padding-top: 10px;
   max-width: 230px;
+  min-width: 230px;
   border-right: 1px solid var(--tabset-divider-color);
-  box-shadow: var(--shadow);
 }
 
-#suitesList {
+#suites-list {
   max-width: 100%;
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: row;
 }

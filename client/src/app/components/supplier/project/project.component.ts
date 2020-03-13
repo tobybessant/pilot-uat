@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
 import { NbMenuService, NbMenuItem, NbDialogService } from "@nebular/theme";
-import { filter, map } from "rxjs/operators";
+import { filter, map, takeWhile } from "rxjs/operators";
 import { IProjectResponse } from "src/app/models/response/supplier/project.interface";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
@@ -28,6 +28,9 @@ export class ProjectComponent implements OnInit, OnDestroy {
   private readonly projectSettingsActions: Map<string, () => void> = new Map<string, () => void>();
 
   public suites: NbMenuItem[] = [];
+  public activeSuite: string;
+
+  private alive: boolean = true;
 
   constructor(
     private projectsApiService: ProjectApiService,
@@ -36,7 +39,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
   ) { }
 
   ngOnInit(): void {
@@ -52,10 +55,23 @@ export class ProjectComponent implements OnInit, OnDestroy {
         map(({ item }) => item)
       )
       .subscribe(item => this.projectSettingsActions.get(item.title)());
+
+    this.nbMenuService.onItemClick()
+      .pipe(
+        filter(({ tag }) => tag === "testSuites"),
+        map(({ item }) => item)
+      )
+      .subscribe(item => {
+        if (this.alive) {
+          this.activeSuite = this.project.suites.filter(s => s.id === item.data.id)[0]?.suiteName;
+          console.log(this.activeSuite);
+        }
+      });
   }
 
   ngOnDestroy(): void {
     this.dialogService = null;
+    this.alive = false;
   }
 
   private promptDeleteProject() {
@@ -92,7 +108,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   private mapAndAddSuitesToItems(suites: ISuiteResponse[]) {
     const suiteItems = suites.map(s => ({
-      title: s.suiteName
+      title: s.suiteName,
+      data: {
+        id: s.id
+      }
     }) as NbMenuItem);
 
     this.suites.push(...suiteItems);
@@ -127,6 +146,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     if (response.errors.length > 0) {
       return;
     }
+    this.project.suites = response.payload;
     this.suites = [];
     this.mapAndAddSuitesToItems(response.payload);
   }
