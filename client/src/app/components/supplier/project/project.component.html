@@ -37,7 +37,28 @@
     
         <nb-tabset>
           <nb-tab tabTitle="Tests" id="noHPadding">
-            <nb-menu [items]="items" id="suitesList"></nb-menu>
+            <div id="suitesListContainer">
+              <div class="addSuiteContainer">
+                <!-- <span class="menu-title"><strong>+ Add Suite</strong></span> -->
+                
+                <span *ngIf="!getIsAddingSuite()">
+                  <button nbButton status="basic" (click)="setIsAddingSuite(true)">Add Suite</button>
+                </span>
+                <span *ngIf="getIsAddingSuite()">
+                  <input
+                    #suiteNameInput
+                    type="text"
+                    nbInput
+                    fullWidth
+                    placeholder="Enter Suite Name"
+                    [(ngModel)]="newSuiteName"
+                    (blur)="setIsAddingSuite(false)"
+                    (keyup.enter)="addSuite()"
+                    />
+                </span>
+              </div>
+              <nb-menu [items]="suites" id="suitesList"></nb-menu>
+            </div>
 
           </nb-tab>
         </nb-tabset>

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
-import { IProjectResponse } from "src/app/models/response/common/project.interface";
+import { IProjectResponse } from "src/app/models/response/supplier/project.interface";
 import { ICreateProjectResponse } from "src/app/models/response/supplier/create-project.interface";
 
 @Component({
