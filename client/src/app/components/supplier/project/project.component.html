@@ -34,32 +34,15 @@
 
     <nb-card class="tabs-view">
       <nb-card-body>
-    
         <nb-tabset>
           <nb-tab tabTitle="Tests" id="no-h-padding">
             <div class="tab-content">
-              <div id="suites-list-container">
-                <div class="add-suite-container">
-                  <!-- <span class="menu-title"><strong>+ Add Suite</strong></span> -->
-                  
-                  <span *ngIf="!getIsAddingSuite()">
-                    <button nbButton status="basic" (click)="setIsAddingSuite(true)">Add Suite</button>
-                  </span>
-                  <span *ngIf="getIsAddingSuite()">
-                    <input
-                      #suiteNameInput
-                      type="text"
-                      nbInput
-                      fullWidth
-                      placeholder="Enter Suite Name"
-                      [(ngModel)]="newSuiteName"
-                      (blur)="setIsAddingSuite(false)"
-                      (keyup.enter)="addSuite()"
-                      />
-                  </span>
-                </div>
-                <nb-menu tag="testSuites" [items]="suites" id="suites-list"></nb-menu>
-              </div>
+              <app-test-case-list 
+                [suitesData]="project.suites"
+                (suiteSelected)="updateSuiteView($event)"
+                (suiteAdded)="addSuiteToProject($event)"
+              >
+              </app-test-case-list>
               <div class="test-suite" *ngIf="activeSuite !== undefined">
                 <h4>{{ activeSuite }}</h4>
               </div>

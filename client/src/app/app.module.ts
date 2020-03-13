@@ -23,6 +23,7 @@ import { SessionService } from "./services/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
 import { ProjectComponent } from "./components/supplier/project/project.component";
 import { ConfirmationPromptComponent } from "./components/common/confirmation-prompt/confirmation-prompt.component";
+import { TestCaseListComponent } from './components/supplier/test-case-list/test-case-list.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ConfirmationPromptComponent } from "./components/common/confirmation-pr
     ProjectsDashboardComponent,
     NavComponent,
     ProjectComponent,
-    ConfirmationPromptComponent
+    ConfirmationPromptComponent,
+    TestCaseListComponent
   ],
   imports: [
     BrowserModule,
