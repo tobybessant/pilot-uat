@@ -42,7 +42,8 @@ export class TestSuiteController {
         errors: [],
         payload: ((record: TestSuiteDbo): ITestSuiteResponse =>
         ({
-          suiteName: record.suiteName
+          suiteName: record.suiteName,
+          id: record.id
         })
       )(suite)
       } as IApiResponse<ITestSuiteResponse>);
@@ -64,9 +65,10 @@ export class TestSuiteController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: testSuites.map(ts =>
+        payload: testSuites.map(record =>
           ({
-            suiteName: ts.suiteName
+            suiteName: record.suiteName,
+            id: record.id
           }))
       } as IApiResponse<ITestSuiteResponse[]>);
     } catch (error) {

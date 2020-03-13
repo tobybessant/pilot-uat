@@ -61,7 +61,7 @@ export class ProjectRepository {
     const project = await this.baseProjectRepository
       .createQueryBuilder("project")
       .leftJoin("project.testSuites", "suites")
-      .addSelect("suites.suiteName")
+      .addSelect(["suites.suiteName", "suites.id"])
       .where("project.id = :id", { id })
       .getOne();
 
