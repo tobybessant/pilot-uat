@@ -19,6 +19,15 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public projectSettings: NbMenuItem[] = [{ title: "Delete", icon: "trash-2-outline" }];
   private readonly projectSettingsActions: Map<string, () => void> = new Map<string, () => void>();
 
+  items: NbMenuItem[] = [
+    {
+      title: "Leads"
+    },
+    {
+      title: "Opportunities"
+    }
+   ];
+
   constructor(
     private projectsApiService: ProjectApiService,
     private nbMenuService: NbMenuService,

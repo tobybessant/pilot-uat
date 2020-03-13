@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
-          NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule, NbActionsModule } from "@nebular/theme";
+          NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule, NbActionsModule, NbTreeGridModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -53,6 +53,7 @@ import { ConfirmationPromptComponent } from "./components/common/confirmation-pr
     NbSpinnerModule,
     NbTabsetModule,
     NbActionsModule,
+    NbTreeGridModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),

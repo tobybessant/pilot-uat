@@ -1,6 +1,21 @@
+@import '../../../../themes';
+
 .project-subnav {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+#noHPadding {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+#suitesList {
+  padding-top: 10px;
+  max-width: 230px;
+  border-right: 1px solid var(--tabset-divider-color)
 }
