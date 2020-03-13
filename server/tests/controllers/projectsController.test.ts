@@ -12,10 +12,12 @@ import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IProjectResponse } from "../../src/models/response/project";
 import { IUserToken } from "../../src/models/response/userToken";
+import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
   let projectRepository: IMock<ProjectRepository>;
+  let suiteRepository: IMock<TestSuiteRepository>;
   let repositoryService: IMock<RepositoryService>;
 
   let req: IMock<Request>;
@@ -26,12 +28,13 @@ suite("Project Controller", () => {
   suiteSetup(() => {
     userRepository = Mock.ofType<UserRepository>();
     projectRepository = Mock.ofType<ProjectRepository>();
+    suiteRepository = Mock.ofType<TestSuiteRepository>();
     repositoryService = Mock.ofType<RepositoryService>();
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
 
-    subject = new ProjectController(projectRepository.object, userRepository.object);
+    subject = new ProjectController(projectRepository.object, userRepository.object, suiteRepository.object);
   });
 
   teardown(() => {
@@ -123,6 +126,7 @@ suite("Project Controller", () => {
         project = new ProjectDbo();
         project.id = "4000";
         project.projectName = "Getted Project Name"
+        project.testSuites = [];
 
         getProjectBody = {
           id: project.id
@@ -130,7 +134,8 @@ suite("Project Controller", () => {
 
         projectResponse = {
           id: project.id,
-          projectName: project.projectName
+          projectName: project.projectName,
+          suites: project.testSuites
         };
 
       });
@@ -202,13 +207,15 @@ suite("Project Controller", () => {
           const p = new ProjectDbo();
           p.id = i + "";
           p.projectName = "Project " + i;
+          p.testSuites = []
           projects.push(p);
         }
 
         for (const project of projects) {
           projectsResponse.push({
             id: project.id,
-            projectName: project.projectName
+            projectName: project.projectName,
+            suites: project.testSuites
           });
         }
       });

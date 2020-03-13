@@ -13,6 +13,7 @@ import { IUserToken } from "../models/response/userToken";
 import { IProjectResponse } from "../models/response/project";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
+import { TestSuiteRepository } from "../repositories/testSuiteRepository";
 
 @injectable()
 @Controller("project")
@@ -21,7 +22,8 @@ export class ProjectController {
 
   constructor(
     private projectRepository: ProjectRepository,
-    private userRepository: UserRepository
+    private userRepository: UserRepository,
+    private suiteRepository: TestSuiteRepository
   ) {
   }
 
@@ -69,12 +71,15 @@ export class ProjectController {
         throw new Error("That project does not exist");
       }
 
+      const suites = await this.projectRepository.getTestSuitesForProject(project.id);
+
       res.json({
         errors: [],
         payload: ((record: ProjectDbo) =>
           ({
             id: record.id,
-            projectName: record.projectName
+            projectName: record.projectName,
+            suites
           })
         )(project)
       } as IApiResponse<IProjectResponse>);
@@ -99,7 +104,8 @@ export class ProjectController {
         payload: projects!.map(r =>
           ({
             id: r.id,
-            projectName: r.projectName
+            projectName: r.projectName,
+            suites: []
           }))
       } as IApiResponse<IProjectResponse[]>)
     } catch (error) {

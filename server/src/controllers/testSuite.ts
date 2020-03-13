@@ -54,7 +54,7 @@ export class TestSuiteController {
     }
   }
 
-  @Get("all")
+  @Post("all")
   public async getTestSuites(req: Request, res: Response) {
     const { projectId } = req.body;
 

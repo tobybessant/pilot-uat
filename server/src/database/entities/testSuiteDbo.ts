@@ -12,7 +12,7 @@ export class TestSuiteDbo {
     @Column()
     suiteName!: string;
 
-    @ManyToOne(type => ProjectDbo, project => project.testSuites)
+    @ManyToOne(type => ProjectDbo, project => project.testSuites, { primary: true, onDelete: "CASCADE" })
     project!: ProjectDbo;
 
     @CreateDateColumn()
