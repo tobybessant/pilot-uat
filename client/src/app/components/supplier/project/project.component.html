@@ -37,15 +37,16 @@
         <nb-tabset>
           <nb-tab tabTitle="Tests" id="no-h-padding">
             <div class="tab-content">
-              <app-test-case-list 
+              <app-test-suite-list 
                 [suitesData]="project.suites"
                 (suiteSelected)="updateSuiteView($event)"
                 (suiteAdded)="addSuiteToProject($event)"
               >
-              </app-test-case-list>
-              <div class="test-suite" *ngIf="activeSuite !== undefined">
-                <h4>{{ activeSuite }}</h4>
-              </div>
+              </app-test-suite-list>
+              <app-test-suite  
+                class="test-suite"
+                [activeSuite]="activeSuite"
+              ></app-test-suite>
             </div>
           </nb-tab>
         </nb-tabset>

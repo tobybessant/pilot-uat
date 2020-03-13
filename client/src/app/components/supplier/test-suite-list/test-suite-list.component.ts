@@ -1,15 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Input, Output, EventEmitter } from "@angular/core";
 import { ISuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { NbMenuItem, NbMenuService } from "@nebular/theme";
-import { SuiteApiService } from "src/app/services/api/suite-api.service";
 import { filter, map } from "rxjs/operators";
 
 @Component({
-  selector: "app-test-case-list",
-  templateUrl: "./test-case-list.component.html",
-  styleUrls: ["./test-case-list.component.scss"]
+  selector: "app-test-suite-list",
+  templateUrl: "./test-suite-list.component.html",
+  styleUrls: ["./test-suite-list.component.scss"]
 })
-export class TestCaseListComponent implements OnInit, OnDestroy {
+export class TestSuiteListComponent implements OnInit, OnDestroy {
 
   @Input()
   public set suitesData(data: ISuiteResponse[]) {
@@ -44,8 +43,6 @@ export class TestCaseListComponent implements OnInit, OnDestroy {
           this.suiteSelected.emit(item.data.id);
         }
       });
-
-    // this.mapAndAddSuitesToItems(this.suitesData);
   }
 
   ngOnDestroy(): void {

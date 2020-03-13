@@ -8,7 +8,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
-          NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule, NbActionsModule, NbTreeGridModule } from "@nebular/theme";
+          NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
+          NbActionsModule, NbTreeGridModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -23,7 +24,8 @@ import { SessionService } from "./services/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
 import { ProjectComponent } from "./components/supplier/project/project.component";
 import { ConfirmationPromptComponent } from "./components/common/confirmation-prompt/confirmation-prompt.component";
-import { TestCaseListComponent } from './components/supplier/test-case-list/test-case-list.component';
+import { TestSuiteListComponent } from "./components/supplier/test-suite-list/test-suite-list.component";
+import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.component";
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { TestCaseListComponent } from './components/supplier/test-case-list/test
     NavComponent,
     ProjectComponent,
     ConfirmationPromptComponent,
-    TestCaseListComponent
+    TestSuiteListComponent,
+    TestSuiteComponent
   ],
   imports: [
     BrowserModule,

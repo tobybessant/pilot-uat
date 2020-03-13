@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
 import { NbMenuService, NbMenuItem, NbDialogService } from "@nebular/theme";
-import { filter, map, takeWhile } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 import { IProjectResponse } from "src/app/models/response/supplier/project.interface";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
-import { ISuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { SuiteApiService } from "src/app/services/api/suite-api.service";
+import { ISuiteResponse } from "src/app/models/response/supplier/suite.interface";
 
 @Component({
   selector: "app-project",
@@ -22,7 +22,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public projectSettings: NbMenuItem[] = [{ title: "Delete", icon: "trash-2-outline" }];
   private readonly projectSettingsActions: Map<string, () => void> = new Map<string, () => void>();
 
-  public activeSuite: string;
+  public activeSuite: ISuiteResponse;
 
   constructor(
     private projectsApiService: ProjectApiService,
@@ -84,7 +84,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   public updateSuiteView($event) {
-    this.activeSuite = this.project.suites.filter(suite => suite.id === $event)[0].suiteName;
+    this.activeSuite = this.project.suites.filter(suite => suite.id === $event)[0];
   }
 
   public async fetchSuites() {
