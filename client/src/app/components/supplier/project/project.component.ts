@@ -77,8 +77,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
     const response = await this.projectsApiService.getProjectById(id);
     if (response.errors.length === 0) {
       this.project = response.payload;
+      this.activeSuite = response.payload.suites[0];
     }
-
     this.fetchAttemptComplete = true;
     this.spinner.hide();
   }
