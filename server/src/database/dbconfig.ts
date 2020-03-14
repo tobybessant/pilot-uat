@@ -7,7 +7,10 @@ export const DBConfig: ConnectionOptions = {
   username: process.env.db_user || "sa",
   password: process.env.db_password || "d3vel0pmentPassword",
   database: process.env.db_database || "UAT_APP_DEV",
-  entities: [__dirname + "/entities/*.ts"],
+  entities: [
+    __dirname + "/entities/*.ts",
+    __dirname + "/entities/*.js" // get dist models when project is built
+  ],
   synchronize: false,
   logging: process.env.db_logging ? true : false
 }
