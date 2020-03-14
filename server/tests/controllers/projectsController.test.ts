@@ -13,6 +13,7 @@ import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IProjectResponse } from "../../src/models/response/project";
 import { IUserToken } from "../../src/models/response/userToken";
 import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
+import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -123,10 +124,13 @@ suite("Project Controller", () => {
     suite("Valid request conditions", () => {
       suiteSetup(() => {
 
+        let testSuite = new TestSuiteDbo();
+        testSuite.suiteName = "Suite 1";
+
         project = new ProjectDbo();
         project.id = "4000";
         project.projectName = "Getted Project Name"
-        project.testSuites = [];
+        project.testSuites = [ testSuite ];
 
         getProjectBody = {
           id: project.id
@@ -137,11 +141,11 @@ suite("Project Controller", () => {
           projectName: project.projectName,
           suites: project.testSuites
         };
-
       });
 
       test("Should return project in response body", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
+        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.testSuites, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
@@ -320,6 +324,12 @@ suite("Project Controller", () => {
   function given_projectRepository_deleteProject_returns_whenGiven(returns: any, whenGiven: any) {
     projectRepository
       .setup(pr => pr.deleteProjectById(whenGiven))
+      .returns(async () => returns);
+  }
+
+  function given_projectRepository_getTestSuitesForProject_returns_whenGiven(returns: TestSuiteDbo[], whenGiven: any) {
+    projectRepository
+      .setup(pr => pr.getTestSuitesForProject(whenGiven))
       .returns(async () => returns);
   }
 });
