@@ -134,6 +134,34 @@ suite("TestSuiteController", () => {
     })
   });
 
+  suite("Delete test suite from project", async () => {
+    let deleteTestSuiteBody: any;
+
+    suite("Valid request conditions", () => {
+      suiteSetup(() => {
+        deleteTestSuiteBody = {
+          suiteId: "500"
+        }
+      });
+
+      test("Should return nothing in response body", async () => {
+        given_Request_body_is(deleteTestSuiteBody);
+
+        await subject.deleteSuite(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [] }), Times.once());
+      });
+
+      test("Should return statusCode 200", async () => {
+        given_Request_body_is(deleteTestSuiteBody);
+
+        await subject.deleteSuite(req.object, res.object);
+
+        res.verify(r => r.status(OK), Times.once());
+      });
+    });
+  });
+
   function given_Request_body_is(body: any): void {
     req
       .setup(r => r.body)
@@ -157,5 +185,4 @@ suite("TestSuiteController", () => {
     .setup(pr => pr.getTestSuitesForProject(It.isAny()))
     .returns(async () => returns);
   };
-
 });
