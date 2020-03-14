@@ -8,8 +8,8 @@ import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcryptHash";
-import { ICreateUserRequest } from "../services/middleware/joi/schemas/createUser";
-import { ILoginRequest } from "../services/middleware/joi/schemas/login";
+import { CreateUserSchema } from "../services/middleware/joi/schemas/createUser";
+import { LoginSchema } from "../services/middleware/joi/schemas/login";
 import { IApiResponse } from "../models/response/apiResponse";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryService";
@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post("createaccount")
-  @Middleware(BodyMatches.modelSchema(ICreateUserRequest))
+  @Middleware(BodyMatches.modelSchema(CreateUserSchema))
   public async createAccount(req: Request, res: Response) {
 
     // extract details
@@ -98,7 +98,7 @@ export class AuthController {
 
   @Post("login")
   @Middleware([
-    BodyMatches.modelSchema(ILoginRequest),
+    BodyMatches.modelSchema(LoginSchema),
     passport.authenticate("local")
   ])
   public login(req: Request, res: Response) {

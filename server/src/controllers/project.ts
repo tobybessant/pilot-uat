@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { ICreateProjectRequest } from "../services/middleware/joi/schemas/createProject";
+import { CreateProjectSchema } from "../services/middleware/joi/schemas/createProject";
 import { ProjectDbo } from "../database/entities/projectDbo";
 import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
 import { IApiResponse } from "../models/response/apiResponse";
@@ -29,7 +29,7 @@ export class ProjectController {
 
   @Post("create")
   @Middleware([
-    BodyMatches.modelSchema(ICreateProjectRequest),
+    BodyMatches.modelSchema(CreateProjectSchema),
     PermittedAccountTypes.are(["Supplier"])
   ])
   public async createProject(req: Request, res: Response) {
