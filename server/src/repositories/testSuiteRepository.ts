@@ -19,4 +19,9 @@ export class TestSuiteRepository {
       suiteName
     });
   }
+
+  public async deleteSuiteById(id: string) {
+    await this.baseTestSuiteRepository.delete({ id });
+    return;
+  }
 }
