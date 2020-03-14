@@ -1,4 +1,17 @@
-<div class="sutie" *ngIf="activeSuite">
-  <h4>Name: {{ activeSuite.suiteName }}</h4>
-  <h4>ID: {{ activeSuite.id }}</h4>
+<div class="suite" *ngIf="activeSuite">
+  <div class="suite-header">
+    <div class="suite-details">
+      <h5>Name: {{ activeSuite.suiteName }}</h5>
+      <h5>ID: {{ activeSuite.id }}</h5>
+    </div>
+    <button
+      nbButton
+      ghost
+      status="danger"
+      size="giant"
+      (click)="promptDeleteSuite()"
+    >
+      <nb-icon icon="trash-2-outline"></nb-icon>
+    </button>
+  </div>
 </div>

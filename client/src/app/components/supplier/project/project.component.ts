@@ -18,11 +18,22 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   public project: IProjectResponse;
   public fetchAttemptComplete = false;
-
-  public projectSettings: NbMenuItem[] = [{ title: "Delete", icon: "trash-2-outline" }];
-  private readonly projectSettingsActions: Map<string, () => void> = new Map<string, () => void>();
-
   public activeSuite: ISuiteResponse;
+  public projectSettings: NbMenuItem[] = [
+    {
+      title: "Delete Project",
+      icon: "trash-2-outline",
+      data: {
+        callback: () => {
+          if (this.project && this.dialogService && this.alive) {
+            this.promptDeleteProject();
+          }
+        }
+      }
+    }
+  ];
+
+  private alive: boolean = true;
 
   constructor(
     private projectsApiService: ProjectApiService,
@@ -36,8 +47,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.spinner.show();
-
-    this.projectSettingsActions.set("Delete", () => { if (this.project && this.dialogService) { this.promptDeleteProject(); } });
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
 
     // subscribe to profile menu events
@@ -46,11 +55,13 @@ export class ProjectComponent implements OnInit, OnDestroy {
         filter(({ tag }) => tag === "project-settings"),
         map(({ item }) => item)
       )
-      .subscribe(item => this.projectSettingsActions.get(item.title)());
+      .subscribe(item => item.data.callback());
   }
 
   ngOnDestroy(): void {
+    this.alive = false;
     this.dialogService = null;
+    this.projectSettings = null;
   }
 
   private promptDeleteProject() {
