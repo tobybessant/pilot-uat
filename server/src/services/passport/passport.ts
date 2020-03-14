@@ -6,7 +6,7 @@ import { Local } from "./strategies";
 import { Application } from "express";
 import { UserDbo } from "../../database/entities/userDbo";
 import { RepositoryService } from "../repositoryService";
-import { IUserToken } from "../../models/response/userToken";
+import { IUserToken } from "../../dto/common/userToken";
 
 @injectable()
 export class Passport {

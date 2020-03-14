@@ -5,7 +5,7 @@ import { injectable } from "tsyringe";
 import { Bcrypt } from "../../utils/bcryptHash";
 import { UserDbo } from "../../../database/entities/userDbo";
 import { RepositoryService } from "../../repositoryService";
-import { IUserToken } from "../../../models/response/userToken";
+import { IUserToken } from "../../../dto/common/userToken";
 
 @injectable()
 export class Local {

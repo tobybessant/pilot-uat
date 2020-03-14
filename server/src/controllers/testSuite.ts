@@ -5,9 +5,9 @@ import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/testSuiteRepository";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
-import { IApiResponse } from "../models/response/apiResponse";
+import { IApiResponse } from "../dto/common/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { ITestSuiteResponse } from "../models/response/testSuite";
+import { ITestSuiteResponse } from "../dto/supplier/testSuite";
 import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
 
 @injectable()

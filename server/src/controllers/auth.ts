@@ -10,12 +10,12 @@ import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcryptHash";
 import { CreateUserSchema } from "../services/middleware/joi/schemas/createUser";
 import { LoginSchema } from "../services/middleware/joi/schemas/login";
-import { IApiResponse } from "../models/response/apiResponse";
+import { IApiResponse } from "../dto/common/apiResponse";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
-import { IUserToken } from "../models/response/userToken";
-import { ICreateUserResponse } from "../models/response/createUser";
+import { IUserToken } from "../dto/common/userToken";
+import { ICreateUserResponse } from "../dto/common/createUser";
 import { OrganisationDbo } from "../database/entities/organisationDbo";
 
 @injectable()

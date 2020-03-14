@@ -6,12 +6,12 @@ import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
-import { ICreateProjectResponse } from "../../src/models/response/createProject";
+import { ICreateProjectResponse } from "../../src/dto/supplier/createProject";
 import { UserRepository } from "../../src/repositories/userRepository";
 import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { IProjectResponse } from "../../src/models/response/project";
-import { IUserToken } from "../../src/models/response/userToken";
+import { IProjectResponse } from "../../src/dto/supplier/project";
+import { IUserToken } from "../../src/dto/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
 import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
 
@@ -35,7 +35,7 @@ suite("Project Controller", () => {
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
 
-    subject = new ProjectController(projectRepository.object, userRepository.object, suiteRepository.object);
+    subject = new ProjectController(projectRepository.object, userRepository.object);
   });
 
   teardown(() => {
@@ -277,13 +277,7 @@ suite("Project Controller", () => {
         res.verify(r => r.status(OK), Times.once());
       });
     });
-  })
-
-  function given_RepositoryService_getCustomRepositoryFor_returns_whenGiven<T>(returns: T, whenGiven: any): void {
-    repositoryService
-      .setup(rs => rs.getCustomRepositoryFor<T>(whenGiven))
-      .returns(() => returns);
-  }
+  });
 
   function given_Request_user_is(user: IUserToken) {
     req

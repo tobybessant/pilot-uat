@@ -7,13 +7,12 @@ import { PermittedAccountTypes } from "../services/middleware/permittedAccountTy
 import { CreateProjectSchema } from "../services/middleware/joi/schemas/createProject";
 import { ProjectDbo } from "../database/entities/projectDbo";
 import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
-import { IApiResponse } from "../models/response/apiResponse";
-import { ICreateProjectResponse } from "../models/response/createProject";
-import { IUserToken } from "../models/response/userToken";
-import { IProjectResponse } from "../models/response/project";
+import { IApiResponse } from "../dto/common/apiResponse";
+import { ICreateProjectResponse } from "../dto/supplier/createProject";
+import { IUserToken } from "../dto/common/userToken";
+import { IProjectResponse } from "../dto/supplier/project";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
-import { TestSuiteRepository } from "../repositories/testSuiteRepository";
 
 @injectable()
 @Controller("project")
@@ -22,10 +21,8 @@ export class ProjectController {
 
   constructor(
     private projectRepository: ProjectRepository,
-    private userRepository: UserRepository,
-    private suiteRepository: TestSuiteRepository
-  ) {
-  }
+    private userRepository: UserRepository
+  ) { }
 
   @Post("create")
   @Middleware([
