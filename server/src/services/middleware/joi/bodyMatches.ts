@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ObjectSchema, ValidationResult } from "joi";
 import { BAD_REQUEST } from "http-status-codes";
-import { IApiResponse } from "../../models/response/apiResponse";
+import { IApiResponse } from "../../../models/response/apiResponse";
 
 export class BodyMatches {
   public static modelSchema(model: ObjectSchema) {

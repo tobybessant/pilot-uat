@@ -35,6 +35,9 @@ suite("TestSuiteController", () => {
     res.reset();
   })
 
-
-
+  suite("Create Test Suite", async () => {
+    suite("Valid request conditions", () => {
+      
+    });
+  });
 });

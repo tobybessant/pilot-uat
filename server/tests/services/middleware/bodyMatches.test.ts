@@ -1,8 +1,8 @@
 import { assert } from "chai";
 import { IMock, Mock, It, Times } from "typemoq";
 import { Request, Response, NextFunction } from "express";
-import { ObjectSchema, ValidationResult, ValidationError, ValidationErrorItem } from "joi";
-import { BodyMatches } from "../../../src/services/middleware/bodyMatches";
+import { ObjectSchema, ValidationResult, ValidationError } from "joi";
+import { BodyMatches } from "../../../src/services/middleware/joi/bodyMatches";
 import { BAD_REQUEST } from "http-status-codes";
 
 suite("BodyMatches", () => {
