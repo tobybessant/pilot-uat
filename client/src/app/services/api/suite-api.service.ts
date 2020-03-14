@@ -22,4 +22,9 @@ export class SuiteApiService {
     const response = await this.apiService.post<ISuiteResponse[]>(this.baseUrl + "/all", { projectId });
     return response;
   }
+
+  public async deleteSuiteById(suiteId: number) {
+    const response = await this.apiService.delete<void>(this.baseUrl + "/" + suiteId);
+    return response;
+  }
 }

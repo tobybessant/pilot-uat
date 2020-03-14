@@ -104,6 +104,21 @@ export class ProjectComponent implements OnInit, OnDestroy {
     await this.fetchSuites();
   }
 
+  public async suiteDeleted(suiteId: number) {
+    const deletedIndex = this.project.suites.findIndex(suite => suite.id === suiteId);
+    await this.fetchSuites();
+
+    // asume not at the end
+    let newSelectedIndex = deletedIndex;
+
+    // if at end, decrement
+    if (deletedIndex === this.project.suites.length) {
+      newSelectedIndex--;
+    }
+
+    this.activeSuite = this.project.suites[newSelectedIndex];
+  }
+
   private buildAndLinkSettingsMenu() {
     // define menu item details and corresponding actions
     const menuItems: (NbMenuItem & { action: () => void})[] = [

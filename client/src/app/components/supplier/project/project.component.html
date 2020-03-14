@@ -46,6 +46,7 @@
               <app-test-suite  
                 class="test-suite"
                 [activeSuite]="activeSuite"
+                (suiteDeleted)="suiteDeleted($event)"
               ></app-test-suite>
             </div>
           </nb-tab>
