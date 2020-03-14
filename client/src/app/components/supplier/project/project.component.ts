@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
 import { NbMenuService, NbMenuItem, NbDialogService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
@@ -19,21 +19,10 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public project: IProjectResponse;
   public fetchAttemptComplete = false;
   public activeSuite: ISuiteResponse;
-  public projectSettings: NbMenuItem[] = [
-    {
-      title: "Delete Project",
-      icon: "trash-2-outline",
-      data: {
-        callback: () => {
-          if (this.project && this.dialogService && this.alive) {
-            this.promptDeleteProject();
-          }
-        }
-      }
-    }
-  ];
+  public projectSettings: NbMenuItem[] = [];
 
   private alive: boolean = true;
+  private readonly projectSettingsActions: Map<string, () => void> = new Map<string, () => void>();
 
   constructor(
     private projectsApiService: ProjectApiService,
@@ -48,6 +37,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.spinner.show();
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
+    this.buildAndLinkSettingsMenu();
 
     // subscribe to profile menu events
     this.nbMenuService.onItemClick()
@@ -55,7 +45,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
         filter(({ tag }) => tag === "project-settings"),
         map(({ item }) => item)
       )
-      .subscribe(item => item.data.callback());
+      .subscribe(item => this.projectSettingsActions.get(item.title)());
   }
 
   ngOnDestroy(): void {
@@ -112,6 +102,27 @@ export class ProjectComponent implements OnInit, OnDestroy {
       projectId: this.project.id
     });
     await this.fetchSuites();
+  }
+
+  private buildAndLinkSettingsMenu() {
+    // define menu item details and corresponding actions
+    const menuItems: (NbMenuItem & { action: () => void})[] = [
+      {
+        title: "Delete Project",
+        icon: "trash-2-outline",
+        action: () => { if (this.dialogService) { this.promptDeleteProject(); } },
+      }
+    ];
+
+    // build settings menu and actions array
+    menuItems.forEach(menu => {
+      this.projectSettings.push({
+        title: menu.title,
+        icon: menu.icon
+      });
+
+      this.projectSettingsActions.set(menu.title, menu.action);
+    });
   }
 
   public backToAllProjects() {
