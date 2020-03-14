@@ -6,8 +6,8 @@ import { IProjectResponse } from "src/app/models/response/supplier/project.inter
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
-import { SuiteApiService } from "src/app/services/api/suite-api.service";
-import { ISuiteResponse } from "src/app/models/response/supplier/suite.interface";
+import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
+import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 
 @Component({
   selector: "app-project",
@@ -18,7 +18,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   public project: IProjectResponse;
   public fetchAttemptComplete = false;
-  public activeSuite: ISuiteResponse;
+  public activeSuite: ITestSuiteResponse;
   public projectSettings: NbMenuItem[] = [];
 
   private alive: boolean = true;
@@ -26,7 +26,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   constructor(
     private projectsApiService: ProjectApiService,
-    private suiteApiService: SuiteApiService,
+    private testSuiteApiService: TestSuiteApiService,
     private nbMenuService: NbMenuService,
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -89,7 +89,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   public async fetchSuites() {
-    const response = await this.suiteApiService.getSuitesForProject(this.project.id);
+    const response = await this.testSuiteApiService.getTestSuitesForProject(this.project.id);
     if (response.errors.length > 0) {
       return;
     }
@@ -97,7 +97,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   public async addSuiteToProject(suiteName: string) {
-    await this.suiteApiService.addSuite({
+    await this.testSuiteApiService.addTestSuite({
       suiteName,
       projectId: this.project.id
     });

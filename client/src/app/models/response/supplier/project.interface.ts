@@ -1,7 +1,7 @@
-import { ISuiteResponse } from "./suite.interface";
+import { ITestSuiteResponse } from "./suite.interface";
 
 export interface IProjectResponse {
   id: number;
   projectName: string;
-  suites: ISuiteResponse[];
+  suites: ITestSuiteResponse[];
 }

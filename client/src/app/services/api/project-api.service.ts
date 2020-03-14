@@ -29,7 +29,7 @@ export class ProjectApiService {
   }
 
   public async deleteProject(projectId: number) {
-    const response = await this.apiService.delete<any>(this.baseUrl + "/" + projectId);
+    const response = await this.apiService.delete<void>(this.baseUrl + "/" + projectId);
     return response;
   }
 }

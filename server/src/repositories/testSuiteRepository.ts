@@ -20,7 +20,7 @@ export class TestSuiteRepository {
     });
   }
 
-  public async deleteSuiteById(id: string) {
+  public async deleteTestSuiteById(id: string) {
     await this.baseTestSuiteRepository.delete({ id });
     return;
   }

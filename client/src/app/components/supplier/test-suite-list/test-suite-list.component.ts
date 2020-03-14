@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, Input, Output, EventEmitter } from "@angular/core";
-import { ISuiteResponse } from "src/app/models/response/supplier/suite.interface";
+import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { NbMenuItem, NbMenuService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
 
@@ -11,7 +11,7 @@ import { filter, map } from "rxjs/operators";
 export class TestSuiteListComponent implements OnInit, OnDestroy {
 
   @Input()
-  public set suitesData(data: ISuiteResponse[]) {
+  public set suitesData(data: ITestSuiteResponse[]) {
     this.mapAndAddSuitesToItems(data);
   }
 
@@ -49,7 +49,7 @@ export class TestSuiteListComponent implements OnInit, OnDestroy {
     this.alive = false;
   }
 
-  private mapAndAddSuitesToItems(suites: ISuiteResponse[] = []) {
+  private mapAndAddSuitesToItems(suites: ITestSuiteResponse[] = []) {
     const suiteItems = suites.map(s => ({
       title: s.suiteName,
       data: {

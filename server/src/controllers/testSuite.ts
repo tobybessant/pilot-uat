@@ -85,7 +85,7 @@ export class TestSuiteController {
     const suiteId = req.params.id;
 
     try {
-      const deletedSuite = await this.testSuiteRepository.deleteSuiteById(suiteId);
+      const deletedSuite = await this.testSuiteRepository.deleteTestSuiteById(suiteId);
       res.status(OK);
       res.json({
         errors: []

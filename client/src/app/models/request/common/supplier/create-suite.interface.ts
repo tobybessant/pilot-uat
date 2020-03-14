@@ -1,4 +1,4 @@
-export interface ICreateSuiteRequest {
+export interface ICreateTestSuiteRequest {
   suiteName: string;
   projectId: number;
 }
