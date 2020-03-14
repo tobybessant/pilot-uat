@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "./api.service";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
-import { ICreateTestSuiteRequest } from "src/app/models/request/common/supplier/create-suite.interface";
+import { ICreateTestSuiteRequest } from "src/app/models/request/supplier/create-suite.interface";
 import { IApiResponse } from "src/app/models/response/api-response.interface";
 
 @Injectable({
