@@ -1,10 +1,10 @@
-import { EntityRepository, Repository, EntityManager } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryService";
-import { IUserResponse } from "../models/response/user";
 import { injectable } from "tsyringe";
 import { ProjectDbo } from "../database/entities/projectDbo";
 import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
+import { RepositoryService } from "../services/repositoryService";
+import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
 
 @injectable()
 @EntityRepository()
@@ -13,9 +13,9 @@ export class ProjectRepository {
   private baseProjectRepository: Repository<ProjectDbo>;
   private userProjectRoleRepository: Repository<UserProjectRoleDbo>;
 
-  constructor(private manager: EntityManager) {
-    this.baseProjectRepository = manager.getRepository(ProjectDbo);
-    this.userProjectRoleRepository = manager.getRepository(UserProjectRoleDbo);
+  constructor(private repositoryService: RepositoryService) {
+    this.baseProjectRepository = repositoryService.getRepositoryFor(ProjectDbo);
+    this.userProjectRoleRepository = repositoryService.getRepositoryFor(UserProjectRoleDbo);
   }
 
   public async addProject(user: UserDbo, projectName: string) {
@@ -55,5 +55,20 @@ export class ProjectRepository {
       id
     });
    return;
+  }
+
+  public async getTestSuitesForProject(id: string): Promise<TestSuiteDbo[]> {
+    const project = await this.baseProjectRepository
+      .createQueryBuilder("project")
+      .leftJoin("project.testSuites", "suites")
+      .addSelect(["suites.suiteName", "suites.id"])
+      .where("project.id = :id", { id })
+      .getOne();
+
+    if (!project) {
+      throw new Error("Project does not exist");
+    }
+
+    return project.testSuites || [];
   }
 }

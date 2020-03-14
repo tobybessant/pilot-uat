@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { IUserResponse } from "../models/response/common/user.interface";
 import { UserApiService } from "./api/user-api.service";
-import { AuthService } from "./api/auth-service.service";
 
 @Injectable({
   providedIn: "root"
@@ -30,6 +29,6 @@ export class SessionService {
 
   public logout() {
     this.currentUser = null;
-    this.subject = new Subject<IUserResponse>();
+    this.subject.next(null);
   }
 }

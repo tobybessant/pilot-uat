@@ -9,7 +9,7 @@ import { CREATED, BAD_REQUEST } from "http-status-codes";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { UserTypeDbo } from "../../src/database/entities/userTypeDbo";
 import { Bcrypt } from "../../src/services/utils/bcryptHash";
-import { ICreateUserResponse } from "../../src/models/response/createUser";
+import { ICreateUserResponse } from "../../src/dto/common/createUser";
 import { OrganisationDbo } from "../../src/database/entities/organisationDbo";
 
 suite("Auth Controller", () => {

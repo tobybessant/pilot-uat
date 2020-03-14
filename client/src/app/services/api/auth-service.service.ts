@@ -4,10 +4,7 @@ import { IApiResponse } from "src/app/models/response/api-response.interface";
 import { ICreateAccountRequest } from "src/app/models/request/common/create-account.interface";
 import { ISignInRequest } from "src/app/models/request/common/sign-in.interface";
 import { ISignInResponse } from "src/app/models/response/common/sign-in.interface";
-import { IUserResponse } from "src/app/models/response/common/user.interface";
 import { ICreateAccountResponse } from "src/app/models/response/common/create-account.interface";
-import { Observable, BehaviorSubject } from "rxjs";
-import { UserApiService } from "./user-api.service";
 import { SessionService } from "../session.service";
 
 @Injectable({

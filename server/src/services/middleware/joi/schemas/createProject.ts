@@ -1,6 +1,6 @@
 import * as joi from "joi";
 
-export const ICreateProjectRequest = joi.object({
+export const CreateProjectSchema = joi.object({
   projectName: joi
     .string()
     .label("Project Name")

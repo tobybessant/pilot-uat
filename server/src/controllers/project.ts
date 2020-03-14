@@ -2,16 +2,15 @@ import { injectable } from "tsyringe";
 import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { RepositoryService } from "../services/repositoryService";
-import { BodyMatches } from "../services/middleware/bodyMatches";
+import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { ICreateProjectRequest } from "../models/request/createProject";
+import { CreateProjectSchema } from "../services/middleware/joi/schemas/createProject";
 import { ProjectDbo } from "../database/entities/projectDbo";
 import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
-import { IApiResponse } from "../models/response/apiResponse";
-import { ICreateProjectResponse } from "../models/response/createProject";
-import { IUserToken } from "../models/response/userToken";
-import { IProjectResponse } from "../models/response/project";
+import { IApiResponse } from "../dto/common/apiResponse";
+import { ICreateProjectResponse } from "../dto/supplier/createProject";
+import { IUserToken } from "../dto/common/userToken";
+import { IProjectResponse } from "../dto/supplier/project";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
 
@@ -20,19 +19,14 @@ import { UserRepository } from "../repositories/userRepository";
 @ClassMiddleware(checkAuthentication)
 export class ProjectController {
 
-  private projectRepository: ProjectRepository;
-  private userRepository: UserRepository;
-
   constructor(
-    private repositoryService: RepositoryService,
-  ) {
-    this.projectRepository = repositoryService.getCustomRepositoryFor(ProjectRepository);
-    this.userRepository = repositoryService.getCustomRepositoryFor(UserRepository);
-  }
+    private projectRepository: ProjectRepository,
+    private userRepository: UserRepository
+  ) { }
 
   @Post("create")
   @Middleware([
-    BodyMatches.modelSchema(ICreateProjectRequest),
+    BodyMatches.schema(CreateProjectSchema),
     PermittedAccountTypes.are(["Supplier"])
   ])
   public async createProject(req: Request, res: Response) {
@@ -74,12 +68,15 @@ export class ProjectController {
         throw new Error("That project does not exist");
       }
 
+      const suites = await this.projectRepository.getTestSuitesForProject(project.id);
+
       res.json({
         errors: [],
         payload: ((record: ProjectDbo) =>
           ({
             id: record.id,
-            projectName: record.projectName
+            projectName: record.projectName,
+            suites
           })
         )(project)
       } as IApiResponse<IProjectResponse>);
@@ -104,7 +101,8 @@ export class ProjectController {
         payload: projects!.map(r =>
           ({
             id: r.id,
-            projectName: r.projectName
+            projectName: r.projectName,
+            suites: []
           }))
       } as IApiResponse<IProjectResponse[]>)
     } catch (error) {

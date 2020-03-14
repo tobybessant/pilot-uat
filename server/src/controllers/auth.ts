@@ -4,18 +4,18 @@ import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
 import * as passport from "passport";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { BodyMatches } from "../services/middleware/bodyMatches";
+import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcryptHash";
-import { ICreateUserRequest } from "../models/request/createUser";
-import { ILoginRequest } from "../models/request/login";
-import { IApiResponse } from "../models/response/apiResponse";
+import { CreateUserSchema } from "../services/middleware/joi/schemas/createUser";
+import { LoginSchema } from "../services/middleware/joi/schemas/login";
+import { IApiResponse } from "../dto/common/apiResponse";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
-import { IUserToken } from "../models/response/userToken";
-import { ICreateUserResponse } from "../models/response/createUser";
+import { IUserToken } from "../dto/common/userToken";
+import { ICreateUserResponse } from "../dto/common/createUser";
 import { OrganisationDbo } from "../database/entities/organisationDbo";
 
 @injectable()
@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post("createaccount")
-  @Middleware(BodyMatches.modelSchema(ICreateUserRequest))
+  @Middleware(BodyMatches.schema(CreateUserSchema))
   public async createAccount(req: Request, res: Response) {
 
     // extract details
@@ -98,7 +98,7 @@ export class AuthController {
 
   @Post("login")
   @Middleware([
-    BodyMatches.modelSchema(ILoginRequest),
+    BodyMatches.schema(LoginSchema),
     passport.authenticate("local")
   ])
   public login(req: Request, res: Response) {

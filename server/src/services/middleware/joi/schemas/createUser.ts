@@ -1,6 +1,6 @@
 import * as joi from "joi";
 
-export const ICreateUserRequest = joi.object({
+export const CreateUserSchema = joi.object({
   firstName: joi
     .string()
     .label("First Name")

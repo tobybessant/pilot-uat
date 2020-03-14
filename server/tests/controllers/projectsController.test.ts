@@ -6,16 +6,19 @@ import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
-import { ICreateProjectResponse } from "../../src/models/response/createProject";
+import { ICreateProjectResponse } from "../../src/dto/supplier/createProject";
 import { UserRepository } from "../../src/repositories/userRepository";
-import { CREATED, BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
+import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { IProjectResponse } from "../../src/models/response/project";
-import { IUserToken } from "../../src/models/response/userToken";
+import { IProjectResponse } from "../../src/dto/supplier/project";
+import { IUserToken } from "../../src/dto/common/userToken";
+import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
+import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
   let projectRepository: IMock<ProjectRepository>;
+  let suiteRepository: IMock<TestSuiteRepository>;
   let repositoryService: IMock<RepositoryService>;
 
   let req: IMock<Request>;
@@ -26,16 +29,13 @@ suite("Project Controller", () => {
   suiteSetup(() => {
     userRepository = Mock.ofType<UserRepository>();
     projectRepository = Mock.ofType<ProjectRepository>();
+    suiteRepository = Mock.ofType<TestSuiteRepository>();
     repositoryService = Mock.ofType<RepositoryService>();
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
 
-    // setup mock repository to return requested repositories
-    given_RepositoryService_getCustomRepositoryFor_returns_whenGiven(projectRepository.object, ProjectRepository);
-    given_RepositoryService_getCustomRepositoryFor_returns_whenGiven(userRepository.object, UserRepository);
-
-    subject = new ProjectController(repositoryService.object);
+    subject = new ProjectController(projectRepository.object, userRepository.object);
   });
 
   teardown(() => {
@@ -124,9 +124,13 @@ suite("Project Controller", () => {
     suite("Valid request conditions", () => {
       suiteSetup(() => {
 
+        let testSuite = new TestSuiteDbo();
+        testSuite.suiteName = "Suite 1";
+
         project = new ProjectDbo();
         project.id = "4000";
         project.projectName = "Getted Project Name"
+        project.testSuites = [ testSuite ];
 
         getProjectBody = {
           id: project.id
@@ -134,13 +138,14 @@ suite("Project Controller", () => {
 
         projectResponse = {
           id: project.id,
-          projectName: project.projectName
+          projectName: project.projectName,
+          suites: project.testSuites
         };
-
       });
 
       test("Should return project in response body", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
+        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.testSuites, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
@@ -206,13 +211,15 @@ suite("Project Controller", () => {
           const p = new ProjectDbo();
           p.id = i + "";
           p.projectName = "Project " + i;
+          p.testSuites = []
           projects.push(p);
         }
 
         for (const project of projects) {
           projectsResponse.push({
             id: project.id,
-            projectName: project.projectName
+            projectName: project.projectName,
+            suites: project.testSuites
           });
         }
       });
@@ -270,13 +277,7 @@ suite("Project Controller", () => {
         res.verify(r => r.status(OK), Times.once());
       });
     });
-  })
-
-  function given_RepositoryService_getCustomRepositoryFor_returns_whenGiven<T>(returns: T, whenGiven: any): void {
-    repositoryService
-      .setup(rs => rs.getCustomRepositoryFor<T>(whenGiven))
-      .returns(() => returns);
-  }
+  });
 
   function given_Request_user_is(user: IUserToken) {
     req
@@ -317,6 +318,12 @@ suite("Project Controller", () => {
   function given_projectRepository_deleteProject_returns_whenGiven(returns: any, whenGiven: any) {
     projectRepository
       .setup(pr => pr.deleteProjectById(whenGiven))
+      .returns(async () => returns);
+  }
+
+  function given_projectRepository_getTestSuitesForProject_returns_whenGiven(returns: TestSuiteDbo[], whenGiven: any) {
+    projectRepository
+      .setup(pr => pr.getTestSuitesForProject(whenGiven))
       .returns(async () => returns);
   }
 });

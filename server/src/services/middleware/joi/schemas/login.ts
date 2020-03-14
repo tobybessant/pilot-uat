@@ -1,6 +1,6 @@
 import * as joi from "joi";
 
-export const ILoginRequest = joi.object({
+export const LoginSchema = joi.object({
   email: joi
     .string()
     .label("Email")
