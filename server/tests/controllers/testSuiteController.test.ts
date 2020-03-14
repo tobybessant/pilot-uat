@@ -1,4 +1,4 @@
-import { IMock, Mock, It } from "typemoq"
+import { IMock, Mock, It, Times } from "typemoq"
 import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
@@ -6,6 +6,8 @@ import { TestSuiteController } from "../../src/controllers";
 import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
 import { ITestSuiteResponse } from "../../src/dto/supplier/testSuite";
 import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
+import { ProjectDbo } from "../../src/database/entities/projectDbo";
+import { OK } from "http-status-codes";
 
 suite("TestSuiteController", () => {
   let repositoryService: IMock<RepositoryService>;
@@ -39,6 +41,7 @@ suite("TestSuiteController", () => {
 
   suite("Create Test Suite", async () => {
     let createTestSuiteBody: any;
+    let projectDbo: ProjectDbo;
     let testSuiteDbo: TestSuiteDbo;
     let createTestSuiteResponse: ITestSuiteResponse | undefined;
 
@@ -47,6 +50,9 @@ suite("TestSuiteController", () => {
         createTestSuiteBody = {
           suiteName: "New Suite"
         };
+
+        projectDbo = new ProjectDbo();
+        projectDbo.projectName = "New Project";
 
         testSuiteDbo = new TestSuiteDbo();
         testSuiteDbo.suiteName = createTestSuiteBody.suiteName;
@@ -59,14 +65,73 @@ suite("TestSuiteController", () => {
 
       });
 
-      test("Should return suiteName and id in response body", () => {
+      test("Should return suiteName and id in response body", async () => {
         given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(projectDbo);
         given_testSuiteRepository_addTestSuite_returns(testSuiteDbo);
 
-        
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [], payload: createTestSuiteResponse }), Times.once());
       });
 
+      test("Should return statusCode 200", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(projectDbo);
+        given_testSuiteRepository_addTestSuite_returns(testSuiteDbo);
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.status(OK), Times.once());
+      });
     });
+  });
+
+  suite("Get all test suites for a project", async () => {
+    let getTestSuitesBody: any;
+    let testSuiteDboList: TestSuiteDbo[] = [];
+    let getAllTestSuitesResponse: ITestSuiteResponse[] = [];
+
+    suite("Valid request conditions", () => {
+      suiteSetup(() => {
+        getTestSuitesBody = {
+          projectId: "5"
+        };
+
+        for (let i = 0; i < 1; i++) {
+          const ts = new TestSuiteDbo();
+          ts.id = i + "";
+          ts.suiteName = "Suite " + i;
+          testSuiteDboList.push(ts);
+        }
+
+        for (const suite of testSuiteDboList) {
+          getAllTestSuitesResponse.push({
+            id: suite.id,
+            suiteName: suite.suiteName
+          });
+        }
+      });
+
+      test("Test suite list is returned in response body", async () => {
+        given_projectRepository_getTestSuitesForProject_returns(testSuiteDboList);
+        given_Request_body_is(getTestSuitesBody);
+
+        await subject.getTestSuites(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [], payload: getAllTestSuitesResponse }), Times.once());
+      });
+
+      test("Should return statusCode 200", async () => {
+        given_projectRepository_getTestSuitesForProject_returns(testSuiteDboList);
+        given_Request_body_is(getTestSuitesBody);
+
+        await subject.getTestSuites(req.object, res.object);
+
+        res.verify(r => r.status(OK), Times.once());
+      });
+
+    })
   });
 
   function given_Request_body_is(body: any): void {
@@ -79,5 +144,18 @@ suite("TestSuiteController", () => {
     testSuiteRepository
       .setup(tsr => tsr.addTestSuite(It.isAny(), It.isAny()))
       .returns(async () => returns);
-  }
+  };
+
+  function given_projectRepository_getProjectById_returns(returns: ProjectDbo) {
+    projectRepository
+      .setup(pr => pr.getProjectById(It.isAny()))
+      .returns(async () => returns);
+  };
+
+  function given_projectRepository_getTestSuitesForProject_returns(returns: TestSuiteDbo[]) {
+    projectRepository
+    .setup(pr => pr.getTestSuitesForProject(It.isAny()))
+    .returns(async () => returns);
+  };
+
 });
