@@ -36,7 +36,7 @@ export class AuthController {
   }
 
   @Post("createaccount")
-  @Middleware(BodyMatches.modelSchema(CreateUserSchema))
+  @Middleware(BodyMatches.schema(CreateUserSchema))
   public async createAccount(req: Request, res: Response) {
 
     // extract details
@@ -98,7 +98,7 @@ export class AuthController {
 
   @Post("login")
   @Middleware([
-    BodyMatches.modelSchema(LoginSchema),
+    BodyMatches.schema(LoginSchema),
     passport.authenticate("local")
   ])
   public login(req: Request, res: Response) {

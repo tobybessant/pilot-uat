@@ -29,7 +29,7 @@ export class ProjectController {
 
   @Post("create")
   @Middleware([
-    BodyMatches.modelSchema(CreateProjectSchema),
+    BodyMatches.schema(CreateProjectSchema),
     PermittedAccountTypes.are(["Supplier"])
   ])
   public async createProject(req: Request, res: Response) {

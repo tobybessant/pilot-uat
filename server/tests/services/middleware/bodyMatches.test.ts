@@ -36,7 +36,7 @@ suite("BodyMatches", () => {
       given_Request_body_is(body);
       given_model_validate_succeeds();
 
-      const middleware = BodyMatches.modelSchema(model.object);
+      const middleware = BodyMatches.schema(model.object);
       middleware(req.object, res.object, nextFunction.object);
 
       assert.deepInclude(req.object.body, body);
@@ -45,7 +45,7 @@ suite("BodyMatches", () => {
     test("'next()' method is called", () => {
       given_model_validate_succeeds();
 
-      const middleware = BodyMatches.modelSchema(model.object);
+      const middleware = BodyMatches.schema(model.object);
       middleware(req.object, res.object, nextFunction.object);
 
       nextFunction.verify(next => next(), Times.once());
@@ -60,7 +60,7 @@ suite("BodyMatches", () => {
       ];
       given_model_validate_fails_with(errors);
 
-      const middleware = BodyMatches.modelSchema(model.object);
+      const middleware = BodyMatches.schema(model.object);
       middleware(req.object, res.object, nextFunction.object);
 
       nextFunction.verify(next => next(), Times.never());
@@ -73,7 +73,7 @@ suite("BodyMatches", () => {
       ];
       given_model_validate_fails_with(errors);
 
-      const middleware = BodyMatches.modelSchema(model.object);
+      const middleware = BodyMatches.schema(model.object);
       middleware(req.object, res.object, nextFunction.object);
 
       res.verify(r => r.json({ errors: errors.map(err => err.message) }), Times.once());
@@ -86,7 +86,7 @@ suite("BodyMatches", () => {
       ];
       given_model_validate_fails_with(errors);
 
-      const middleware = BodyMatches.modelSchema(model.object);
+      const middleware = BodyMatches.schema(model.object);
       middleware(req.object, res.object, nextFunction.object);
 
       res.verify(r => r.status(BAD_REQUEST), Times.once());
