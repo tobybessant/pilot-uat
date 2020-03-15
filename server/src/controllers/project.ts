@@ -68,15 +68,13 @@ export class ProjectController {
         throw new Error("That project does not exist");
       }
 
-      const suites = await this.projectRepository.getTestSuitesForProject(project.id);
-
       res.json({
         errors: [],
         payload: ((record: ProjectDbo) =>
           ({
             id: record.id,
             projectName: record.projectName,
-            suites
+            suites: record.testSuites
           })
         )(project)
       } as IApiResponse<IProjectResponse>);

@@ -15,7 +15,7 @@ export class TestController {
   ) { }
 
 
-  @Post()
+  @Post("create")
   public async addTest(req: Request, res: Response) {
     const { testName, suiteId } = req.body;
 
