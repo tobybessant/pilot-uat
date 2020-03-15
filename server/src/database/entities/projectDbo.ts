@@ -2,7 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, Ma
 import { OrganisationDbo } from "./organisationDbo";
 import { UserProjectRoleDbo } from "./userProjectRole";
 import { TestSuiteDbo } from "./testSuiteDbo";
-import { TestDbo } from "./testDbo";
+// import { TestSuiteDbo } from "./testSuiteDbo";
+// import { TestDbo } from "./testDbo";
 
 export const TABLE_NAME: string = "Project";
 @Entity({
@@ -18,10 +19,10 @@ export class ProjectDbo {
     @ManyToOne(type => OrganisationDbo)
     organisation!: OrganisationDbo;
 
-    @OneToMany(type => UserProjectRoleDbo, role => role.project, { onDelete: "CASCADE" })
+    @OneToMany(type => UserProjectRoleDbo, role => role.project, { eager: true, onDelete: "CASCADE" })
     users!: UserProjectRoleDbo[];
 
-    @OneToMany(type => TestSuiteDbo, suite => suite.project, { onDelete: "CASCADE" })
+    @OneToMany(type => TestSuiteDbo, suite => suite.project, { eager: true, onDelete: "CASCADE" })
     testSuites!: TestSuiteDbo[];
 
     @CreateDateColumn()

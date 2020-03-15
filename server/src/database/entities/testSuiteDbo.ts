@@ -14,12 +14,12 @@ export class TestSuiteDbo {
     @Column()
     suiteName!: string;
 
-    @ManyToOne(type => ProjectDbo, project => project.testSuites, { primary: true, onDelete: "CASCADE" })
+    @ManyToOne(type => ProjectDbo, project => project.testSuites, { onDelete: "CASCADE" })
     project!: ProjectDbo;
 
     @CreateDateColumn()
     createdDate!: Date;
 
-    @OneToMany(type => TestDbo, test => test.suite)
+    @OneToMany(type => TestDbo, test => test.suite, { onDelete: "CASCADE" })
     tests!: TestDbo[];
 }

@@ -102,7 +102,7 @@ export class ProjectController {
           ({
             id: r.id,
             projectName: r.projectName,
-            suites: []
+            suites: r.testSuites
           }))
       } as IApiResponse<IProjectResponse[]>)
     } catch (error) {

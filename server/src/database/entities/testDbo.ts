@@ -11,6 +11,6 @@ export class TestDbo {
   @Column()
   subject!: string;
 
-  @ManyToOne(type => TestSuiteDbo, suite => suite.tests)
+  @ManyToOne(type => TestSuiteDbo, suite => suite.tests, { onDelete: "CASCADE" })
   suite!: TestSuiteDbo;
 }
