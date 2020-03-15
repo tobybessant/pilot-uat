@@ -57,6 +57,7 @@ export class ProjectRepository {
    return;
   }
 
+  // TODO: Move this method into test suite repository
   public async getTestSuitesForProject(id: string): Promise<TestSuiteDbo[]> {
     const project = await this.baseProjectRepository
       .createQueryBuilder("project")

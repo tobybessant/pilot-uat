@@ -22,4 +22,12 @@ export class TestRepository {
 
     return response;
   }
+
+  public async getTestsForTestSuite(id: string): Promise<TestDbo[]> {
+    return this.baseTestRepository
+      .createQueryBuilder("tests")
+      .leftJoin("tests.suite", "suite")
+      .where("suite.id = :id", { id })
+      .getMany();
+  }
 }

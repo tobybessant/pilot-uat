@@ -45,4 +45,11 @@ export class TestController {
       } as IApiResponse<ITestResponse>);
     }
   }
+
+  @Post()
+  public async getTestsForSuite(req: Request, res: Response) {
+    const { suiteId } = req.body;
+    const tests = await this.testRepository.getTestsForTestSuite(suiteId);
+    res.send(tests);
+  }
 }
