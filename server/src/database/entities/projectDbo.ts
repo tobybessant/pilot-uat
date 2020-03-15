@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, Ma
 import { OrganisationDbo } from "./organisationDbo";
 import { UserProjectRoleDbo } from "./userProjectRole";
 import { TestSuiteDbo } from "./testSuiteDbo";
+import { TestDbo } from "./testDbo";
 
 export const TABLE_NAME: string = "Project";
 @Entity({

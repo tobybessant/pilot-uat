@@ -13,8 +13,12 @@ export class TestSuiteRepository {
     this.baseTestSuiteRepository = repositoryService.getRepositoryFor(TestSuiteDbo);
   }
 
+  public async getTestSuiteById(id: string): Promise<TestSuiteDbo | undefined> {
+    return this.baseTestSuiteRepository.findOne({ id });
+  }
+
   public async addTestSuite(project: ProjectDbo, suiteName: string): Promise<TestSuiteDbo | undefined> {
-    return await this.baseTestSuiteRepository.save({
+    return this.baseTestSuiteRepository.save({
       project,
       suiteName
     });
