@@ -3,6 +3,8 @@ import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.inter
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
+import { TestApiService } from "src/app/services/api/test-api.service";
+import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 
 @Component({
   selector: "app-test-suite",
@@ -17,12 +19,18 @@ export class TestSuiteComponent implements OnInit {
   @Output()
   public suiteDeleted = new EventEmitter<number>();
 
+  public tests: ITestResponse[] = [];
+
   constructor(
     private dialogService: NbDialogService,
-    private testSuiteApiService: TestSuiteApiService
+    private testSuiteApiService: TestSuiteApiService,
+    private testApiService: TestApiService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
+    this.tests = response.payload;
+    console.log(this.tests);
   }
 
   public promptDeleteSuite() {

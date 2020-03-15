@@ -13,4 +13,10 @@
       <nb-icon icon="trash-2-outline"></nb-icon>
     </button>
   </div>
+
+  <div class="tests" *ngIf="tests">
+    <div *ngFor="let test of tests">
+      {{ test.subject }}
+    </div>
+  </div>
 </div>
