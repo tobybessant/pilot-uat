@@ -33,7 +33,7 @@ export class TestController {
         payload: ((record: TestDbo) =>
           ({
             id: record.id,
-            testName: record.subject
+            subject: record.subject
           })
         )(test)
       } as IApiResponse<ITestResponse>);
@@ -49,7 +49,19 @@ export class TestController {
   @Post()
   public async getTestsForSuite(req: Request, res: Response) {
     const { suiteId } = req.body;
-    const tests = await this.testRepository.getTestsForTestSuite(suiteId);
-    res.send(tests);
+
+    try {
+      const tests = await this.testRepository.getTestsForTestSuite(suiteId);
+
+      res.status(OK);
+      res.json({
+        errors: [],
+        payload: tests!.map(t =>
+          ({
+            id: t.id,
+            subject: t.subject,
+          }))
+      } as IApiResponse<ITestResponse[]>);
+    } catch (error) { }
   }
 }

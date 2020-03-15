@@ -1,4 +1,4 @@
 export interface ITestResponse {
-  testName: string;
+  subject: string;
   id: string;
 }
