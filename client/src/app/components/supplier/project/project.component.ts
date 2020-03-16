@@ -9,6 +9,7 @@ import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/co
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
+import { NavbarService } from "src/app/services/navbar.service";
 
 @Component({
   selector: "app-project",
@@ -33,47 +34,22 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private router: Router,
     private spinner: NgxSpinnerService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private navbarService: NavbarService
   ) { }
 
   ngOnInit(): void {
+    this.navbarService.setIsViewingProject(true);
     this.spinner.show();
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
-    this.buildAndLinkSettingsMenu();
-
-    // subscribe to profile menu events
-    this.nbMenuService.onItemClick()
-      .pipe(
-        filter(({ tag }) => tag === "project-settings"),
-        map(({ item }) => item)
-      )
-      .subscribe(item => this.projectSettingsActions.get(item.title)());
   }
 
   ngOnDestroy(): void {
     this.alive = false;
     this.dialogService = null;
     this.projectSettings = null;
-  }
-
-  private promptDeleteProject() {
-    this.dialogService.open(ConfirmationPromptComponent, {
-      hasBackdrop: true,
-      autoFocus: false,
-      context: {
-        bodyText: `You are about to delete this project (${this.project.projectName}).`,
-        confirmButtonText: "Delete",
-        confirmAction: () => this.deleteProject(this.project.id)
-      }
-    });
-  }
-
-  private async deleteProject(id: number) {
-    const response = await this.projectsApiService.deleteProject(id);
-    if (response.errors.length === 0) {
-      this.project = null;
-      this.backToAllProjects();
-    }
+    this.navbarService.clearHeader();
+    this.navbarService.setIsViewingProject(false);
   }
 
   private async fetchProjectById(id: string) {
@@ -82,6 +58,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       this.project = response.payload;
       this.setActiveSuite(response.payload.suites[0]);
     }
+    this.navbarService.setHeader(response.payload.projectName);
     this.fetchAttemptComplete = true;
     this.spinner.hide();
   }
@@ -123,32 +100,5 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   private setActiveSuite(suite: ITestSuiteResponse) {
     this.activeTestSuiteService.setSuite(suite);
-  }
-
-  private buildAndLinkSettingsMenu() {
-    // define menu item details and corresponding actions
-    const menuItems: (NbMenuItem & { action: () => void})[] = [
-      {
-        title: "Delete Project",
-        icon: "trash-2-outline",
-        action: () => { if (this.dialogService) { this.promptDeleteProject(); } },
-      }
-    ];
-
-    // build settings menu and actions array
-    menuItems.forEach(menu => {
-      this.projectSettings.push({
-        title: menu.title,
-        icon: menu.icon
-      });
-
-      this.projectSettingsActions.set(menu.title, menu.action);
-    });
-  }
-
-  public backToAllProjects() {
-    // clear dialog service so dialogs do not appear cross-project
-    this.dialogService = null;
-    this.router.navigate(["/"]);
   }
 }

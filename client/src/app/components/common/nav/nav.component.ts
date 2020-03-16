@@ -5,6 +5,7 @@ import { NbMenuService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { AuthService } from "src/app/services/api/auth-service.service";
+import { NavbarService } from "src/app/services/navbar.service";
 
 @Component({
   selector: "app-nav",
@@ -12,8 +13,9 @@ import { AuthService } from "src/app/services/api/auth-service.service";
   styleUrls: ["./nav.component.scss"]
 })
 export class NavComponent implements OnInit {
+
+  public viewingProject = false;
   public user: IUserResponse = null;
-  public pageTitle = "Pilot";
   public fullName = "";
   public userContextMenuItems: any[] = [{ title: "Logout", icon: "log-out-outline" }];
   private readonly userContextMenuActions: Map<string, () => void> = new Map<string, () => void>();
@@ -22,7 +24,8 @@ export class NavComponent implements OnInit {
     private sessionService: SessionService,
     private authService: AuthService,
     private nbMenuService: NbMenuService,
-    private router: Router
+    private router: Router,
+    public navbarService: NavbarService
   ) {
     const user = this.sessionService.getCurrentUser();
     this.setDetails(user);
@@ -52,6 +55,11 @@ export class NavComponent implements OnInit {
       this.fullName = `${user.firstName} ${user.lastName}`;
     }
     this.user = user;
+  }
+
+  public backToAllProjects() {
+    // clear dialog service so dialogs do not appear cross-project
+    this.router.navigate(["/"]);
   }
 
 }

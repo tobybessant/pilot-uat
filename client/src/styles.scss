@@ -22,7 +22,7 @@ $ngx-datatable-row-odd-background: #eee !default;
 
 // default row and cell background colors
 $ngx-datatable-default-background: var(--background-basic-color-1) !default;
-$ngx-datatable-default-background-hover: #eee !default;
+$ngx-datatable-default-background-hover: var(--color-basic-transparent-hover) !default;
 $ngx-datatable-default-background-focus: #ddd !default;
 
 // default background colors for cell selection style
@@ -30,12 +30,14 @@ $ngx-datatable-cellselection-background-hover: #eee !default;
 $ngx-datatable-cellselection-background-focus: #ddd !default;
 
 // background and text colors for selected cell / row
-$ngx-datatable-selected-active-background: #304ffe !default;
-$ngx-datatable-selected-active-color: #fff !default;
-$ngx-datatable-selected-active-background-hover: #193ae4 !default;
-$ngx-datatable-selected-active-color-hover: #fff !default;
-$ngx-datatable-selected-active-background-focus: #2041ef !default;
-$ngx-datatable-selected-active-color-focus: #fff !default;
+$ngx-datatable-selected-active-background: var(--color-basic-transparent-hover) !default;
+$ngx-datatable-selected-active-color: var(--text-primary-color) !default;
+
+$ngx-datatable-selected-active-background-hover: var(--color-basic-transparent-hover) !default;
+$ngx-datatable-selected-active-color-hover: var(--color-primary-hover) !default;
+
+$ngx-datatable-selected-active-background-focus: var(--color-primary-transparent-200) !default;
+$ngx-datatable-selected-active-color-focus: var(--text-primary-color) !default;
 
 // colors for header elements
 $datatable-header-cell-background: var(--background-basic-color-1) !default;
@@ -51,7 +53,7 @@ $datatable-group-header-border-top-color: #d9d8d9 !default;
 $datatable-group-header-border-bottom-color: #d9d8d9 !default;
 
 // colors for footer elements
-$datatable-footer-cell-color: rgba(0, 0, 0, 0.54) !default;
+$datatable-footer-cell-color: var(--text-basic-color) !default;
 $datatable-footer-border-top-color: var(--divider-color) !default;
 $datatable-pager-color: rgba(0, 0, 0, 0.54) !default;
 $datatable-pager-color-hover: rgba(0, 0, 0, 0.75) !default;

@@ -10,52 +10,31 @@
     <p>Loading...</p>
   </ngx-spinner>
 
-  <div *ngIf="project">
-    <div class="project-subnav">
-      <div class="project-subnav-left">
-        <button
-          nbButton
-          status="primary"
-          (click)="backToAllProjects()"
-          id="back-button"
-        >
-          <nb-icon icon="arrow-back-outline"></nb-icon>
-          Exit Project
-        </button>
-        <h2>{{ project.projectName }}</h2>
-      </div>
-      <button
-        nbButton
-        status="primary"
-        [nbContextMenu]="projectSettings"
-        nbContextMenuTag="project-settings"
-      >
-        Settings
-      </button>
-    </div>
-
-    <nb-card class="tabs-view">
-      <nb-card-body>
-        <nb-tabset>
-          <nb-tab tabTitle="Tests" id="no-h-padding">
-            <div class="tab-content">
-              <app-test-suite-list
-                [suitesData]="project.suites"
-                (suiteSelected)="updateActiveSuite($event)"
-                (suiteAdded)="addSuiteToProject($event)"
-              >
-              </app-test-suite-list>
-              <app-test-suite
-                class="test-suite"
-                [activeSuite]="activeSuite"
-                (suiteDeleted)="suiteDeleted($event)"
-              ></app-test-suite>
-            </div>
-          </nb-tab>
-        </nb-tabset>
-      </nb-card-body>
-    </nb-card>
-  </div>
+  <ng-container *ngIf="project">
+    <nb-tabset class="tabs-view">
+      <nb-tab tabTitle="Tests" id="no-h-padding">
+        <div class="tab-content">
+          <app-test-suite-list
+            [suitesData]="project.suites"
+            (suiteSelected)="updateActiveSuite($event)"
+            (suiteAdded)="addSuiteToProject($event)"
+          >
+          </app-test-suite-list>
+          <app-test-suite
+            class="test-suite"
+            [activeSuite]="activeSuite"
+            (suiteDeleted)="suiteDeleted($event)"
+          ></app-test-suite>
+        </div>
+      </nb-tab>
+      <nb-tab tabTitle="Settings">
+        <div class="tab-content">
+          <app-project-settings [project]="project">
+          </app-project-settings>
+        </div>
+      </nb-tab>
+    </nb-tabset>
+  </ng-container>
 
   <div *ngIf="!project && fetchAttemptComplete">
     <h2>Project not found :(</h2>
