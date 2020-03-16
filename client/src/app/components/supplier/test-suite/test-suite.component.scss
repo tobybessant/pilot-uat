@@ -1,6 +1,7 @@
 .suite {
   padding: 0 20px;
   width: 100%;
+  height: calc(100% - 130px);
 }
 
 h5 {
@@ -22,16 +23,13 @@ h5 {
 
 .tests {
   position: relative;
-  height: 490px;
+  height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
-.fullscreen {
-  position: absolute !important;
-  height: auto !important;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
+.material {
+  flex: 1;
 }

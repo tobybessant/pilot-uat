@@ -34,7 +34,8 @@
   border-radius: var(--border-radius);
 }
 
-#no-h-padding {
+.no-h-padding {
+  height: calc(100% - 48px);
   padding-left: 0;
   padding-right: 0;
   padding-top: 0;

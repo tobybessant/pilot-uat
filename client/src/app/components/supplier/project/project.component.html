@@ -12,7 +12,7 @@
 
   <ng-container *ngIf="project">
     <nb-tabset class="tabs-view">
-      <nb-tab tabTitle="Tests" id="no-h-padding">
+      <nb-tab tabTitle="Tests" class="no-h-padding">
         <div class="tab-content">
           <app-test-suite-list
             [suitesData]="project.suites"
@@ -29,8 +29,7 @@
       </nb-tab>
       <nb-tab tabTitle="Settings">
         <div class="tab-content">
-          <app-project-settings [project]="project">
-          </app-project-settings>
+          <app-project-settings [project]="project"> </app-project-settings>
         </div>
       </nb-tab>
     </nb-tabset>
