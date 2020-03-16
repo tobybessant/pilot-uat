@@ -1,4 +1,4 @@
-<div>
+<div class="project-container">
   <ngx-spinner
     bdOpacity="0"
     bdColor="rgba(0,0,0,0)"
@@ -9,19 +9,21 @@
   >
     <p>Loading...</p>
   </ngx-spinner>
-  <button
-    nbButton
-    status="primary"
-    (click)="backToAllProjects()"
-    id="back-button"
-  >
-    <nb-icon icon="arrow-back-outline"></nb-icon>
-    Exit Project
-  </button>
 
   <div *ngIf="project">
     <div class="project-subnav">
-      <h2>{{ project.projectName }}</h2>
+      <div class="project-subnav-left">
+        <button
+          nbButton
+          status="primary"
+          (click)="backToAllProjects()"
+          id="back-button"
+        >
+          <nb-icon icon="arrow-back-outline"></nb-icon>
+          Exit Project
+        </button>
+        <h2>{{ project.projectName }}</h2>
+      </div>
       <button
         nbButton
         status="primary"
@@ -37,13 +39,13 @@
         <nb-tabset>
           <nb-tab tabTitle="Tests" id="no-h-padding">
             <div class="tab-content">
-              <app-test-suite-list 
+              <app-test-suite-list
                 [suitesData]="project.suites"
                 (suiteSelected)="updateActiveSuite($event)"
                 (suiteAdded)="addSuiteToProject($event)"
               >
               </app-test-suite-list>
-              <app-test-suite  
+              <app-test-suite
                 class="test-suite"
                 [activeSuite]="activeSuite"
                 (suiteDeleted)="suiteDeleted($event)"
@@ -51,7 +53,6 @@
             </div>
           </nb-tab>
         </nb-tabset>
-    
       </nb-card-body>
     </nb-card>
   </div>

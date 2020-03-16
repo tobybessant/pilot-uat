@@ -1,8 +1,24 @@
+
 .project-subnav {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.project-subnav-left {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.project-subnav-left > h2 {
+  margin: 0;
+}
+
+#back-button {
+  margin-right: 20px;
 }
 
 .tabs-view {

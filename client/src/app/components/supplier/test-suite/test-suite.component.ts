@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from "@angular/core";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
@@ -20,13 +20,11 @@ export class TestSuiteComponent implements OnInit {
   @Output()
   public suiteDeleted = new EventEmitter<number>();
 
-  public tests: ITestResponse[] = [];
+  @ViewChild("testTable")
+  public testTable: ElementRef<any>;
 
-  public rows = [
-    { name: "Austin", gender: "Male", company: "Swimlane" },
-    { name: "Dany", gender: "Male", company: "KFC" },
-    { name: "Molly", gender: "Female", company: "Burger King" },
-  ];
+  public tests: ITestResponse[] = [];
+  public newTestCase: string = "";
 
   constructor(
     private dialogService: NbDialogService,
@@ -48,9 +46,8 @@ export class TestSuiteComponent implements OnInit {
   }
 
   private async updateActiveSuite(suite: ITestSuiteResponse) {
-    const response = await this.testApiService.getTestsForSuite(suite.id);
     this.activeSuite = suite;
-    this.tests = response.payload;
+    this.fetchTestsForActiveSuite();
   }
 
   public promptDeleteSuite() {
@@ -66,5 +63,21 @@ export class TestSuiteComponent implements OnInit {
   public async deleteSuite() {
     await this.testSuiteApiService.deleteTestSuiteById(this.activeSuite.id);
     this.suiteDeleted.emit(this.activeSuite.id);
+  }
+
+  public async addTest() {
+    if (this.newTestCase) {
+      await this.testApiService.addTest({
+        suiteId: this.activeSuite.id,
+        testCase: this.newTestCase
+      });
+      this.newTestCase = "";
+      this.fetchTestsForActiveSuite();
+    }
+  }
+
+  private async fetchTestsForActiveSuite() {
+    const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
+    this.tests = response.payload;
   }
 }

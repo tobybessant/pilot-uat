@@ -9,7 +9,7 @@ export class TestDbo {
   id!: string;
 
   @Column()
-  subject!: string;
+  testCase!: string;
 
   @ManyToOne(type => TestSuiteDbo, suite => suite.tests, { onDelete: "CASCADE" })
   suite!: TestSuiteDbo;

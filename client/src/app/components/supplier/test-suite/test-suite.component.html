@@ -3,37 +3,44 @@
     <div class="suite-details">
       <h5>{{ activeSuite.id }} | {{ activeSuite.suiteName }}</h5>
     </div>
-    <button
-      nbButton
-      status="danger"
-      (click)="promptDeleteSuite()"
-    >
+    <button nbButton status="danger" (click)="promptDeleteSuite()">
       <nb-icon icon="trash-2-outline"></nb-icon>
       Delete Suite
     </button>
   </div>
 
+  <div class="test-input">
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Enter Test Case"
+      [(ngModel)]="newTestCase"
+      (keyup.enter)="addTest()"
+    />
+  </div>
+
   <div class="tests">
     <ngx-datatable
-      class="material"
+      class="material fullscreen"
       [rows]="tests"
       columnMode="force"
       headerHeight="50"
       footerHeight="50"
-      [rowHeight]="50"
+      rowHeight="auto"
       [scrollbarV]="true"
+      [scrollbarH]="false"
+      selectionType="single"
+      [virtualization]="false"
     >
-      <ngx-datatable-column
-        name="ID"
-        [sortable]="false"
-        flexGrow="1"
-      >
+      <ngx-datatable-column name="ID" [sortable]="false" flexGrow="1">
         <ng-template let-value="value" width="100" ngx-datatable-cell-template>
           {{ value }}
         </ng-template>
       </ngx-datatable-column>
       <ngx-datatable-column
-        name="Subject"
+        name="Test Case"
+        prop="testCase"
         [sortable]="false"
         [resizable]="true"
         flexGrow="4"

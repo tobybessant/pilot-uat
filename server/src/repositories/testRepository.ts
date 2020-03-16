@@ -14,10 +14,10 @@ export class TestRepository {
     this.baseTestRepository = repositoryService.getRepositoryFor(TestDbo);
   }
 
-  public async addTest(suite: TestSuiteDbo, subject: string): Promise<TestDbo> {
+  public async addTest(suite: TestSuiteDbo, testCase: string): Promise<TestDbo> {
     const response = await this.baseTestRepository.save({
       suite,
-      subject
+      testCase
     });
 
     return response;
