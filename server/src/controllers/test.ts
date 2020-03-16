@@ -21,11 +21,11 @@ export class TestController {
 
   @Post("create")
   public async addTest(req: Request, res: Response) {
-    const { subject, suiteId } = req.body;
+    const { testCase, suiteId } = req.body;
 
     const suite = await this.suiteRepository.getTestSuiteById(suiteId);
     if (suite) {
-      const test = await this.testRepository.addTest(suite, subject);
+      const test = await this.testRepository.addTest(suite, testCase);
 
       res.status(OK);
       res.json({
