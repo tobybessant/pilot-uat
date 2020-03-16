@@ -32,6 +32,7 @@
       [scrollbarH]="false"
       selectionType="single"
       [virtualization]="false"
+      (select)="newCaseSelected($event)"
     >
       <ngx-datatable-column name="ID" [sortable]="false" flexGrow="1">
         <ng-template let-value="value" width="100" ngx-datatable-cell-template>
@@ -50,8 +51,9 @@
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
-    <div class="selected-case">
-      Placeholder
+
+    <div class="selected-case" *ngIf="test">
+      {{ test.testCase }}
     </div>
   </div>
 </div>

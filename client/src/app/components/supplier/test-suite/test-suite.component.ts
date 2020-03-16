@@ -6,6 +6,7 @@ import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service
 import { TestApiService } from "src/app/services/api/test-api.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
+import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
 
 @Component({
   selector: "app-test-suite",
@@ -13,6 +14,8 @@ import { ActiveTestSuiteService } from "src/app/services/active-test-suite.servi
   styleUrls: ["./test-suite.component.scss"]
 })
 export class TestSuiteComponent implements OnInit {
+
+  public test: ITestResponse;
 
   @Input()
   public activeSuite: ITestSuiteResponse;
@@ -30,12 +33,17 @@ export class TestSuiteComponent implements OnInit {
     private dialogService: NbDialogService,
     private testSuiteApiService: TestSuiteApiService,
     private testApiService: TestApiService,
-    private activeTestSuiteService: ActiveTestSuiteService
+    private activeTestSuiteService: ActiveTestSuiteService,
+    private activeTestCaseService: ActiveTestCaseService
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.activeTestSuiteService.getSubject().subscribe((suite) => {
       this.updateActiveSuite(suite);
+    });
+
+    this.activeTestCaseService.getSubject().subscribe((test) => {
+      this.test = test;
     });
 
     // NOTE: this will catch the race condition where this component initialises
@@ -79,5 +87,9 @@ export class TestSuiteComponent implements OnInit {
   private async fetchTestsForActiveSuite() {
     const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
     this.tests = response.payload;
+  }
+
+  public newCaseSelected({ selected }) {
+    this.activeTestCaseService.setTestCase(selected[0]);
   }
 }
