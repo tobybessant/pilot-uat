@@ -28,6 +28,7 @@ import { ConfirmationPromptComponent } from "./components/common/confirmation-pr
 import { TestSuiteListComponent } from "./components/supplier/test-suite-list/test-suite-list.component";
 import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.component";
 import { ProjectSettingsComponent } from './components/supplier/project-settings/project-settings.component';
+import { TestCaseComponent } from './components/supplier/test-case/test-case.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ProjectSettingsComponent } from './components/supplier/project-settings
     ConfirmationPromptComponent,
     TestSuiteListComponent,
     TestSuiteComponent,
-    ProjectSettingsComponent
+    ProjectSettingsComponent,
+    TestCaseComponent
   ],
   imports: [
     /* Angular */
