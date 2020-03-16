@@ -5,18 +5,43 @@
     </div>
     <button
       nbButton
-      ghost
       status="danger"
-      size="giant"
       (click)="promptDeleteSuite()"
     >
       <nb-icon icon="trash-2-outline"></nb-icon>
+      Delete Suite
     </button>
   </div>
 
   <div class="tests">
-    <div *ngFor="let test of tests">
-      {{ test.subject }}
-    </div>
+    <ngx-datatable
+      class="material"
+      [rows]="tests"
+      columnMode="force"
+      headerHeight="50"
+      footerHeight="50"
+      [rowHeight]="50"
+      [scrollbarV]="true"
+    >
+      <ngx-datatable-column
+        name="ID"
+        [sortable]="false"
+        flexGrow="1"
+      >
+        <ng-template let-value="value" width="100" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Subject"
+        [sortable]="false"
+        [resizable]="true"
+        flexGrow="4"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
 </div>

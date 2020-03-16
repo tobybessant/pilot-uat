@@ -12,6 +12,7 @@ import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbActionsModule, NbTreeGridModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { HttpClientModule } from "@angular/common/http";
@@ -40,12 +41,15 @@ import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.
     TestSuiteComponent
   ],
   imports: [
+    /* Angular */
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+
+    /* NebularUI */
     NbLayoutModule,
     NbCardModule,
     NbInputModule,
@@ -63,6 +67,9 @@ import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.
     NbDialogModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),
     NbButtonModule,
+
+    /* Other Libs */
+    NgxDatatableModule,
     NgxSpinnerModule
   ],
   providers: [
