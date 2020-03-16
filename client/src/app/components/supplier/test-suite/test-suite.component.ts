@@ -5,6 +5,7 @@ import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/co
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
 import { TestApiService } from "src/app/services/api/test-api.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
+import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 
 @Component({
   selector: "app-test-suite",
@@ -24,13 +25,26 @@ export class TestSuiteComponent implements OnInit {
   constructor(
     private dialogService: NbDialogService,
     private testSuiteApiService: TestSuiteApiService,
-    private testApiService: TestApiService
+    private testApiService: TestApiService,
+    private activeTestSuiteService: ActiveTestSuiteService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
+    this.activeTestSuiteService.getSubject().subscribe((suite) => {
+      this.updateActiveSuite(suite);
+    });
+
+    // NOTE: this will catch the race condition where this component initialises
+    // after the on-init active suite has been set by the project component.
+    if (!this.activeSuite) {
+      this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
+    }
+  }
+
+  private async updateActiveSuite(suite: ITestSuiteResponse) {
+    const response = await this.testApiService.getTestsForSuite(suite.id);
+    this.activeSuite = suite;
     this.tests = response.payload;
-    console.log(this.tests);
   }
 
   public promptDeleteSuite() {

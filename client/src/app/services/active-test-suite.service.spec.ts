@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 
-import { ActiveSuiteService } from "./active-suite.service";
+import { ActiveTestSuiteService } from "./active-test-suite.service";
 
 describe("ActiveSuiteService", () => {
-  let service: ActiveSuiteService;
+  let service: ActiveTestSuiteService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ActiveSuiteService);
+    service = TestBed.inject(ActiveTestSuiteService);
   });
 
   it("should be created", () => {

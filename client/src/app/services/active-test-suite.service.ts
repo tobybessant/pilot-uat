@@ -5,7 +5,7 @@ import { ITestSuiteResponse } from "../models/response/supplier/suite.interface"
 @Injectable({
   providedIn: "root"
 })
-export class ActiveSuiteService {
+export class ActiveTestSuiteService {
 
   private subject = new Subject<ITestSuiteResponse>();
   private currentSuite: ITestSuiteResponse;

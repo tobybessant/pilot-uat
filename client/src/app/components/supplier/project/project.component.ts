@@ -8,6 +8,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
+import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 
 @Component({
   selector: "app-project",
@@ -27,6 +28,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   constructor(
     private projectsApiService: ProjectApiService,
     private testSuiteApiService: TestSuiteApiService,
+    private activeTestSuiteService: ActiveTestSuiteService,
     private nbMenuService: NbMenuService,
     private activeRoute: ActivatedRoute,
     private router: Router,
@@ -78,14 +80,14 @@ export class ProjectComponent implements OnInit, OnDestroy {
     const response = await this.projectsApiService.getProjectById(id);
     if (response.errors.length === 0) {
       this.project = response.payload;
-      this.activeSuite = response.payload.suites[0];
+      this.setActiveSuite(response.payload.suites[0]);
     }
     this.fetchAttemptComplete = true;
     this.spinner.hide();
   }
 
   public updateActiveSuite($event) {
-    this.activeSuite = this.project.suites.filter(suite => suite.id === $event)[0];
+    this.setActiveSuite(this.project.suites.filter(suite => suite.id === $event)[0]);
   }
 
   public async fetchSuites() {
@@ -116,7 +118,11 @@ export class ProjectComponent implements OnInit, OnDestroy {
       newSelectedIndex--;
     }
 
-    this.activeSuite = this.project.suites[newSelectedIndex];
+    this.setActiveSuite(this.project.suites[newSelectedIndex])
+  }
+
+  private setActiveSuite(suite: ITestSuiteResponse) {
+    this.activeTestSuiteService.setSuite(suite);
   }
 
   private buildAndLinkSettingsMenu() {
