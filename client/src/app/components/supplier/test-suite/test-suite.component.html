@@ -51,7 +51,10 @@
       >
       </ngx-datatable>
     </div>
-    <app-test-case (testDeleted)="updateSelectedTestCase($event)">
+    <app-test-case 
+    (testDeleted)="updateSelectedTestCase($event)"
+    (testUpdated)="testSuiteUpdated($event)"
+    >
     </app-test-case>
   </div>
 </div>

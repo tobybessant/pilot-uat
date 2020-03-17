@@ -17,6 +17,9 @@ export class TestCaseComponent implements OnInit {
   @Output()
   public testDeleted = new EventEmitter<number>();
 
+  @Output()
+  public testUpdated = new EventEmitter<ITestResponse>();
+
   constructor(
     private activeTestCaseService: ActiveTestCaseService,
     private testCaseApiService: TestApiService,
@@ -25,8 +28,16 @@ export class TestCaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeTestCaseService.getSubject().subscribe((test) => {
-      this.test = test;
+      this.selectedTestChange(test);
     });
+  }
+
+  private selectedTestChange(test: ITestResponse) {
+    if (test) {
+      this.test = test;
+    } else {
+      this.test = null;
+    }
   }
 
   public promptDeleteTest() {
@@ -44,6 +55,11 @@ export class TestCaseComponent implements OnInit {
     if (response.errors.length === 0) {
       this.testDeleted.emit(this.test.id);
     }
+  }
+
+  public async saveTest() {
+    const response = await this.testCaseApiService.updateTest(this.test);
+    this.testUpdated.emit(response.payload);
   }
 
 }

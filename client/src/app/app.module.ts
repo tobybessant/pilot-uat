@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
           NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-          NbActionsModule, NbTreeGridModule } from "@nebular/theme";
+          NbActionsModule, NbTreeGridModule, NbSelectModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
@@ -67,6 +67,7 @@ import { TestCaseComponent } from './components/supplier/test-case/test-case.com
     NbTabsetModule,
     NbActionsModule,
     NbTreeGridModule,
+    NbSelectModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),

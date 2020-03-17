@@ -23,9 +23,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public activeSuite: ITestSuiteResponse;
   public projectSettings: NbMenuItem[] = [];
 
-  private alive: boolean = true;
-  private readonly projectSettingsActions: Map<string, () => void> = new Map<string, () => void>();
-
   constructor(
     private projectsApiService: ProjectApiService,
     private testSuiteApiService: TestSuiteApiService,
@@ -45,7 +42,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.alive = false;
     this.dialogService = null;
     this.projectSettings = null;
     this.navbarService.clearHeader();

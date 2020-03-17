@@ -18,6 +18,11 @@ export class TestApiService {
     return response;
   }
 
+  public async updateTest(testData: ITestResponse) {
+    const response = await this.apiService.post<ITestResponse>(this.baseUrl + "/update", testData);
+    return response;
+  }
+
   public async getTestsForSuite(suiteId: number): Promise<IApiResponse<ITestResponse[]>> {
     const response = await this.apiService.post<ITestResponse[]>(this.baseUrl, { suiteId });
     return response;

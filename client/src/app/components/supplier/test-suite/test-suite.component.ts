@@ -33,8 +33,8 @@ export class TestSuiteComponent implements OnInit {
 
   public columns: any[] = [
     { name: "TestID",    prop: "id",       widthPercentage: 10 },
-    { name: "Test Case", prop: "testCase", widthPercentage: 70 },
-    { name: "Status",    prop: "status",   widthPercentage: 20 }
+    { name: "Test Case", prop: "testCase", widthPercentage: 80 },
+    { name: "Status",    prop: "status",   widthPercentage: 10 }
   ];
 
   public tests: ITestResponse[] = [];
@@ -61,14 +61,7 @@ export class TestSuiteComponent implements OnInit {
       this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
     }
 
-    // NOTE: this is in place to fix the data table from loading before the card and
-    // not being contained within the screen without scrolling. Delaying the load
-    // forces it to consider the size of the card before loading data in.
-    setTimeout(() => {
-      this.calculateColumnWidths();
-      this.tableCanShow = true;
-      this.spinner.hide("testCaseSpinner");
-    }, 1000);
+    this.loadAndRenderTable();
   }
 
   private async updateActiveSuite(suite: ITestSuiteResponse) {
@@ -112,6 +105,10 @@ export class TestSuiteComponent implements OnInit {
     this.activeTestCaseService.setTestCase(null);
   }
 
+  public testSuiteUpdated(test: ITestResponse) {
+    this.fetchTestsForActiveSuite();
+  }
+
   public newCaseSelected({ selected }) {
     this.activeTestCaseService.setTestCase(selected[0]);
   }
@@ -131,5 +128,16 @@ export class TestSuiteComponent implements OnInit {
     if (currentPercentageTotal > 100) {
       throw new Error("Summed column width proportions are larger than 100");
     }
+  }
+
+  private loadAndRenderTable() {
+    // NOTE: this is in place to fix the data table from loading before the card and
+    // not being contained within the screen without scrolling. Delaying the load
+    // forces it to consider the size of the card before loading data in.
+    setTimeout(() => {
+      this.calculateColumnWidths();
+      this.tableCanShow = true;
+      this.spinner.hide("testCaseSpinner");
+    }, 1000);
   }
 }
