@@ -4,6 +4,7 @@ import { TestDbo } from "../database/entities/testDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
 import { TestStatusDbo } from "../database/entities/testStatusDbo";
+import { ITestResponse } from "../dto/supplier/test";
 
 @injectable()
 @EntityRepository()
@@ -40,6 +41,16 @@ export class TestRepository {
 
   public async deleteTestById(id: string) {
     return this.baseTestRepository.delete({ id });
+  }
+
+  public async updateTest(test: ITestResponse): Promise<TestDbo> {
+    const status = await this.baseTestStatusRepository.findOne({ status: test.status });
+
+    return this.baseTestRepository.save({
+      id: test.id,
+      testCase: test.testCase,
+      status
+    });
   }
 
 }

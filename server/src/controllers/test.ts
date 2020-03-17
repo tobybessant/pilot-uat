@@ -67,8 +67,34 @@ export class TestController {
     } catch (error) { }
   }
 
+  @Post("update")
+  public async updateTest(req: Request, res: Response) {
+    const test: ITestResponse = req.body;
+
+    try {
+      const savedTest = await this.testRepository.updateTest(test);
+
+      res.status(OK);
+      res.json({
+        errors: [],
+        payload: ((record: TestDbo) =>
+          ({
+            id: record.id,
+            testCase: record.testCase,
+            status: record.status.status
+          })
+        )(savedTest)
+      } as IApiResponse<ITestResponse>);
+    } catch(error) {
+      res.status(BAD_REQUEST);
+      res.json({
+        errors: [error.message]
+      } as IApiResponse<any>);
+    }
+  }
+
   @Delete(":id")
-  public async deleteSuiteById(req: Request, res: Response) {
+  public async deleteTestById(req: Request, res: Response) {
     const testId = req.params.id;
 
     try {
