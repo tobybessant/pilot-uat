@@ -15,8 +15,6 @@ import { ActiveTestCaseService } from "src/app/services/active-test-case.service
 })
 export class TestSuiteComponent implements OnInit {
 
-  public test: ITestResponse;
-
   @Input()
   public activeSuite: ITestSuiteResponse;
 
@@ -40,10 +38,6 @@ export class TestSuiteComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.activeTestSuiteService.getSubject().subscribe((suite) => {
       this.updateActiveSuite(suite);
-    });
-
-    this.activeTestCaseService.getSubject().subscribe((test) => {
-      this.test = test;
     });
 
     // NOTE: this will catch the race condition where this component initialises

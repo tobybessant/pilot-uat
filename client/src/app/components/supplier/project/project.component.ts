@@ -95,7 +95,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       newSelectedIndex--;
     }
 
-    this.setActiveSuite(this.project.suites[newSelectedIndex])
+    this.setActiveSuite(this.project.suites[newSelectedIndex]);
   }
 
   private setActiveSuite(suite: ITestSuiteResponse) {

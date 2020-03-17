@@ -1,3 +1,13 @@
 .test-case {
-  min-width: 100px;
+  height: 100%;
+  min-width: 25vw;
+  max-width: 25vw;
+}
+
+.details {
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
