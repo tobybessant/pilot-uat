@@ -2,6 +2,7 @@
   padding: 0 20px;
   width: 100%;
   height: calc(100% - 130px);
+  margin: 0;
 }
 
 h5 {
@@ -37,11 +38,6 @@ h5 {
 
 .tableContainer {
   flex: 1;
-}
-
-.red {
-  flex: 1;
-  background: red;
 }
 
 .first-suite-modal {
