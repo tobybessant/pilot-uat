@@ -1,7 +1,11 @@
-<div class="suite" *ngIf="activeSuite">
+<div class="first-suite-modal" *ngIf="!activeSuite">
+  <h3>Add your first test suite!</h3>
+</div>
+
+<div class="suite">
   <div class="suite-header">
     <div class="suite-details">
-      <h5>{{ activeSuite.id }} | {{ activeSuite.suiteName }}</h5>
+      <h5>{{ getSuiteId() }} | {{ getSuiteName() }}</h5>
     </div>
     <button nbButton status="danger" (click)="promptDeleteSuite()">
       <nb-icon icon="trash-2-outline"></nb-icon>

@@ -33,8 +33,8 @@ export class TestSuiteComponent implements OnInit {
 
   public columns: any[] = [
     { name: "TestID",    prop: "id",       widthPercentage: 10 },
-    { name: "Test Case", prop: "testCase", widthPercentage: 80 },
-    { name: "Status",    prop: "status",   widthPercentage: 10 }
+    { name: "Test Case", prop: "testCase", widthPercentage: 70 },
+    { name: "Status",    prop: "status",   widthPercentage: 20 }
   ];
 
   public tests: ITestResponse[] = [];
@@ -62,6 +62,14 @@ export class TestSuiteComponent implements OnInit {
     }
 
     this.loadAndRenderTable();
+  }
+
+  public getSuiteId(): number | string {
+    return this.activeSuite ? this.activeSuite.id : "";
+  }
+
+  public getSuiteName(): string {
+    return this.activeSuite ? this.activeSuite.suiteName : "";
   }
 
   private async updateActiveSuite(suite: ITestSuiteResponse) {
@@ -96,8 +104,10 @@ export class TestSuiteComponent implements OnInit {
   }
 
   private async fetchTestsForActiveSuite() {
-    const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
-    this.tests = response.payload;
+    if (this.activeSuite) {
+      const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
+      this.tests = response.payload;
+    }
   }
 
   public updateSelectedTestCase(id: number) {
