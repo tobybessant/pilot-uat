@@ -37,7 +37,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.navbarService.setIsViewingProject(true);
-    this.spinner.show();
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
   }
 
@@ -56,7 +55,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
     }
     this.navbarService.setHeader(response.payload.projectName);
     this.fetchAttemptComplete = true;
-    this.spinner.hide();
   }
 
   public updateActiveSuite($event) {
