@@ -20,64 +20,37 @@
     />
   </div>
 
-  <div class="tests" #testTableContainer>
-    <ngx-spinner
-      name="testCaseSpinner"
-      bdOpacity="0"
-      bdColor="rgba(0,0,0,0)"
-      size="default"
-      color="rgba(1,1,1,0.5)"
-      type="cube-transition"
-      [fullScreen]="false"
-    >
-      <p>Loading...</p>
-    </ngx-spinner>
+  <div class="tests">
+    <div class="tableContainer" #testTableContainer>
+      <ngx-spinner
+        name="testCaseSpinner"
+        bdOpacity="0"
+        bdColor="rgba(0,0,0,0)"
+        size="default"
+        color="rgba(1,1,1,0.5)"
+        type="cube-transition"
+        [fullScreen]="false"
+      >
+        <p>Loading...</p>
+      </ngx-spinner>
 
-    <ngx-datatable
-      *ngIf="tableCanShow"
-      class="material"
-      [rows]="tests"
-      columnMode="standard"
-      headerHeight="50"
-      footerHeight="50"
-      rowHeight="auto"
-      [scrollbarV]="true"
-      [scrollbarH]="false"
-      selectionType="single"
-      [virtualization]="false"
-      (select)="newCaseSelected($event)"
-    >
-      <ngx-datatable-column 
-        name="ID" 
-        [sortable]="false" 
-        width="100"
+      <ngx-datatable
+        *ngIf="tableCanShow"
+        class="material"
+        [rows]="tests"
+        [columns]="columns"
+        columnMode="standard"
+        headerHeight="50"
+        footerHeight="50"
+        rowHeight="auto"
+        [scrollbarV]="true"
+        [scrollbarH]="false"
+        selectionType="single"
+        [virtualization]="false"
+        (select)="newCaseSelected($event)"
       >
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column
-        name="Test Case"
-        prop="testCase"
-        [sortable]="false"
-        width="1000"
-      >
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-      <ngx-datatable-column
-        name="Status"
-        prop="status"
-        [sortable]="false"
-        width="400"
-      >
-        <ng-template let-value="value" ngx-datatable-cell-template>
-          {{ value }}
-        </ng-template>
-      </ngx-datatable-column>
-    </ngx-datatable>
-
+      </ngx-datatable>
+    </div>
     <app-test-case (testDeleted)="updateSelectedTestCase($event)">
     </app-test-case>
   </div>

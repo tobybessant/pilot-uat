@@ -30,6 +30,11 @@ export class TestSuiteComponent implements OnInit {
   public tableContainer;
 
   public tableCanShow: boolean = false;
+  public columns: any[] = [
+    { name: "TestID",    prop: "id",       widthPercentage: 10 },
+    { name: "Test Case", prop: "testCase", widthPercentage: 70 },
+    { name: "Status",    prop: "status",   widthPercentage: 20 }
+  ];
 
   public tests: ITestResponse[] = [];
   public newTestCase: string = "";
@@ -111,7 +116,17 @@ export class TestSuiteComponent implements OnInit {
   }
 
   private calculateColumnWidths() {
-    const width = this.tableContainer.nativeElement.offsetWidth;
+    const width = this.tableContainer.nativeElement.clientWidth;
+    let currentPercentageTotal = 0;
 
+    // convert widthPercentage property into px value
+    for (const column of this.columns) {
+      currentPercentageTotal += column.widthPercentage;
+      column.width = width * (column.widthPercentage / 100);
+    }
+
+    if (currentPercentageTotal > 100) {
+      throw new Error("Summed column width proportions are larger than 100");
+    }
   }
 }
