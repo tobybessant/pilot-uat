@@ -99,6 +99,7 @@ export class TestSuiteComponent implements OnInit {
 
   public updateSelectedTestCase(id: number) {
     this.fetchTestsForActiveSuite();
+    this.activeTestCaseService.setTestCase(null);
   }
 
   public newCaseSelected({ selected }) {
