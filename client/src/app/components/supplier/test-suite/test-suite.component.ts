@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, AfterViewChecked } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, AfterViewChecked, ViewChildren } from "@angular/core";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
@@ -25,6 +25,9 @@ export class TestSuiteComponent implements OnInit {
 
   @ViewChild(DatatableComponent)
   public table: DatatableComponent;
+
+  @ViewChild("testTableContainer")
+  public tableContainer;
 
   public tableCanShow: boolean = false;
 
@@ -55,7 +58,8 @@ export class TestSuiteComponent implements OnInit {
     // NOTE: this is in place to fix the data table from loading before the card and
     // not being contained within the screen without scrolling. Delaying the load
     // forces it to consider the size of the card before loading data in.
-    setInterval(() => {
+    setTimeout(() => {
+      this.calculateColumnWidths();
       this.tableCanShow = true;
       this.spinner.hide("testCaseSpinner");
     }, 1000);
@@ -104,5 +108,10 @@ export class TestSuiteComponent implements OnInit {
 
   public newCaseSelected({ selected }) {
     this.activeTestCaseService.setTestCase(selected[0]);
+  }
+
+  private calculateColumnWidths() {
+    const width = this.tableContainer.nativeElement.offsetWidth;
+
   }
 }

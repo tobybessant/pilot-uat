@@ -33,7 +33,8 @@ export class TestController {
         payload: ((record: TestDbo) =>
           ({
             id: record.id,
-            testCase: record.testCase
+            testCase: record.testCase,
+            status: record.status.status
           })
         )(test)
       } as IApiResponse<ITestResponse>);
@@ -60,6 +61,7 @@ export class TestController {
           ({
             id: t.id,
             testCase: t.testCase,
+            status: t.status.status
           }))
       } as IApiResponse<ITestResponse[]>);
     } catch (error) { }

@@ -20,25 +20,24 @@
     />
   </div>
 
-  <div class="tests">
-
+  <div class="tests" #testTableContainer>
     <ngx-spinner
-    name="testCaseSpinner"
-    bdOpacity="0"
-    bdColor="rgba(0,0,0,0)"
-    size="default"
-    color="rgba(1,1,1,0.5)"
-    type="cube-transition"
-    [fullScreen]="false"
-  >
-    <p>Loading...</p>
-  </ngx-spinner>
-  
+      name="testCaseSpinner"
+      bdOpacity="0"
+      bdColor="rgba(0,0,0,0)"
+      size="default"
+      color="rgba(1,1,1,0.5)"
+      type="cube-transition"
+      [fullScreen]="false"
+    >
+      <p>Loading...</p>
+    </ngx-spinner>
+
     <ngx-datatable
       *ngIf="tableCanShow"
       class="material"
       [rows]="tests"
-      columnMode="force"
+      columnMode="standard"
       headerHeight="50"
       footerHeight="50"
       rowHeight="auto"
@@ -48,8 +47,12 @@
       [virtualization]="false"
       (select)="newCaseSelected($event)"
     >
-      <ngx-datatable-column name="ID" [sortable]="false" flexGrow="1">
-        <ng-template let-value="value" width="100" ngx-datatable-cell-template>
+      <ngx-datatable-column 
+        name="ID" 
+        [sortable]="false" 
+        width="100"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
           {{ value }}
         </ng-template>
       </ngx-datatable-column>
@@ -57,8 +60,17 @@
         name="Test Case"
         prop="testCase"
         [sortable]="false"
-        [resizable]="true"
-        flexGrow="4"
+        width="1000"
+      >
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column
+        name="Status"
+        prop="status"
+        [sortable]="false"
+        width="400"
       >
         <ng-template let-value="value" ngx-datatable-cell-template>
           {{ value }}
@@ -66,9 +78,7 @@
       </ngx-datatable-column>
     </ngx-datatable>
 
-    <app-test-case
-      (testDeleted)="updateSelectedTestCase($event)"
-    >
+    <app-test-case (testDeleted)="updateSelectedTestCase($event)">
     </app-test-case>
   </div>
 </div>
