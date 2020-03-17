@@ -73,3 +73,9 @@ $datatable-summary-row-background-hover: #ddd !default;
 @include nb-install() {
   @include nb-theme-global();
 };
+
+// NOTE: this removes browser outline on nb tabs for project component,
+// placing this elsewhere in the app had no effect.
+[tabindex="-1"]:focus {
+  outline: 0!important;
+}
