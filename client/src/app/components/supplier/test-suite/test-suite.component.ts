@@ -105,29 +105,17 @@ export class TestSuiteComponent implements OnInit {
     this.activeTestCaseService.setTestCase(null);
   }
 
-  public testSuiteUpdated(test: ITestResponse) {
-    this.fetchTestsForActiveSuite();
+  public async testSuiteUpdated(test: ITestResponse) {
+    await this.fetchTestsForActiveSuite();
+    if (this.activeSuite) {
+      const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);
+      this.table.selected.push(this.tests[existingSelectionIndex]);
+      console.log(this.table.selected);
+    }
   }
 
   public newCaseSelected({ selected }) {
     this.activeTestCaseService.setTestCase(selected[0]);
-  }
-
-  private calculateColumnWidths() {
-    const width = this.tableContainer.nativeElement.clientWidth;
-    let currentPercentageTotal = 0;
-
-    // convert widthPercentage property into px value
-    for (const column of this.columns) {
-      if (column.widthPercentage) {
-        currentPercentageTotal += column.widthPercentage;
-        column.width = width * (column.widthPercentage / 100);
-      }
-    }
-
-    if (currentPercentageTotal > 100) {
-      throw new Error("Summed column width proportions are larger than 100");
-    }
   }
 
   private loadAndRenderTable() {
@@ -139,5 +127,24 @@ export class TestSuiteComponent implements OnInit {
       this.tableCanShow = true;
       this.spinner.hide("testCaseSpinner");
     }, 1000);
+  }
+
+  private calculateColumnWidths() {
+    if (this.tableContainer) {
+      const width = this.tableContainer.nativeElement.clientWidth;
+      let currentPercentageTotal = 0;
+
+      // convert widthPercentage property into px value
+      for (const column of this.columns) {
+        if (column.widthPercentage) {
+          currentPercentageTotal += column.widthPercentage;
+          column.width = width * (column.widthPercentage / 100);
+        }
+      }
+
+      if (currentPercentageTotal > 100) {
+        throw new Error("Summed column width proportions are larger than 100");
+      }
+    }
   }
 }
