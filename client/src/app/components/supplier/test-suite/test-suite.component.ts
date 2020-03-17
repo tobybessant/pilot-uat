@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, AfterViewChecked } from "@angular/core";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
@@ -7,6 +7,8 @@ import { TestApiService } from "src/app/services/api/test-api.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-test-suite",
@@ -24,6 +26,11 @@ export class TestSuiteComponent implements OnInit {
   @ViewChild("testTable")
   public testTable: ElementRef<any>;
 
+  @ViewChild(DatatableComponent)
+  public table: DatatableComponent;
+
+  public tableCanShow: boolean = false;
+
   public tests: ITestResponse[] = [];
   public newTestCase: string = "";
 
@@ -32,10 +39,12 @@ export class TestSuiteComponent implements OnInit {
     private testSuiteApiService: TestSuiteApiService,
     private testApiService: TestApiService,
     private activeTestSuiteService: ActiveTestSuiteService,
-    private activeTestCaseService: ActiveTestCaseService
+    private activeTestCaseService: ActiveTestCaseService,
+    private spinner: NgxSpinnerService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.spinner.show("testCaseSpinner");
     this.activeTestSuiteService.getSubject().subscribe((suite) => {
       this.updateActiveSuite(suite);
     });
@@ -45,6 +54,11 @@ export class TestSuiteComponent implements OnInit {
     if (!this.activeSuite) {
       this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
     }
+
+    setInterval(() => {
+      this.tableCanShow = true;
+      this.spinner.hide("testCaseSpinner");
+    }, 1000);
   }
 
   private async updateActiveSuite(suite: ITestSuiteResponse) {

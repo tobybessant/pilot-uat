@@ -21,7 +21,21 @@
   </div>
 
   <div class="tests">
+
+    <ngx-spinner
+    name="testCaseSpinner"
+    bdOpacity="0"
+    bdColor="rgba(0,0,0,0)"
+    size="default"
+    color="rgba(1,1,1,0.5)"
+    type="cube-transition"
+    [fullScreen]="false"
+  >
+    <p>Loading...</p>
+  </ngx-spinner>
+  
     <ngx-datatable
+      *ngIf="tableCanShow"
       class="material"
       [rows]="tests"
       columnMode="force"
