@@ -55,6 +55,9 @@ export class TestSuiteComponent implements OnInit {
       this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
     }
 
+    // NOTE: this is in place to fix the data table from loading before the card and
+    // not being contained within the screen without scrolling. Delaying the load
+    // forces it to consider the size of the card before loading data in.
     setInterval(() => {
       this.tableCanShow = true;
       this.spinner.hide("testCaseSpinner");
