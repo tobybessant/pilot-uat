@@ -65,6 +65,10 @@
         </ng-template>
       </ngx-datatable-column>
     </ngx-datatable>
-    <app-test-case></app-test-case>
+
+    <app-test-case
+      (testDeleted)="updateSelectedTestCase($event)"
+    >
+    </app-test-case>
   </div>
 </div>

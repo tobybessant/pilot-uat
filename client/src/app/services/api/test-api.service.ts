@@ -22,4 +22,9 @@ export class TestApiService {
     const response = await this.apiService.post<ITestResponse[]>(this.baseUrl, { suiteId });
     return response;
   }
+
+  public async deleteTestById(testId: number): Promise<IApiResponse<ITestResponse>> {
+    const response = await this.apiService.delete<ITestResponse>(this.baseUrl + "/" + testId);
+    return response;
+  }
 }

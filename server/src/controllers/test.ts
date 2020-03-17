@@ -1,4 +1,4 @@
-import { Controller, ClassMiddleware, Post } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Delete } from "@overnightjs/core";
 import { injectable } from "tsyringe";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { TestRepository } from "../repositories/testRepository";
@@ -7,7 +7,7 @@ import { TestSuiteRepository } from "../repositories/testSuiteRepository";
 import { TestDbo } from "../database/entities/testDbo";
 import { ITestResponse } from "../dto/supplier/test";
 import { IApiResponse } from "../dto/common/apiResponse";
-import { OK, INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 
 @injectable()
 @Controller("test")
@@ -63,5 +63,23 @@ export class TestController {
           }))
       } as IApiResponse<ITestResponse[]>);
     } catch (error) { }
+  }
+
+  @Delete(":id")
+  public async deleteSuiteById(req: Request, res: Response) {
+    const testId = req.params.id;
+
+    try {
+      await this.testRepository.deleteTestById(testId);
+      res.status(OK);
+      res.json({
+        errors: []
+      } as unknown as IApiResponse<any>);
+    } catch(error) {
+      res.status(BAD_REQUEST);
+      res.json({
+        errors: [error.message]
+      } as IApiResponse<any>);
+    }
   }
 }

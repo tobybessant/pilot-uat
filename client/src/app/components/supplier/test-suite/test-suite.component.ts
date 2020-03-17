@@ -23,9 +23,6 @@ export class TestSuiteComponent implements OnInit {
   @Output()
   public suiteDeleted = new EventEmitter<number>();
 
-  @ViewChild("testTable")
-  public testTable: ElementRef<any>;
-
   @ViewChild(DatatableComponent)
   public table: DatatableComponent;
 
@@ -98,6 +95,10 @@ export class TestSuiteComponent implements OnInit {
   private async fetchTestsForActiveSuite() {
     const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
     this.tests = response.payload;
+  }
+
+  public updateSelectedTestCase(id: number) {
+    this.fetchTestsForActiveSuite();
   }
 
   public newCaseSelected({ selected }) {

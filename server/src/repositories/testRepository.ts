@@ -30,4 +30,9 @@ export class TestRepository {
       .where("suite.id = :id", { id })
       .getMany();
   }
+
+  public async deleteTestById(id: string) {
+    return this.baseTestRepository.delete({ id });
+  }
+
 }

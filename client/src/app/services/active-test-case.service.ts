@@ -15,7 +15,6 @@ export class ActiveTestCaseService {
   async setTestCase(test: ITestResponse) {
     this.currentTestCase = test;
     this.subject.next(test);
-    console.log("selected case:" , test);
   }
 
   public getSubject(): Observable<ITestResponse> {

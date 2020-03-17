@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
@@ -13,6 +13,9 @@ import { TestApiService } from "src/app/services/api/test-api.service";
 export class TestCaseComponent implements OnInit {
 
   public test: ITestResponse;
+
+  @Output()
+  public testDeleted = new EventEmitter<number>();
 
   constructor(
     private activeTestCaseService: ActiveTestCaseService,
@@ -37,8 +40,10 @@ export class TestCaseComponent implements OnInit {
   }
 
   public async deleteTest() {
-    // await this.testCaseApiService;
-    // this.suiteDeleted.emit(this.activeSuite.id);
+    const response = await this.testCaseApiService.deleteTestById(this.test.id);
+    if (response.errors.length === 0) {
+      this.testDeleted.emit(this.test.id);
+    }
   }
 
 }
