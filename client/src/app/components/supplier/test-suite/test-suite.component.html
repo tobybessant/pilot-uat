@@ -32,7 +32,7 @@
 
   <div class="tests">
     <div class="tableContainer" #testTableContainer>
-      <ngx-spinner
+      <!-- <ngx-spinner
         *ngIf="activeSuite"
         name="testCaseSpinner"
         bdOpacity="0"
@@ -43,7 +43,7 @@
         [fullScreen]="false"
       >
         <p>Loading...</p>
-      </ngx-spinner>
+      </ngx-spinner> -->
       <mat-accordion [multi]="true">
         <mat-expansion-panel *ngFor="let test of tests">
           <mat-expansion-panel-header>
