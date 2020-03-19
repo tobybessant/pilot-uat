@@ -14,6 +14,8 @@ import { NbEvaIconsModule } from "@nebular/eva-icons";
 
 import { NgxSpinnerModule } from "ngx-spinner";
 
+import { MatExpansionModule } from "@angular/material/expansion";
+
 import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from "./components/common/login/login.component";
@@ -73,7 +75,8 @@ import { TestCaseComponent } from "./components/supplier/test-case/test-case.com
     NbButtonModule,
 
     /* Other Libs */
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    MatExpansionModule
   ],
   providers: [
     {

@@ -7,7 +7,13 @@
     <div class="suite-details">
       <h5>{{ getSuiteId() }} | {{ getSuiteName() }}</h5>
     </div>
-    <button nbButton ghost size="medium" status="danger" (click)="promptDeleteSuite()">
+    <button
+      nbButton
+      ghost
+      size="medium"
+      status="danger"
+      (click)="promptDeleteSuite()"
+    >
       <nb-icon icon="trash-2-outline"></nb-icon>
       Delete Suite
     </button>
@@ -38,11 +44,24 @@
       >
         <p>Loading...</p>
       </ngx-spinner>
+      <mat-accordion [multi]="true">
+        <mat-expansion-panel *ngFor="let test of tests">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ test.id }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ test.testCase }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          {{ test.status }}
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
-    <app-test-case 
-    (testDeleted)="updateSelectedTestCase($event)"
-    (testUpdated)="testSuiteUpdated($event)"
+    <!-- <app-test-case
+      (testDeleted)="updateSelectedTestCase($event)"
+      (testUpdated)="testSuiteUpdated($event)"
     >
-    </app-test-case>
+    </app-test-case> -->
   </div>
 </div>

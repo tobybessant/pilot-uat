@@ -32,12 +32,11 @@ h5 {
   align-items: stretch;
 }
 
-.material {
-  height: 100%;
-}
-
 .tableContainer {
   flex: 1;
+  padding: 20px;
+  overflow-y: scroll;
+  max-height: 100%;
 }
 
 .first-suite-modal {

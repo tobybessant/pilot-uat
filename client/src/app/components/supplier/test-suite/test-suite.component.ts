@@ -16,6 +16,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 export class TestSuiteComponent implements OnInit {
 
+  panelOpenState = false;
+
   @Input()
   public activeSuite: ITestSuiteResponse;
 
@@ -31,12 +33,12 @@ export class TestSuiteComponent implements OnInit {
   public newTestCase: string = "";
 
   constructor(
-    private dialogService: NbDialogService,
-    private testSuiteApiService: TestSuiteApiService,
-    private testApiService: TestApiService,
-    private activeTestSuiteService: ActiveTestSuiteService,
-    private activeTestCaseService: ActiveTestCaseService,
-    private spinner: NgxSpinnerService
+    private readonly dialogService: NbDialogService,
+    private readonly testSuiteApiService: TestSuiteApiService,
+    private readonly testApiService: TestApiService,
+    private readonly activeTestSuiteService: ActiveTestSuiteService,
+    private readonly activeTestCaseService: ActiveTestCaseService,
+    private readonly spinner: NgxSpinnerService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -126,7 +128,7 @@ export class TestSuiteComponent implements OnInit {
       // this.calculateColumnWidths();
       this.tableCanShow = true;
       this.spinner.hide("testCaseSpinner");
-    }, 1000);
+    }, 3000);
   }
 
   // private calculateColumnWidths() {
