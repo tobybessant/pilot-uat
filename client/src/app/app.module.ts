@@ -12,7 +12,6 @@ import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbActionsModule, NbTreeGridModule, NbSelectModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { HttpClientModule } from "@angular/common/http";
@@ -74,7 +73,6 @@ import { TestCaseComponent } from "./components/supplier/test-case/test-case.com
     NbButtonModule,
 
     /* Other Libs */
-    NgxDatatableModule,
     NgxSpinnerModule
   ],
   providers: [

@@ -38,23 +38,6 @@
       >
         <p>Loading...</p>
       </ngx-spinner>
-
-      <ngx-datatable
-        *ngIf="tableCanShow"
-        class="material"
-        [rows]="tests"
-        [columns]="columns"
-        columnMode="standard"
-        headerHeight="50"
-        footerHeight="50"
-        rowHeight="auto"
-        [scrollbarV]="true"
-        [scrollbarH]="false"
-        selectionType="single"
-        [virtualization]="false"
-        (select)="newCaseSelected($event)"
-      >
-      </ngx-datatable>
     </div>
     <app-test-case 
     (testDeleted)="updateSelectedTestCase($event)"

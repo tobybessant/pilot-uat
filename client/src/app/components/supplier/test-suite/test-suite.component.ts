@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, AfterViewChecked, ViewChildren } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from "@angular/core";
 import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
@@ -7,7 +7,6 @@ import { TestApiService } from "src/app/services/api/test-api.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
@@ -23,19 +22,10 @@ export class TestSuiteComponent implements OnInit {
   @Output()
   public suiteDeleted = new EventEmitter<number>();
 
-  @ViewChild(DatatableComponent)
-  public table: DatatableComponent;
-
   @ViewChild("testTableContainer")
   public tableContainer;
 
   public tableCanShow: boolean = false;
-
-  public columns: any[] = [
-    { name: "TestID",    prop: "id",       widthPercentage: 10 },
-    { name: "Test Case", prop: "testCase", widthPercentage: 70 },
-    { name: "Status",    prop: "status",   widthPercentage: 20 }
-  ];
 
   public tests: ITestResponse[] = [];
   public newTestCase: string = "";
@@ -118,9 +108,9 @@ export class TestSuiteComponent implements OnInit {
   public async testSuiteUpdated(test: ITestResponse) {
     await this.fetchTestsForActiveSuite();
     if (this.activeSuite) {
-      const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);
-      this.table.selected.push(this.tests[existingSelectionIndex]);
-      console.log(this.table.selected);
+      // const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);
+      // this.table.selected.push(this.tests[existingSelectionIndex]);
+      // console.log(this.table.selected);
     }
   }
 
@@ -133,28 +123,28 @@ export class TestSuiteComponent implements OnInit {
     // not being contained within the screen without scrolling. Delaying the load
     // forces it to consider the size of the card before loading data in.
     setTimeout(() => {
-      this.calculateColumnWidths();
+      // this.calculateColumnWidths();
       this.tableCanShow = true;
       this.spinner.hide("testCaseSpinner");
     }, 1000);
   }
 
-  private calculateColumnWidths() {
-    if (this.tableContainer) {
-      const width = this.tableContainer.nativeElement.clientWidth;
-      let currentPercentageTotal = 0;
+  // private calculateColumnWidths() {
+  //   if (this.tableContainer) {
+  //     const width = this.tableContainer.nativeElement.clientWidth;
+  //     let currentPercentageTotal = 0;
 
-      // convert widthPercentage property into px value
-      for (const column of this.columns) {
-        if (column.widthPercentage) {
-          currentPercentageTotal += column.widthPercentage;
-          column.width = width * (column.widthPercentage / 100);
-        }
-      }
+  //     // convert widthPercentage property into px value
+  //     for (const column of this.columns) {
+  //       if (column.widthPercentage) {
+  //         currentPercentageTotal += column.widthPercentage;
+  //         column.width = width * (column.widthPercentage / 100);
+  //       }
+  //     }
 
-      if (currentPercentageTotal > 100) {
-        throw new Error("Summed column width proportions are larger than 100");
-      }
-    }
-  }
+  //     if (currentPercentageTotal > 100) {
+  //       throw new Error("Summed column width proportions are larger than 100");
+  //     }
+  //   }
+  // }
 }
