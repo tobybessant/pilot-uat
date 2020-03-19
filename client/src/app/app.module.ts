@@ -27,8 +27,8 @@ import { ProjectComponent } from "./components/supplier/project/project.componen
 import { ConfirmationPromptComponent } from "./components/common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteListComponent } from "./components/supplier/test-suite-list/test-suite-list.component";
 import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.component";
-import { ProjectSettingsComponent } from './components/supplier/project-settings/project-settings.component';
-import { TestCaseComponent } from './components/supplier/test-case/test-case.component';
+import { ProjectSettingsComponent } from "./components/supplier/project-settings/project-settings.component";
+import { TestCaseComponent } from "./components/supplier/test-case/test-case.component";
 
 @NgModule({
   declarations: [
