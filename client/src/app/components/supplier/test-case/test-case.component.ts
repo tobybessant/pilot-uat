@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
@@ -12,6 +12,7 @@ import { TestApiService } from "src/app/services/api/test-api.service";
 })
 export class TestCaseComponent implements OnInit {
 
+  @Input()
   public test: ITestResponse;
 
   @Output()

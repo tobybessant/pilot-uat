@@ -7,7 +7,6 @@ import { TestApiService } from "src/app/services/api/test-api.service";
 import { ITestResponse } from "src/app/models/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
-import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-test-suite",
@@ -37,12 +36,10 @@ export class TestSuiteComponent implements OnInit {
     private readonly testSuiteApiService: TestSuiteApiService,
     private readonly testApiService: TestApiService,
     private readonly activeTestSuiteService: ActiveTestSuiteService,
-    private readonly activeTestCaseService: ActiveTestCaseService,
-    private readonly spinner: NgxSpinnerService
+    private readonly activeTestCaseService: ActiveTestCaseService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.spinner.show("testCaseSpinner");
     this.activeTestSuiteService.getSubject().subscribe((suite) => {
       this.updateActiveSuite(suite);
     });
@@ -52,8 +49,6 @@ export class TestSuiteComponent implements OnInit {
     if (!this.activeSuite) {
       this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
     }
-
-    this.loadAndRenderTable();
   }
 
   public getSuiteId(): number | string {
@@ -119,34 +114,4 @@ export class TestSuiteComponent implements OnInit {
   public newCaseSelected({ selected }) {
     this.activeTestCaseService.setTestCase(selected[0]);
   }
-
-  private loadAndRenderTable() {
-    // NOTE: this is in place to fix the data table from loading before the card and
-    // not being contained within the screen without scrolling. Delaying the load
-    // forces it to consider the size of the card before loading data in.
-    setTimeout(() => {
-      // this.calculateColumnWidths();
-      this.tableCanShow = true;
-      this.spinner.hide("testCaseSpinner");
-    }, 3000);
-  }
-
-  // private calculateColumnWidths() {
-  //   if (this.tableContainer) {
-  //     const width = this.tableContainer.nativeElement.clientWidth;
-  //     let currentPercentageTotal = 0;
-
-  //     // convert widthPercentage property into px value
-  //     for (const column of this.columns) {
-  //       if (column.widthPercentage) {
-  //         currentPercentageTotal += column.widthPercentage;
-  //         column.width = width * (column.widthPercentage / 100);
-  //       }
-  //     }
-
-  //     if (currentPercentageTotal > 100) {
-  //       throw new Error("Summed column width proportions are larger than 100");
-  //     }
-  //   }
-  // }
 }

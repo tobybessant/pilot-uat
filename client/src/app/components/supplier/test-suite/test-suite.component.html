@@ -32,18 +32,6 @@
 
   <div class="tests">
     <div class="tableContainer" #testTableContainer>
-      <!-- <ngx-spinner
-        *ngIf="activeSuite"
-        name="testCaseSpinner"
-        bdOpacity="0"
-        bdColor="rgba(0,0,0,0)"
-        size="default"
-        color="rgba(1,1,1,0.5)"
-        type="cube-transition"
-        [fullScreen]="false"
-      >
-        <p>Loading...</p>
-      </ngx-spinner> -->
       <mat-accordion [multi]="true">
         <mat-expansion-panel *ngFor="let test of tests">
           <mat-expansion-panel-header>
@@ -54,14 +42,14 @@
               {{ test.testCase }}
             </mat-panel-description>
           </mat-expansion-panel-header>
-          {{ test.status }}
+          <app-test-case
+            (testDeleted)="updateSelectedTestCase($event)"
+            (testUpdated)="testSuiteUpdated($event)"
+            [test]="test"
+          >
+          </app-test-case>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
-    <!-- <app-test-case
-      (testDeleted)="updateSelectedTestCase($event)"
-      (testUpdated)="testSuiteUpdated($event)"
-    >
-    </app-test-case> -->
   </div>
 </div>
