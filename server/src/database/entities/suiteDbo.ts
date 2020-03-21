@@ -1,25 +1,25 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { ProjectDbo } from "./projectDbo";
-import { TestDbo } from "./testDbo";
+import { CaseDbo } from "./caseDbo";
 
-export const TABLE_NAME: string = "TestSuite";
+export const TABLE_NAME: string = "Suite";
 @Entity({
     name: TABLE_NAME
 })
-export class TestSuiteDbo {
+export class SuiteDbo {
 
     @PrimaryGeneratedColumn()
     id!: string;
 
     @Column()
-    suiteName!: string;
+    title!: string;
 
-    @ManyToOne(type => ProjectDbo, project => project.testSuites, { onDelete: "CASCADE" })
+    @ManyToOne(type => ProjectDbo, project => project.suites, { onDelete: "CASCADE" })
     project!: ProjectDbo;
 
     @CreateDateColumn()
     createdDate!: Date;
 
-    @OneToMany(type => TestDbo, test => test.suite, { onDelete: "CASCADE" })
-    tests!: TestDbo[];
+    @OneToMany(type => CaseDbo, test => test.suite, { onDelete: "CASCADE" })
+    cases!: CaseDbo[];
 }

@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "./api.service";
-import { IApiResponse } from "src/app/models/response/api-response.interface";
-import { ICreateAccountRequest } from "src/app/models/request/common/create-account.interface";
-import { ISignInRequest } from "src/app/models/request/common/sign-in.interface";
-import { ISignInResponse } from "src/app/models/response/common/sign-in.interface";
-import { ICreateAccountResponse } from "src/app/models/response/common/create-account.interface";
+import { IApiResponse } from "src/app/models/api/response/api-response.interface";
+import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
+import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interface";
+import { ISignInResponse } from "src/app/models/api/response/common/sign-in.interface";
+import { ICreateAccountResponse } from "src/app/models/api/response/common/create-account.interface";
 import { SessionService } from "../session.service";
 
 @Injectable({

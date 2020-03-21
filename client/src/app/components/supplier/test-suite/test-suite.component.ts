@@ -1,14 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, AfterViewChecked, ViewChildren } from "@angular/core";
-import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from "@angular/core";
+import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
-import { TestApiService } from "src/app/services/api/test-api.service";
-import { ITestResponse } from "src/app/models/response/supplier/test.interface";
+import { CaseApiService } from "src/app/services/api/case-api.service";
+import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable";
-import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-test-suite",
@@ -17,40 +15,31 @@ import { NgxSpinnerService } from "ngx-spinner";
 })
 export class TestSuiteComponent implements OnInit {
 
+  panelOpenState = false;
+
   @Input()
-  public activeSuite: ITestSuiteResponse;
+  public activeSuite: ISuiteResponse;
 
   @Output()
   public suiteDeleted = new EventEmitter<number>();
-
-  @ViewChild(DatatableComponent)
-  public table: DatatableComponent;
 
   @ViewChild("testTableContainer")
   public tableContainer;
 
   public tableCanShow: boolean = false;
 
-  public columns: any[] = [
-    { name: "TestID",    prop: "id",       widthPercentage: 10 },
-    { name: "Test Case", prop: "testCase", widthPercentage: 70 },
-    { name: "Status",    prop: "status",   widthPercentage: 20 }
-  ];
-
-  public tests: ITestResponse[] = [];
+  public cases: ICaseResponse[] = [];
   public newTestCase: string = "";
 
   constructor(
-    private dialogService: NbDialogService,
-    private testSuiteApiService: TestSuiteApiService,
-    private testApiService: TestApiService,
-    private activeTestSuiteService: ActiveTestSuiteService,
-    private activeTestCaseService: ActiveTestCaseService,
-    private spinner: NgxSpinnerService
+    private readonly dialogService: NbDialogService,
+    private readonly testSuiteApiService: TestSuiteApiService,
+    private readonly testApiService: CaseApiService,
+    private readonly activeTestSuiteService: ActiveTestSuiteService,
+    private readonly activeTestCaseService: ActiveTestCaseService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.spinner.show("testCaseSpinner");
     this.activeTestSuiteService.getSubject().subscribe((suite) => {
       this.updateActiveSuite(suite);
     });
@@ -60,8 +49,6 @@ export class TestSuiteComponent implements OnInit {
     if (!this.activeSuite) {
       this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
     }
-
-    this.loadAndRenderTable();
   }
 
   public getSuiteId(): number | string {
@@ -69,10 +56,10 @@ export class TestSuiteComponent implements OnInit {
   }
 
   public getSuiteName(): string {
-    return this.activeSuite ? this.activeSuite.suiteName : "";
+    return this.activeSuite ? this.activeSuite.title : "";
   }
 
-  private async updateActiveSuite(suite: ITestSuiteResponse) {
+  private async updateActiveSuite(suite: ISuiteResponse) {
     this.activeSuite = suite;
     this.fetchTestsForActiveSuite();
   }
@@ -80,7 +67,7 @@ export class TestSuiteComponent implements OnInit {
   public promptDeleteSuite() {
     this.dialogService.open(ConfirmationPromptComponent, {
       context: {
-        bodyText: `You are about to delete this suite (${this.activeSuite.suiteName}).`,
+        bodyText: `You are about to delete this suite (${this.activeSuite.title}).`,
         confirmButtonText: "Delete",
         confirmAction: () => this.deleteSuite()
       }
@@ -96,7 +83,7 @@ export class TestSuiteComponent implements OnInit {
     if (this.newTestCase) {
       await this.testApiService.addTest({
         suiteId: this.activeSuite.id,
-        testCase: this.newTestCase
+        title: this.newTestCase
       });
       this.newTestCase = "";
       this.fetchTestsForActiveSuite();
@@ -106,7 +93,7 @@ export class TestSuiteComponent implements OnInit {
   private async fetchTestsForActiveSuite() {
     if (this.activeSuite) {
       const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
-      this.tests = response.payload;
+      this.cases = response.payload;
     }
   }
 
@@ -115,46 +102,16 @@ export class TestSuiteComponent implements OnInit {
     this.activeTestCaseService.setTestCase(null);
   }
 
-  public async testSuiteUpdated(test: ITestResponse) {
+  public async testSuiteUpdated(test: ICaseResponse) {
     await this.fetchTestsForActiveSuite();
     if (this.activeSuite) {
-      const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);
-      this.table.selected.push(this.tests[existingSelectionIndex]);
-      console.log(this.table.selected);
+      // const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);
+      // this.table.selected.push(this.tests[existingSelectionIndex]);
+      // console.log(this.table.selected);
     }
   }
 
   public newCaseSelected({ selected }) {
     this.activeTestCaseService.setTestCase(selected[0]);
-  }
-
-  private loadAndRenderTable() {
-    // NOTE: this is in place to fix the data table from loading before the card and
-    // not being contained within the screen without scrolling. Delaying the load
-    // forces it to consider the size of the card before loading data in.
-    setTimeout(() => {
-      this.calculateColumnWidths();
-      this.tableCanShow = true;
-      this.spinner.hide("testCaseSpinner");
-    }, 1000);
-  }
-
-  private calculateColumnWidths() {
-    if (this.tableContainer) {
-      const width = this.tableContainer.nativeElement.clientWidth;
-      let currentPercentageTotal = 0;
-
-      // convert widthPercentage property into px value
-      for (const column of this.columns) {
-        if (column.widthPercentage) {
-          currentPercentageTotal += column.widthPercentage;
-          column.width = width * (column.widthPercentage / 100);
-        }
-      }
-
-      if (currentPercentageTotal > 100) {
-        throw new Error("Summed column width proportions are larger than 100");
-      }
-    }
   }
 }

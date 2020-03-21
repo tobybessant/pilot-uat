@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { IApiResponse } from "src/app/models/response/api-response.interface";
+import { IApiResponse } from "src/app/models/api/response/api-response.interface";
 
 @Injectable({
   providedIn: "root"

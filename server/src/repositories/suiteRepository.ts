@@ -1,27 +1,26 @@
 import { injectable } from "tsyringe";
 import { EntityRepository, Repository } from "typeorm";
-import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
+import { SuiteDbo } from "../database/entities/suiteDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { ProjectDbo } from "../database/entities/projectDbo";
-import { TestDbo } from "../database/entities/testDbo";
 
 @injectable()
 @EntityRepository()
 export class TestSuiteRepository {
-  private baseTestSuiteRepository: Repository<TestSuiteDbo>;
+  private baseTestSuiteRepository: Repository<SuiteDbo>;
 
   constructor(private repositoryService: RepositoryService) {
-    this.baseTestSuiteRepository = repositoryService.getRepositoryFor(TestSuiteDbo);
+    this.baseTestSuiteRepository = repositoryService.getRepositoryFor(SuiteDbo);
   }
 
-  public async getTestSuiteById(id: string): Promise<TestSuiteDbo | undefined> {
+  public async getTestSuiteById(id: string): Promise<SuiteDbo | undefined> {
     return this.baseTestSuiteRepository.findOne({ id });
   }
 
-  public async addTestSuite(project: ProjectDbo, suiteName: string): Promise<TestSuiteDbo | undefined> {
+  public async addTestSuite(project: ProjectDbo, title: string): Promise<SuiteDbo | undefined> {
     return this.baseTestSuiteRepository.save({
       project,
-      suiteName
+      title
     });
   }
 

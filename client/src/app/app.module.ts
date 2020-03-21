@@ -12,8 +12,9 @@ import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbActionsModule, NbTreeGridModule, NbSelectModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
-import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { NgxSpinnerModule } from "ngx-spinner";
+
+import { MatExpansionModule } from "@angular/material/expansion";
 
 import { HttpClientModule } from "@angular/common/http";
 
@@ -29,6 +30,7 @@ import { TestSuiteListComponent } from "./components/supplier/test-suite-list/te
 import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.component";
 import { ProjectSettingsComponent } from "./components/supplier/project-settings/project-settings.component";
 import { TestCaseComponent } from "./components/supplier/test-case/test-case.component";
+import { TestStepListComponent } from './components/supplier/test-step-list/test-step-list.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { TestCaseComponent } from "./components/supplier/test-case/test-case.com
     TestSuiteListComponent,
     TestSuiteComponent,
     ProjectSettingsComponent,
-    TestCaseComponent
+    TestCaseComponent,
+    TestStepListComponent
   ],
   imports: [
     /* Angular */
@@ -74,8 +77,8 @@ import { TestCaseComponent } from "./components/supplier/test-case/test-case.com
     NbButtonModule,
 
     /* Other Libs */
-    NgxDatatableModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    MatExpansionModule
   ],
   providers: [
     {

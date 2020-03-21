@@ -2,13 +2,13 @@ import { injectable } from "tsyringe";
 import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
-import { TestSuiteRepository } from "../repositories/testSuiteRepository";
+import { TestSuiteRepository } from "../repositories/suiteRepository";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { ITestSuiteResponse } from "../dto/supplier/testSuite";
-import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
+import { ISuiteResponse } from "../dto/supplier/suite";
+import { SuiteDbo } from "../database/entities/suiteDbo";
 
 @injectable()
 @Controller("suite")
@@ -23,7 +23,7 @@ export class TestSuiteController {
   @Post("create")
   @Middleware(PermittedAccountTypes.are(["Supplier"]))
   public async createTestSuite(req: Request, res: Response) {
-    const { suiteName, projectId } = req.body;
+    const { title, projectId } = req.body;
 
     try {
       const project = await this.projectsRepository.getProjectById(projectId);
@@ -31,7 +31,7 @@ export class TestSuiteController {
         throw new Error("Project does not exist");
       }
 
-      const suite = await this.testSuiteRepository.addTestSuite(project, suiteName);
+      const suite = await this.testSuiteRepository.addTestSuite(project, title);
 
       if(!suite) {
         throw new Error("Failed to add suite");
@@ -40,13 +40,13 @@ export class TestSuiteController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: TestSuiteDbo): ITestSuiteResponse =>
+        payload: ((record: SuiteDbo): ISuiteResponse =>
         ({
-          suiteName: record.suiteName,
+          title: record.title,
           id: record.id
         })
       )(suite)
-      } as IApiResponse<ITestSuiteResponse>);
+      } as IApiResponse<ISuiteResponse>);
     } catch (error) {
       res.status(INTERNAL_SERVER_ERROR);
       res.json({
@@ -67,10 +67,10 @@ export class TestSuiteController {
         errors: [],
         payload: testSuites.map(record =>
           ({
-            suiteName: record.suiteName,
+            title: record.title,
             id: record.id
           }))
-      } as IApiResponse<ITestSuiteResponse[]>);
+      } as IApiResponse<ISuiteResponse[]>);
     } catch (error) {
       res.status(INTERNAL_SERVER_ERROR);
       res.json({

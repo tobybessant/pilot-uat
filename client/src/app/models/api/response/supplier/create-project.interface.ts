@@ -1,3 +1,3 @@
 export interface ICreateProjectResponse {
-  projectName: string;
+  title: string;
 }

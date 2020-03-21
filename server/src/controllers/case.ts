@@ -1,49 +1,48 @@
 import { Controller, ClassMiddleware, Post, Delete } from "@overnightjs/core";
 import { injectable } from "tsyringe";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { TestRepository } from "../repositories/testRepository";
+import { CaseRepository } from "../repositories/caseRepository";
 import { Request, Response } from "express";
-import { TestSuiteRepository } from "../repositories/testSuiteRepository";
-import { TestDbo } from "../database/entities/testDbo";
-import { ITestResponse } from "../dto/supplier/test";
+import { TestSuiteRepository } from "../repositories/suiteRepository";
+import { CaseDbo } from "../database/entities/caseDbo";
+import { ICaseResponse } from "../dto/supplier/case";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 
 @injectable()
-@Controller("test")
+@Controller("case")
 @ClassMiddleware(checkAuthentication)
 export class TestController {
   constructor(
-    private testRepository: TestRepository,
+    private testRepository: CaseRepository,
     private suiteRepository: TestSuiteRepository
   ) { }
 
 
   @Post("create")
   public async addTest(req: Request, res: Response) {
-    const { testCase, suiteId } = req.body;
+    const { title, suiteId } = req.body;
 
     const suite = await this.suiteRepository.getTestSuiteById(suiteId);
     if (suite) {
-      const test = await this.testRepository.addTest(suite, testCase);
+      const test = await this.testRepository.addCase(suite, title);
 
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: TestDbo) =>
+        payload: ((record: CaseDbo) =>
           ({
             id: record.id,
-            testCase: record.testCase,
-            status: record.status.status
+            title: record.title
           })
         )(test)
-      } as IApiResponse<ITestResponse>);
+      } as IApiResponse<ICaseResponse>);
 
     } else {
       res.status(INTERNAL_SERVER_ERROR);
       res.json({
         errors: ["Failure adding suite"],
-      } as IApiResponse<ITestResponse>);
+      } as IApiResponse<ICaseResponse>);
     }
   }
 
@@ -52,7 +51,7 @@ export class TestController {
     const { suiteId } = req.body;
 
     try {
-      const tests = await this.testRepository.getTestsForTestSuite(suiteId);
+      const tests = await this.testRepository.getCasesForTestSuite(suiteId);
 
       res.status(OK);
       res.json({
@@ -60,31 +59,29 @@ export class TestController {
         payload: tests!.map(t =>
           ({
             id: t.id,
-            testCase: t.testCase,
-            status: t.status.status
+            title: t.title
           }))
-      } as IApiResponse<ITestResponse[]>);
+      } as IApiResponse<ICaseResponse[]>);
     } catch (error) { }
   }
 
   @Post("update")
   public async updateTest(req: Request, res: Response) {
-    const test: ITestResponse = req.body;
+    const test: ICaseResponse = req.body;
 
     try {
-      const savedTest = await this.testRepository.updateTest(test);
+      const savedTest = await this.testRepository.updateCase(test);
 
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: TestDbo) =>
+        payload: ((record: CaseDbo) =>
           ({
             id: record.id,
-            testCase: record.testCase,
-            status: record.status.status
+            title: record.title
           })
         )(savedTest)
-      } as IApiResponse<ITestResponse>);
+      } as IApiResponse<ICaseResponse>);
     } catch(error) {
       res.status(BAD_REQUEST);
       res.json({
@@ -98,7 +95,7 @@ export class TestController {
     const testId = req.params.id;
 
     try {
-      await this.testRepository.deleteTestById(testId);
+      await this.testRepository.deleteCaseById(testId);
       res.status(OK);
       res.json({
         errors: []

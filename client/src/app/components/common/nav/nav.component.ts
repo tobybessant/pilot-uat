@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SessionService } from "src/app/services/session.service";
-import { IUserResponse } from "src/app/models/response/common/user.interface";
+import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 import { NbMenuService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
 import { Router } from "@angular/router";

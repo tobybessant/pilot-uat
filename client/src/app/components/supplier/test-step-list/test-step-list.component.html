@@ -1,0 +1,23 @@
+<div class="steps">
+  <div class="timeline" *ngFor="let step of steps">
+    <div class="container right">
+      <div class="content">
+        <p>{{ step.description }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="timeline new-step-input">
+    <div class="container right">
+      <div class="content">
+        <input
+          nbInput
+          fullWidth
+          type="text"
+          placeholder="Next Step"
+          [(ngModel)]="newStepDescription"
+          (keyup.enter)="addTestToCase()"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, ManyToMany, JoinTable, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany } from "typeorm";
 import { OrganisationDbo } from "./organisationDbo";
-import { UserProjectRoleDbo } from "./userProjectRole";
-import { TestSuiteDbo } from "./testSuiteDbo";
-// import { TestSuiteDbo } from "./testSuiteDbo";
-// import { TestDbo } from "./testDbo";
+import { UserProjectRoleDbo } from "./userProjectRoleDbo";
+import { SuiteDbo } from "./suiteDbo";
 
 export const TABLE_NAME: string = "Project";
 @Entity({
@@ -14,7 +12,7 @@ export class ProjectDbo {
     id!: string;
 
     @Column()
-    projectName!: string;
+    title!: string;
 
     @ManyToOne(type => OrganisationDbo)
     organisation!: OrganisationDbo;
@@ -22,8 +20,8 @@ export class ProjectDbo {
     @OneToMany(type => UserProjectRoleDbo, role => role.project, { eager: true, onDelete: "CASCADE" })
     users!: UserProjectRoleDbo[];
 
-    @OneToMany(type => TestSuiteDbo, suite => suite.project, { eager: true, onDelete: "CASCADE" })
-    testSuites!: TestSuiteDbo[];
+    @OneToMany(type => SuiteDbo, suite => suite.project, { eager: true, onDelete: "CASCADE" })
+    suites!: SuiteDbo[];
 
     @CreateDateColumn()
     createdDate!: Date;

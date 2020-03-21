@@ -2,12 +2,12 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
 import { NbMenuService, NbMenuItem, NbDialogService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
-import { IProjectResponse } from "src/app/models/response/supplier/project.interface";
+import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
-import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
+import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { NavbarService } from "src/app/services/navbar.service";
 
@@ -20,7 +20,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   public project: IProjectResponse;
   public fetchAttemptComplete = false;
-  public activeSuite: ITestSuiteResponse;
+  public activeSuite: ISuiteResponse;
   public projectSettings: NbMenuItem[] = [];
 
   constructor(
@@ -53,7 +53,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
       this.project = response.payload;
       this.setActiveSuite(response.payload.suites[0]);
     }
-    this.navbarService.setHeader(response.payload.projectName);
+    this.navbarService.setHeader(response.payload.title);
     this.fetchAttemptComplete = true;
   }
 
@@ -71,7 +71,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   public async addSuiteToProject(suiteName: string) {
     await this.testSuiteApiService.addTestSuite({
-      suiteName,
+      title: suiteName,
       projectId: this.project.id
     });
     await this.fetchSuites();
@@ -92,7 +92,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.setActiveSuite(this.project.suites[newSelectedIndex]);
   }
 
-  private setActiveSuite(suite: ITestSuiteResponse) {
+  private setActiveSuite(suite: ISuiteResponse) {
     this.activeTestSuiteService.setSuite(suite);
   }
 }

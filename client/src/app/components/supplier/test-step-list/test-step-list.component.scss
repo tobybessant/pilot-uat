@@ -1,0 +1,61 @@
+p {
+  margin: 0;
+}
+
+/* The actual timeline (the vertical ruler) */
+.timeline {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* The actual timeline (the vertical ruler) */
+.timeline::after {
+  content: "";
+  left: 31px;
+  position: absolute;
+  width: 2px;
+  background-color: var(--divider-color);
+  top: 0;
+  bottom: 0;
+  margin-left: -3px;
+}
+
+/* The circles on the timeline */
+.container::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border: 2px solid var(--divider-color);
+  top: 34%;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* The actual content */
+.content {
+  padding: 10px 50px;
+  position: relative;
+}
+
+/* Full-width containers */
+.container {
+  width: 100%;
+  left: 50%;
+}
+
+/* Make sure all circles are at the same spot */
+.left::after,
+.right::after {
+  left: 22px;
+}
+
+.new-step-input {
+  padding-top: 14px;
+
+  .container::after {
+    top: 50%;
+  }
+}

@@ -7,7 +7,13 @@
     <div class="suite-details">
       <h5>{{ getSuiteId() }} | {{ getSuiteName() }}</h5>
     </div>
-    <button nbButton ghost size="medium" status="danger" (click)="promptDeleteSuite()">
+    <button
+      nbButton
+      ghost
+      size="medium"
+      status="danger"
+      (click)="promptDeleteSuite()"
+    >
       <nb-icon icon="trash-2-outline"></nb-icon>
       Delete Suite
     </button>
@@ -26,40 +32,24 @@
 
   <div class="tests">
     <div class="tableContainer" #testTableContainer>
-      <ngx-spinner
-        *ngIf="activeSuite"
-        name="testCaseSpinner"
-        bdOpacity="0"
-        bdColor="rgba(0,0,0,0)"
-        size="default"
-        color="rgba(1,1,1,0.5)"
-        type="cube-transition"
-        [fullScreen]="false"
-      >
-        <p>Loading...</p>
-      </ngx-spinner>
-
-      <ngx-datatable
-        *ngIf="tableCanShow"
-        class="material"
-        [rows]="tests"
-        [columns]="columns"
-        columnMode="standard"
-        headerHeight="50"
-        footerHeight="50"
-        rowHeight="auto"
-        [scrollbarV]="true"
-        [scrollbarH]="false"
-        selectionType="single"
-        [virtualization]="false"
-        (select)="newCaseSelected($event)"
-      >
-      </ngx-datatable>
+      <mat-accordion [multi]="true">
+        <mat-expansion-panel *ngFor="let case of cases">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ case.id }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ case.title }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-test-case
+            (testDeleted)="updateSelectedTestCase($event)"
+            (testUpdated)="testSuiteUpdated($event)"
+            [case]="case"
+          >
+          </app-test-case>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
-    <app-test-case 
-    (testDeleted)="updateSelectedTestCase($event)"
-    (testUpdated)="testSuiteUpdated($event)"
-    >
-    </app-test-case>
   </div>
 </div>

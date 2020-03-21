@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "./api.service";
-import { IApiResponse } from "src/app/models/response/api-response.interface";
-import { IUserResponse } from "src/app/models/response/common/user.interface";
+import { IApiResponse } from "src/app/models/api/response/api-response.interface";
+import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 
 @Injectable({
   providedIn: "root"
