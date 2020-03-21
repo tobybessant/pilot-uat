@@ -1,3 +1,9 @@
-<div *ngFor="let step of steps">
-  {{ step.description }}
+<div class="steps">
+  <div class="timeline" *ngFor="let step of steps">
+    <div class="container right">
+      <div class="content">
+        <p>{{ step.description }}</p>
+      </div>
+    </div>
+  </div>
 </div>

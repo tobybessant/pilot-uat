@@ -1,5 +1,4 @@
 import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
-import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
 import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { NbDialogService } from "@nebular/theme";
