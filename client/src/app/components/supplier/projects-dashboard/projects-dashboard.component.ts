@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
-import { IProjectResponse } from "src/app/models/response/supplier/project.interface";
-import { ICreateProjectResponse } from "src/app/models/response/supplier/create-project.interface";
+import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
+import { ICreateProjectResponse } from "src/app/models/api/response/supplier/create-project.interface";
 
 @Component({
   selector: "app-projects-dashboard",
@@ -43,7 +43,7 @@ export class ProjectsDashboardComponent implements OnInit {
 
   public async addProject() {
     const response = await this.projectsApiService.addProject({
-      projectName: this.newProjectName
+      title: this.newProjectName
     });
     this.newProjectName = "";
     await this.getUserProjects();

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ITestResponse } from "../models/response/supplier/test.interface";
+import { ICaseResponse } from "../models/api/response/supplier/test.interface";
 import { Subject, Observable } from "rxjs";
 
 @Injectable({
@@ -7,17 +7,17 @@ import { Subject, Observable } from "rxjs";
 })
 export class ActiveTestCaseService {
 
-  private subject = new Subject<ITestResponse>();
-  private currentTestCase: ITestResponse;
+  private subject = new Subject<ICaseResponse>();
+  private currentTestCase: ICaseResponse;
 
   constructor() { }
 
-  async setTestCase(test: ITestResponse) {
+  async setTestCase(test: ICaseResponse) {
     this.currentTestCase = test;
     this.subject.next(test);
   }
 
-  public getSubject(): Observable<ITestResponse> {
+  public getSubject(): Observable<ICaseResponse> {
     return this.subject.asObservable();
   }
 

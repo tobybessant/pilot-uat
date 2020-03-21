@@ -3,7 +3,7 @@ import { NbDialogService } from "@nebular/theme";
 import { ProjectApiService } from "src/app/services/api/project-api.service";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { Router } from "@angular/router";
-import { IProjectResponse } from "src/app/models/response/supplier/project.interface";
+import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 
 @Component({
   selector: "app-project-settings",
@@ -35,7 +35,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         hasBackdrop: true,
         autoFocus: false,
         context: {
-          bodyText: `You are about to delete this project (${this.project.projectName}).`,
+          bodyText: `You are about to delete this project (${this.project.title}).`,
           confirmButtonText: "Delete",
           confirmAction: () => this.deleteProject(this.project.id)
         }

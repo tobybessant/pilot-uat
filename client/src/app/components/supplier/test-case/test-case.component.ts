@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
-import { ITestResponse } from "src/app/models/response/supplier/test.interface";
+import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { NbDialogService } from "@nebular/theme";
 import { TestApiService } from "src/app/services/api/test-api.service";
@@ -13,13 +13,13 @@ import { TestApiService } from "src/app/services/api/test-api.service";
 export class TestCaseComponent implements OnInit {
 
   @Input()
-  public test: ITestResponse;
+  public test: ICaseResponse;
 
   @Output()
   public testDeleted = new EventEmitter<number>();
 
   @Output()
-  public testUpdated = new EventEmitter<ITestResponse>();
+  public testUpdated = new EventEmitter<ICaseResponse>();
 
   constructor(
     private activeTestCaseService: ActiveTestCaseService,
@@ -33,7 +33,7 @@ export class TestCaseComponent implements OnInit {
     });
   }
 
-  private selectedTestChange(test: ITestResponse) {
+  private selectedTestChange(test: ICaseResponse) {
     if (test) {
       this.test = test;
     } else {
@@ -44,7 +44,7 @@ export class TestCaseComponent implements OnInit {
   public promptDeleteTest() {
     this.dialogService.open(ConfirmationPromptComponent, {
       context: {
-        bodyText: `You are about to delete this case (${this.test.testCase}).`,
+        bodyText: `You are about to delete this case (${this.test.title}).`,
         confirmButtonText: "Delete",
         confirmAction: () => this.deleteTest()
       }

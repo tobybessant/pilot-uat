@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from "@angular/core";
-import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
+import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
 import { TestApiService } from "src/app/services/api/test-api.service";
-import { ITestResponse } from "src/app/models/response/supplier/test.interface";
+import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
 
@@ -18,7 +18,7 @@ export class TestSuiteComponent implements OnInit {
   panelOpenState = false;
 
   @Input()
-  public activeSuite: ITestSuiteResponse;
+  public activeSuite: ISuiteResponse;
 
   @Output()
   public suiteDeleted = new EventEmitter<number>();
@@ -28,7 +28,7 @@ export class TestSuiteComponent implements OnInit {
 
   public tableCanShow: boolean = false;
 
-  public tests: ITestResponse[] = [];
+  public tests: ICaseResponse[] = [];
   public newTestCase: string = "";
 
   constructor(
@@ -56,10 +56,10 @@ export class TestSuiteComponent implements OnInit {
   }
 
   public getSuiteName(): string {
-    return this.activeSuite ? this.activeSuite.suiteName : "";
+    return this.activeSuite ? this.activeSuite.title : "";
   }
 
-  private async updateActiveSuite(suite: ITestSuiteResponse) {
+  private async updateActiveSuite(suite: ISuiteResponse) {
     this.activeSuite = suite;
     this.fetchTestsForActiveSuite();
   }
@@ -67,7 +67,7 @@ export class TestSuiteComponent implements OnInit {
   public promptDeleteSuite() {
     this.dialogService.open(ConfirmationPromptComponent, {
       context: {
-        bodyText: `You are about to delete this suite (${this.activeSuite.suiteName}).`,
+        bodyText: `You are about to delete this suite (${this.activeSuite.title}).`,
         confirmButtonText: "Delete",
         confirmAction: () => this.deleteSuite()
       }
@@ -83,7 +83,7 @@ export class TestSuiteComponent implements OnInit {
     if (this.newTestCase) {
       await this.testApiService.addTest({
         suiteId: this.activeSuite.id,
-        testCase: this.newTestCase
+        title: this.newTestCase
       });
       this.newTestCase = "";
       this.fetchTestsForActiveSuite();
@@ -102,7 +102,7 @@ export class TestSuiteComponent implements OnInit {
     this.activeTestCaseService.setTestCase(null);
   }
 
-  public async testSuiteUpdated(test: ITestResponse) {
+  public async testSuiteUpdated(test: ICaseResponse) {
     await this.fetchTestsForActiveSuite();
     if (this.activeSuite) {
       // const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);

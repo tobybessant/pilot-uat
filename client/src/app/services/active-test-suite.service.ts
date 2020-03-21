@@ -1,23 +1,23 @@
 import { Injectable } from "@angular/core";
 import { Subject, Observable } from "rxjs";
-import { ITestSuiteResponse } from "../models/response/supplier/suite.interface";
+import { ISuiteResponse } from "../models/api/response/supplier/suite.interface";
 
 @Injectable({
   providedIn: "root"
 })
 export class ActiveTestSuiteService {
 
-  private subject = new Subject<ITestSuiteResponse>();
-  private currentSuite: ITestSuiteResponse;
+  private subject = new Subject<ISuiteResponse>();
+  private currentSuite: ISuiteResponse;
 
   constructor() { }
 
-  async setSuite(suite: ITestSuiteResponse) {
+  async setSuite(suite: ISuiteResponse) {
     this.currentSuite = suite;
     this.subject.next(suite);
   }
 
-  public getSubject(): Observable<ITestSuiteResponse> {
+  public getSubject(): Observable<ISuiteResponse> {
     return this.subject.asObservable();
   }
 

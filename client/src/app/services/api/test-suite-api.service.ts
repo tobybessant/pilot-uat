@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "./api.service";
-import { ITestSuiteResponse } from "src/app/models/response/supplier/suite.interface";
-import { ICreateTestSuiteRequest } from "src/app/models/request/supplier/create-suite.interface";
-import { IApiResponse } from "src/app/models/response/api-response.interface";
+import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
+import { ICreateSuiteRequest } from "src/app/models/api/request/supplier/create-suite.interface";
+import { IApiResponse } from "src/app/models/api/response/api-response.interface";
 
 @Injectable({
   providedIn: "root"
@@ -13,13 +13,13 @@ export class TestSuiteApiService {
 
   constructor(private apiService: ApiService) { }
 
-  public async addTestSuite(testSuiteData: ICreateTestSuiteRequest): Promise<IApiResponse<ITestSuiteResponse>> {
-    const response = await this.apiService.post<ITestSuiteResponse>(this.baseUrl + "/create", testSuiteData);
+  public async addTestSuite(testSuiteData: ICreateSuiteRequest): Promise<IApiResponse<ISuiteResponse>> {
+    const response = await this.apiService.post<ISuiteResponse>(this.baseUrl + "/create", testSuiteData);
     return response;
   }
 
-  public async getTestSuitesForProject(projectId: number): Promise<IApiResponse<ITestSuiteResponse[]>> {
-    const response = await this.apiService.post<ITestSuiteResponse[]>(this.baseUrl + "/all", { projectId });
+  public async getTestSuitesForProject(projectId: number): Promise<IApiResponse<ISuiteResponse[]>> {
+    const response = await this.apiService.post<ISuiteResponse[]>(this.baseUrl + "/all", { projectId });
     return response;
   }
 
