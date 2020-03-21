@@ -73,8 +73,11 @@ export class ProjectController {
         payload: ((record: ProjectDbo) =>
           ({
             id: record.id,
-            projectName: record.projectName,
-            suites: record.testSuites
+            title: record.title,
+            suites: record.suites.map(s => ({
+              id: s.id,
+              title: s.title
+            }))
           })
         )(project)
       } as IApiResponse<IProjectResponse>);
@@ -99,8 +102,11 @@ export class ProjectController {
         payload: projects!.map(r =>
           ({
             id: r.id,
-            projectName: r.projectName,
-            suites: r.testSuites
+            title: r.title,
+            suites: r.suites.map(s => ({
+              id: s.id,
+              title: s.title
+            }))
           }))
       } as IApiResponse<IProjectResponse[]>)
     } catch (error) {

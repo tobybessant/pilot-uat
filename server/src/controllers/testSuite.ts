@@ -8,7 +8,7 @@ import { ProjectRepository } from "../repositories/projectRepository";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { ITestSuiteResponse } from "../dto/supplier/testSuite";
-import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
+import { SuiteDbo } from "../database/entities/suiteDbo";
 
 @injectable()
 @Controller("suite")
@@ -40,9 +40,9 @@ export class TestSuiteController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: TestSuiteDbo): ITestSuiteResponse =>
+        payload: ((record: SuiteDbo): ITestSuiteResponse =>
         ({
-          suiteName: record.suiteName,
+          title: record.title,
           id: record.id
         })
       )(suite)
@@ -67,7 +67,7 @@ export class TestSuiteController {
         errors: [],
         payload: testSuites.map(record =>
           ({
-            suiteName: record.suiteName,
+            title: record.title,
             id: record.id
           }))
       } as IApiResponse<ITestSuiteResponse[]>);

@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import { TestSuiteController } from "../../src/controllers";
 import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
 import { ITestSuiteResponse } from "../../src/dto/supplier/testSuite";
-import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
+import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { OK } from "http-status-codes";
 
@@ -42,7 +42,7 @@ suite("TestSuiteController", () => {
   suite("Create Test Suite", async () => {
     let createTestSuiteBody: any;
     let projectDbo: ProjectDbo;
-    let testSuiteDbo: TestSuiteDbo;
+    let testSuiteDbo: SuiteDbo;
     let createTestSuiteResponse: ITestSuiteResponse | undefined;
 
     suite("Valid request conditions", () => {
@@ -52,14 +52,14 @@ suite("TestSuiteController", () => {
         };
 
         projectDbo = new ProjectDbo();
-        projectDbo.projectName = "New Project";
+        projectDbo.title = "New Project";
 
-        testSuiteDbo = new TestSuiteDbo();
-        testSuiteDbo.suiteName = createTestSuiteBody.suiteName;
+        testSuiteDbo = new SuiteDbo();
+        testSuiteDbo.title = createTestSuiteBody.suiteName;
         testSuiteDbo.id = "5";
 
         createTestSuiteResponse = {
-          suiteName: testSuiteDbo.suiteName,
+          title: testSuiteDbo.title,
           id: testSuiteDbo.id
         };
 
@@ -89,7 +89,7 @@ suite("TestSuiteController", () => {
 
   suite("Get all test suites for a project", async () => {
     let getTestSuitesBody: any;
-    let testSuiteDboList: TestSuiteDbo[] = [];
+    let testSuiteDboList: SuiteDbo[] = [];
     let getAllTestSuitesResponse: ITestSuiteResponse[] = [];
 
     suite("Valid request conditions", () => {
@@ -99,16 +99,16 @@ suite("TestSuiteController", () => {
         };
 
         for (let i = 0; i < 1; i++) {
-          const ts = new TestSuiteDbo();
+          const ts = new SuiteDbo();
           ts.id = i + "";
-          ts.suiteName = "Suite " + i;
+          ts.title = "Suite " + i;
           testSuiteDboList.push(ts);
         }
 
         for (const suite of testSuiteDboList) {
           getAllTestSuitesResponse.push({
             id: suite.id,
-            suiteName: suite.suiteName
+            title: suite.title
           });
         }
       });
@@ -168,7 +168,7 @@ suite("TestSuiteController", () => {
       .returns(() => body);
   };
 
-  function given_testSuiteRepository_addTestSuite_returns(returns: TestSuiteDbo) {
+  function given_testSuiteRepository_addTestSuite_returns(returns: SuiteDbo) {
     testSuiteRepository
       .setup(tsr => tsr.addTestSuite(It.isAny(), It.isAny()))
       .returns(async () => returns);
@@ -180,7 +180,7 @@ suite("TestSuiteController", () => {
       .returns(async () => returns);
   };
 
-  function given_projectRepository_getTestSuitesForProject_returns(returns: TestSuiteDbo[]) {
+  function given_projectRepository_getTestSuitesForProject_returns(returns: SuiteDbo[]) {
     projectRepository
     .setup(pr => pr.getTestSuitesForProject(It.isAny()))
     .returns(async () => returns);

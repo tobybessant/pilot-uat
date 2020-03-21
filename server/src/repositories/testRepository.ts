@@ -1,55 +1,45 @@
 import { injectable } from "tsyringe";
 import { EntityRepository, Repository } from "typeorm";
-import { TestDbo } from "../database/entities/testDbo";
+import { CaseDbo } from "../database/entities/caseDbo";
 import { RepositoryService } from "../services/repositoryService";
-import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
-import { TestStatusDbo } from "../database/entities/testStatusDbo";
+import { SuiteDbo } from "../database/entities/suiteDbo";
 import { ITestResponse } from "../dto/supplier/test";
 
 @injectable()
 @EntityRepository()
-export class TestRepository {
+export class CaseRepository {
 
-  private baseTestRepository: Repository<TestDbo>;
-  private baseTestStatusRepository: Repository<TestStatusDbo>;
+  private baseCaseRepository: Repository<CaseDbo>;
 
   constructor(private repositoryService: RepositoryService) {
-    this.baseTestRepository = repositoryService.getRepositoryFor(TestDbo);
-    this.baseTestStatusRepository = repositoryService.getRepositoryFor(TestStatusDbo);
+    this.baseCaseRepository = repositoryService.getRepositoryFor(CaseDbo);
   }
 
-  public async addTest(suite: TestSuiteDbo, testCase: string): Promise<TestDbo> {
-    const defaultStatus = await this.baseTestStatusRepository.findOne({ id: 1 });
-
-    const response = await this.baseTestRepository.save({
+  public async addTest(suite: SuiteDbo, testCase: string): Promise<CaseDbo> {
+    const response = await this.baseCaseRepository.save({
       suite,
-      testCase,
-      status: defaultStatus
+      testCase
     });
 
     return response;
   }
 
-  public async getTestsForTestSuite(id: string): Promise<TestDbo[]> {
-    return this.baseTestRepository
-      .createQueryBuilder("test")
-      .leftJoinAndSelect("test.status", "status")
-      .leftJoin("test.suite", "suite")
+  public async getTestsForTestSuite(id: string): Promise<CaseDbo[]> {
+    return this.baseCaseRepository
+      .createQueryBuilder("case")
+      .leftJoin("case.suite", "suite")
       .where("suite.id = :id", { id })
       .getMany();
   }
 
   public async deleteTestById(id: string) {
-    return this.baseTestRepository.delete({ id });
+    return this.baseCaseRepository.delete({ id });
   }
 
-  public async updateTest(test: ITestResponse): Promise<TestDbo> {
-    const status = await this.baseTestStatusRepository.findOne({ status: test.status });
-
-    return this.baseTestRepository.save({
+  public async updateTest(test: ITestResponse): Promise<CaseDbo> {
+    return this.baseCaseRepository.save({
       id: test.id,
-      testCase: test.testCase,
-      status
+      title: test.title
     });
   }
 

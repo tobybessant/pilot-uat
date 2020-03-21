@@ -13,7 +13,7 @@ import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IProjectResponse } from "../../src/dto/supplier/project";
 import { IUserToken } from "../../src/dto/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
-import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
+import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -124,13 +124,14 @@ suite("Project Controller", () => {
     suite("Valid request conditions", () => {
       suiteSetup(() => {
 
-        let testSuite = new TestSuiteDbo();
-        testSuite.suiteName = "Suite 1";
+        const testSuite = new SuiteDbo();
+        testSuite.id = "3";
+        testSuite.title = "Suite 1";
 
         project = new ProjectDbo();
         project.id = "4000";
-        project.projectName = "Getted Project Name"
-        project.testSuites = [ testSuite ];
+        project.title = "Fetched Project Title"
+        project.suites = [ testSuite ];
 
         getProjectBody = {
           id: project.id
@@ -138,14 +139,17 @@ suite("Project Controller", () => {
 
         projectResponse = {
           id: project.id,
-          projectName: project.projectName,
-          suites: project.testSuites
+          title: project.title,
+          suites: project.suites.map(s => ({
+            id: s.id,
+            title: s.title
+          }))
         };
       });
 
       test("Should return project in response body", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
-        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.testSuites, It.isAny());
+        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.suites, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
@@ -210,16 +214,16 @@ suite("Project Controller", () => {
         for (let i = 0; i < 1; i++) {
           const p = new ProjectDbo();
           p.id = i + "";
-          p.projectName = "Project " + i;
-          p.testSuites = []
+          p.title = "Project " + i;
+          p.suites = []
           projects.push(p);
         }
 
         for (const project of projects) {
           projectsResponse.push({
             id: project.id,
-            projectName: project.projectName,
-            suites: project.testSuites
+            title: project.title,
+            suites: project.suites
           });
         }
       });
@@ -321,7 +325,7 @@ suite("Project Controller", () => {
       .returns(async () => returns);
   }
 
-  function given_projectRepository_getTestSuitesForProject_returns_whenGiven(returns: TestSuiteDbo[], whenGiven: any) {
+  function given_projectRepository_getTestSuitesForProject_returns_whenGiven(returns: SuiteDbo[], whenGiven: any) {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(whenGiven))
       .returns(async () => returns);

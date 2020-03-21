@@ -1,10 +1,10 @@
 import { Controller, ClassMiddleware, Post, Delete } from "@overnightjs/core";
 import { injectable } from "tsyringe";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { TestRepository } from "../repositories/testRepository";
+import { CaseRepository } from "../repositories/testRepository";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/testSuiteRepository";
-import { TestDbo } from "../database/entities/testDbo";
+import { CaseDbo } from "../database/entities/caseDbo";
 import { ITestResponse } from "../dto/supplier/test";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
@@ -14,7 +14,7 @@ import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 @ClassMiddleware(checkAuthentication)
 export class TestController {
   constructor(
-    private testRepository: TestRepository,
+    private testRepository: CaseRepository,
     private suiteRepository: TestSuiteRepository
   ) { }
 
@@ -30,11 +30,10 @@ export class TestController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: TestDbo) =>
+        payload: ((record: CaseDbo) =>
           ({
             id: record.id,
-            testCase: record.testCase,
-            status: record.status.status
+            title: record.title
           })
         )(test)
       } as IApiResponse<ITestResponse>);
@@ -60,8 +59,7 @@ export class TestController {
         payload: tests!.map(t =>
           ({
             id: t.id,
-            testCase: t.testCase,
-            status: t.status.status
+            title: t.title
           }))
       } as IApiResponse<ITestResponse[]>);
     } catch (error) { }
@@ -77,11 +75,10 @@ export class TestController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: TestDbo) =>
+        payload: ((record: CaseDbo) =>
           ({
             id: record.id,
-            testCase: record.testCase,
-            status: record.status.status
+            title: record.title
           })
         )(savedTest)
       } as IApiResponse<ITestResponse>);

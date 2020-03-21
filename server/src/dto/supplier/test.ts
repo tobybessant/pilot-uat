@@ -1,5 +1,4 @@
 export interface ITestResponse {
-  testCase: string;
-  status: string;
+  title: string;
   id: string;
 }

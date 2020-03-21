@@ -2,9 +2,9 @@ import { EntityRepository, Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
 import { injectable } from "tsyringe";
 import { ProjectDbo } from "../database/entities/projectDbo";
-import { UserProjectRoleDbo } from "../database/entities/userProjectRole";
+import { UserProjectRoleDbo } from "../database/entities/userProjectRoleDbo";
 import { RepositoryService } from "../services/repositoryService";
-import { TestSuiteDbo } from "../database/entities/testSuiteDbo";
+import { SuiteDbo } from "../database/entities/suiteDbo";
 
 @injectable()
 @EntityRepository()
@@ -22,7 +22,7 @@ export class ProjectRepository {
     // save new project
     const project = new ProjectDbo();
     project.organisation = user.organisations[0];
-    project.projectName = projectName;
+    project.title = projectName;
     const savedProject = await this.baseProjectRepository.save(project);
 
     // save new relationship to user
@@ -58,11 +58,11 @@ export class ProjectRepository {
   }
 
   // TODO: Move this method into test suite repository
-  public async getTestSuitesForProject(id: string): Promise<TestSuiteDbo[]> {
+  public async getTestSuitesForProject(id: string): Promise<SuiteDbo[]> {
     const project = await this.baseProjectRepository
       .createQueryBuilder("project")
-      .leftJoin("project.testSuites", "suites")
-      .addSelect(["suites.suiteName", "suites.id"])
+      .leftJoin("project.suites", "suites")
+      .addSelect(["suites.title", "suites.id"])
       .where("project.id = :id", { id })
       .getOne();
 
@@ -70,6 +70,6 @@ export class ProjectRepository {
       throw new Error("Project does not exist");
     }
 
-    return project.testSuites || [];
+    return project.suites || [];
   }
 }
