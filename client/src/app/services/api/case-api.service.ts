@@ -7,9 +7,9 @@ import { IApiResponse } from "src/app/models/api/response/api-response.interface
 @Injectable({
   providedIn: "root"
 })
-export class TestApiService {
+export class CaseApiService {
 
-  protected readonly baseUrl: string = "/test";
+  protected readonly baseUrl: string = "/case";
 
   constructor(protected apiService: ApiService) { }
 

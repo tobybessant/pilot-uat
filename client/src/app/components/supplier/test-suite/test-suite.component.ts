@@ -3,7 +3,7 @@ import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.inter
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
-import { TestApiService } from "src/app/services/api/test-api.service";
+import { CaseApiService } from "src/app/services/api/case-api.service";
 import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
@@ -34,7 +34,7 @@ export class TestSuiteComponent implements OnInit {
   constructor(
     private readonly dialogService: NbDialogService,
     private readonly testSuiteApiService: TestSuiteApiService,
-    private readonly testApiService: TestApiService,
+    private readonly testApiService: CaseApiService,
     private readonly activeTestSuiteService: ActiveTestSuiteService,
     private readonly activeTestCaseService: ActiveTestCaseService
   ) { }

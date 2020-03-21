@@ -3,7 +3,8 @@ import { ActiveTestCaseService } from "src/app/services/active-test-case.service
 import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { NbDialogService } from "@nebular/theme";
-import { TestApiService } from "src/app/services/api/test-api.service";
+import { CaseApiService } from "src/app/services/api/case-api.service";
+import { StepApiService } from "src/app/services/api/step-api.service";
 
 @Component({
   selector: "app-test-case",
@@ -21,24 +22,17 @@ export class TestCaseComponent implements OnInit {
   @Output()
   public testUpdated = new EventEmitter<ICaseResponse>();
 
+  public steps: any[] = [];
+
   constructor(
-    private activeTestCaseService: ActiveTestCaseService,
-    private testCaseApiService: TestApiService,
+    private testCaseApiService: CaseApiService,
+    private stepApiService: StepApiService,
     private dialogService: NbDialogService
   ) { }
 
-  ngOnInit(): void {
-    this.activeTestCaseService.getSubject().subscribe((test) => {
-      this.selectedTestChange(test);
-    });
-  }
-
-  private selectedTestChange(test: ICaseResponse) {
-    if (test) {
-      this.test = test;
-    } else {
-      this.test = null;
-    }
+  async ngOnInit(): Promise<void> {
+    const response = await this.stepApiService.getStepsforCase(this.test.id);
+    this.steps = response.payload;
   }
 
   public promptDeleteTest() {

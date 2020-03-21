@@ -51,6 +51,10 @@ h5 {
   background: white;
 }
 
+mat-expansion-panel {
+  max-width: 100%;
+}
+
 .mat-expansion-panel-header-title {
   flex-grow: 0;
 }
