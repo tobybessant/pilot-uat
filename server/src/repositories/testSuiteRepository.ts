@@ -18,10 +18,10 @@ export class TestSuiteRepository {
     return this.baseTestSuiteRepository.findOne({ id });
   }
 
-  public async addTestSuite(project: ProjectDbo, suiteName: string): Promise<SuiteDbo | undefined> {
+  public async addTestSuite(project: ProjectDbo, title: string): Promise<SuiteDbo | undefined> {
     return this.baseTestSuiteRepository.save({
       project,
-      suiteName
+      title
     });
   }
 

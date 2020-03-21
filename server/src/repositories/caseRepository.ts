@@ -15,10 +15,10 @@ export class CaseRepository {
     this.baseCaseRepository = repositoryService.getRepositoryFor(CaseDbo);
   }
 
-  public async addTest(suite: SuiteDbo, testCase: string): Promise<CaseDbo> {
+  public async addTest(suite: SuiteDbo, title: string): Promise<CaseDbo> {
     const response = await this.baseCaseRepository.save({
       suite,
-      testCase
+      title
     });
 
     return response;

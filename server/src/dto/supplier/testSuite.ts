@@ -1,4 +1,4 @@
-export interface ITestSuiteResponse {
+export interface ISuiteResponse {
   title: string;
   id: string;
 }

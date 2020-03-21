@@ -4,7 +4,7 @@ import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
 import { TestSuiteController } from "../../src/controllers";
 import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
-import { ITestSuiteResponse } from "../../src/dto/supplier/testSuite";
+import { ISuiteResponse } from "../../src/dto/supplier/testSuite";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { OK } from "http-status-codes";
@@ -43,7 +43,7 @@ suite("TestSuiteController", () => {
     let createTestSuiteBody: any;
     let projectDbo: ProjectDbo;
     let testSuiteDbo: SuiteDbo;
-    let createTestSuiteResponse: ITestSuiteResponse | undefined;
+    let createTestSuiteResponse: ISuiteResponse | undefined;
 
     suite("Valid request conditions", () => {
       suiteSetup(() => {
@@ -89,8 +89,8 @@ suite("TestSuiteController", () => {
 
   suite("Get all test suites for a project", async () => {
     let getTestSuitesBody: any;
-    let testSuiteDboList: SuiteDbo[] = [];
-    let getAllTestSuitesResponse: ITestSuiteResponse[] = [];
+    const testSuiteDboList: SuiteDbo[] = [];
+    const getAllTestSuitesResponse: ISuiteResponse[] = [];
 
     suite("Valid request conditions", () => {
       suiteSetup(() => {

@@ -1,7 +1,7 @@
 import { Controller, ClassMiddleware, Post, Delete } from "@overnightjs/core";
 import { injectable } from "tsyringe";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { CaseRepository } from "../repositories/testRepository";
+import { CaseRepository } from "../repositories/caseRepository";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/testSuiteRepository";
 import { CaseDbo } from "../database/entities/caseDbo";
@@ -21,11 +21,11 @@ export class TestController {
 
   @Post("create")
   public async addTest(req: Request, res: Response) {
-    const { testCase, suiteId } = req.body;
+    const { title, suiteId } = req.body;
 
     const suite = await this.suiteRepository.getTestSuiteById(suiteId);
     if (suite) {
-      const test = await this.testRepository.addTest(suite, testCase);
+      const test = await this.testRepository.addTest(suite, title);
 
       res.status(OK);
       res.json({

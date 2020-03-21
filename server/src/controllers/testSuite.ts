@@ -7,7 +7,7 @@ import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { ITestSuiteResponse } from "../dto/supplier/testSuite";
+import { ISuiteResponse } from "../dto/supplier/testSuite";
 import { SuiteDbo } from "../database/entities/suiteDbo";
 
 @injectable()
@@ -23,7 +23,7 @@ export class TestSuiteController {
   @Post("create")
   @Middleware(PermittedAccountTypes.are(["Supplier"]))
   public async createTestSuite(req: Request, res: Response) {
-    const { suiteName, projectId } = req.body;
+    const { title, projectId } = req.body;
 
     try {
       const project = await this.projectsRepository.getProjectById(projectId);
@@ -31,7 +31,7 @@ export class TestSuiteController {
         throw new Error("Project does not exist");
       }
 
-      const suite = await this.testSuiteRepository.addTestSuite(project, suiteName);
+      const suite = await this.testSuiteRepository.addTestSuite(project, title);
 
       if(!suite) {
         throw new Error("Failed to add suite");
@@ -40,13 +40,13 @@ export class TestSuiteController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: ((record: SuiteDbo): ITestSuiteResponse =>
+        payload: ((record: SuiteDbo): ISuiteResponse =>
         ({
           title: record.title,
           id: record.id
         })
       )(suite)
-      } as IApiResponse<ITestSuiteResponse>);
+      } as IApiResponse<ISuiteResponse>);
     } catch (error) {
       res.status(INTERNAL_SERVER_ERROR);
       res.json({
@@ -70,7 +70,7 @@ export class TestSuiteController {
             title: record.title,
             id: record.id
           }))
-      } as IApiResponse<ITestSuiteResponse[]>);
+      } as IApiResponse<ISuiteResponse[]>);
     } catch (error) {
       res.status(INTERNAL_SERVER_ERROR);
       res.json({

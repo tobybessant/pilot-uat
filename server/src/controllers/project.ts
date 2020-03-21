@@ -30,7 +30,7 @@ export class ProjectController {
     PermittedAccountTypes.are(["Supplier"])
   ])
   public async createProject(req: Request, res: Response) {
-    const { projectName } = req.body;
+    const { title } = req.body;
 
     try {
       const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
@@ -38,13 +38,13 @@ export class ProjectController {
         throw new Error("Error finding user");
       }
 
-      await this.projectRepository.addProject(user, projectName);
+      await this.projectRepository.addProject(user, title);
 
       res.status(CREATED);
       res.json({
         errors: [],
         payload: {
-          projectName
+          title
         }
       } as IApiResponse<ICreateProjectResponse>);
     } catch (error) {
@@ -99,18 +99,14 @@ export class ProjectController {
       res.status(OK);
       res.json({
         errors: [],
-        payload: projects!.map(r =>
+        payload: projects.map(r =>
           ({
             id: r.id,
-            title: r.title,
-            suites: r.suites.map(s => ({
-              id: s.id,
-              title: s.title
-            }))
+            title: r.title
           }))
       } as IApiResponse<IProjectResponse[]>)
     } catch (error) {
-      res.status(BAD_REQUEST);
+      res.status(INTERNAL_SERVER_ERROR);
       res.json({
         errors: [error.message]
       } as IApiResponse<IProjectResponse>);

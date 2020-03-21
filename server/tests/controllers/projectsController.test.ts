@@ -57,7 +57,7 @@ suite("Project Controller", () => {
         }
 
         createProjectResponse = {
-          projectName: createProjectBody.projectName
+          title: createProjectBody.projectName
         }
 
         user = new UserDbo();
