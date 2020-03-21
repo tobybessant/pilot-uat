@@ -6,10 +6,17 @@
       </div>
     </div>
   </div>
-  <div class="timeline">
+  <div class="timeline new-step-input">
     <div class="container right">
       <div class="content">
-        <input type="text" nbInput placeholder="Next Step" />
+        <input
+          nbInput
+          fullWidth
+          type="text"
+          placeholder="Next Step"
+          [(ngModel)]="newStepDescription"
+          (keyup.enter)="addTestToCase()"
+        />
       </div>
     </div>
   </div>

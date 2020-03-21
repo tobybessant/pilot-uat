@@ -28,7 +28,7 @@ export class TestSuiteComponent implements OnInit {
 
   public tableCanShow: boolean = false;
 
-  public tests: ICaseResponse[] = [];
+  public cases: ICaseResponse[] = [];
   public newTestCase: string = "";
 
   constructor(
@@ -93,7 +93,7 @@ export class TestSuiteComponent implements OnInit {
   private async fetchTestsForActiveSuite() {
     if (this.activeSuite) {
       const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
-      this.tests = response.payload;
+      this.cases = response.payload;
     }
   }
 

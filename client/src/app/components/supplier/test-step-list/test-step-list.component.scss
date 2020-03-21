@@ -1,3 +1,7 @@
+p {
+  margin: 0;
+}
+
 /* The actual timeline (the vertical ruler) */
 .timeline {
   position: relative;
@@ -11,7 +15,7 @@
   left: 31px;
   position: absolute;
   width: 2px;
-  background-color: grey;
+  background-color: var(--divider-color);
   top: 0;
   bottom: 0;
   margin-left: -3px;
@@ -24,8 +28,8 @@
   width: 10px;
   height: 10px;
   background-color: white;
-  border: 2px solid grey;
-  top: 42%;
+  border: 2px solid var(--divider-color);
+  top: 34%;
   border-radius: 50%;
   z-index: 1;
 }
@@ -46,4 +50,12 @@
 .left::after,
 .right::after {
   left: 22px;
+}
+
+.new-step-input {
+  padding-top: 14px;
+
+  .container::after {
+    top: 50%;
+  }
 }

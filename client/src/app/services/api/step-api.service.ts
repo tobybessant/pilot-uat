@@ -10,15 +10,14 @@ export class StepApiService {
 
   constructor(private apiService: ApiService) { }
 
-  public async addStepToCase(description: string, caseId: string) {
-    return this.apiService.post<any>(this.baseUrl, {
+  public async addStepToCase(description: string, caseId: number) {
+    return this.apiService.post<any>(this.baseUrl + "/create", {
       description,
       caseId
-     });
+    });
   }
 
   public async getStepsforCase(caseId: number) {
-    console.log(caseId);
     return this.apiService.post<any>(this.baseUrl + "/all", { caseId });
   }
 }

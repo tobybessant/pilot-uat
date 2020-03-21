@@ -33,19 +33,19 @@
   <div class="tests">
     <div class="tableContainer" #testTableContainer>
       <mat-accordion [multi]="true">
-        <mat-expansion-panel *ngFor="let test of tests">
+        <mat-expansion-panel *ngFor="let case of cases">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              {{ test.id }}
+              {{ case.id }}
             </mat-panel-title>
             <mat-panel-description>
-              {{ test.title }}
+              {{ case.title }}
             </mat-panel-description>
           </mat-expansion-panel-header>
           <app-test-case
             (testDeleted)="updateSelectedTestCase($event)"
             (testUpdated)="testSuiteUpdated($event)"
-            [test]="test"
+            [case]="case"
           >
           </app-test-case>
         </mat-expansion-panel>
