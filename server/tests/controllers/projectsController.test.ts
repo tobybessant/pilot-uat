@@ -12,7 +12,7 @@ import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IProjectResponse } from "../../src/dto/supplier/project";
 import { IUserToken } from "../../src/dto/common/userToken";
-import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
+import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 
 suite("Project Controller", () => {

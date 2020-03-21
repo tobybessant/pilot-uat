@@ -7,11 +7,11 @@ export const TABLE_NAME: string = "Step";
 })
 export class StepDbo {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!: string;
 
   @Column({ type: "nvarchar" })
   description!: string;
 
   @ManyToOne(type => CaseDbo, test => test.steps, { onDelete: "CASCADE" })
-  case!: CaseDbo[];
+  case!: CaseDbo;
 }

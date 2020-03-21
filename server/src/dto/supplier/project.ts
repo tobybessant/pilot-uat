@@ -1,4 +1,4 @@
-import { ISuiteResponse } from "./testSuite";
+import { ISuiteResponse } from "./suite";
 
 export interface IProjectResponse {
   id: string;

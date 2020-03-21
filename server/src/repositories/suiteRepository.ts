@@ -3,7 +3,6 @@ import { EntityRepository, Repository } from "typeorm";
 import { SuiteDbo } from "../database/entities/suiteDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { ProjectDbo } from "../database/entities/projectDbo";
-import { CaseDbo } from "../database/entities/caseDbo";
 
 @injectable()
 @EntityRepository()

@@ -2,12 +2,12 @@ import { injectable } from "tsyringe";
 import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
-import { TestSuiteRepository } from "../repositories/testSuiteRepository";
+import { TestSuiteRepository } from "../repositories/suiteRepository";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { ISuiteResponse } from "../dto/supplier/testSuite";
+import { ISuiteResponse } from "../dto/supplier/suite";
 import { SuiteDbo } from "../database/entities/suiteDbo";
 
 @injectable()
