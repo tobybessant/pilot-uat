@@ -21,7 +21,7 @@ export class TestController extends BaseController {
   }
 
   @Post("create")
-  public async addTest(req: Request, res: Response) {
+  public async addCase(req: Request, res: Response) {
     const { title, suiteId } = req.body;
 
     try {
@@ -46,7 +46,7 @@ export class TestController extends BaseController {
   }
 
   @Post()
-  public async getTestsForSuite(req: Request, res: Response) {
+  public async getCasesForSuite(req: Request, res: Response) {
     const { suiteId } = req.body;
 
     try {
@@ -64,7 +64,7 @@ export class TestController extends BaseController {
   }
 
   @Post("update")
-  public async updateTest(req: Request, res: Response) {
+  public async updateCase(req: Request, res: Response) {
     const test: ICaseResponse = req.body;
 
     try {
@@ -80,7 +80,7 @@ export class TestController extends BaseController {
   }
 
   @Delete(":id")
-  public async deleteTestById(req: Request, res: Response) {
+  public async deleteCaseById(req: Request, res: Response) {
     const testId = req.params.id;
 
     try {
