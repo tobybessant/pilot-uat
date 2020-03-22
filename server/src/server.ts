@@ -9,6 +9,7 @@ import { Logger } from "@overnightjs/logger";
 import { DependencyContainer } from "tsyringe"
 
 import { Passport } from "./services/passport/passport";
+import { catchMalformedJson } from "./services/middleware/catchMalformedJson";
 
 class UATPlatformServer extends Server {
 
@@ -21,6 +22,7 @@ class UATPlatformServer extends Server {
 
     // configure express
     this.app.use(bodyParser.json());
+    this.app.use(catchMalformedJson);
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
