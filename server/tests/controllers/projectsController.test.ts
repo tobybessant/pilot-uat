@@ -8,7 +8,7 @@ import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { ICreateProjectResponse } from "../../src/dto/supplier/createProject";
 import { UserRepository } from "../../src/repositories/userRepository";
-import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
+import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND, BAD_REQUEST } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IProjectResponse } from "../../src/dto/supplier/project";
 import { IUserToken } from "../../src/dto/common/userToken";
@@ -53,11 +53,11 @@ suite("Project Controller", () => {
     suite("Valid request conditions", () => {
       suiteSetup(() => {
         createProjectBody = {
-          projectName: "New Project!"
+          title: "New Project!"
         }
 
         createProjectResponse = {
-          title: createProjectBody.projectName
+          title: createProjectBody.title
         }
 
         user = new UserDbo();
@@ -105,13 +105,13 @@ suite("Project Controller", () => {
         }), Times.once());
       });
 
-      test("It should have statusCode 500", async () => {
+      test("It should have statusCode 400", async () => {
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
         given_Request_body_is(createProjectBody);
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
   });
@@ -211,19 +211,17 @@ suite("Project Controller", () => {
           type: "Supplier"
         };
 
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 10; i++) {
           const p = new ProjectDbo();
           p.id = i + "";
           p.title = "Project " + i;
-          p.suites = []
           projects.push(p);
         }
 
         for (const project of projects) {
           projectsResponse.push({
             id: project.id,
-            title: project.title,
-            suites: project.suites
+            title: project.title
           });
         }
       });

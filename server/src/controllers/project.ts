@@ -13,16 +13,19 @@ import { IUserToken } from "../dto/common/userToken";
 import { IProjectResponse } from "../dto/supplier/project";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
+import { BaseController } from "./baseController";
 
 @injectable()
 @Controller("project")
 @ClassMiddleware(checkAuthentication)
-export class ProjectController {
+export class ProjectController extends BaseController {
 
   constructor(
     private projectRepository: ProjectRepository,
     private userRepository: UserRepository
-  ) { }
+  ) {
+    super();
+  }
 
   @Post("create")
   @Middleware([
@@ -40,20 +43,16 @@ export class ProjectController {
 
       await this.projectRepository.addProject(user, title);
 
-      res.status(CREATED);
-      res.json({
-        errors: [],
-        payload: {
-          title
-        }
-      } as IApiResponse<ICreateProjectResponse>);
-    } catch (error) {
-      const errors: string[] = [
-        error.message ? error.message : "Error creating project"
-      ];
+      this.created<ICreateProjectResponse>(res, {
+        title
+      });
 
-      res.status(INTERNAL_SERVER_ERROR);
-      res.json({ errors } as IApiResponse<ICreateProjectResponse>);
+    } catch (error) {
+      if(error.message === "Error finding user") {
+        this.badRequest(res, [ error.message ]);
+        return;
+      }
+      this.serverError(res);
     }
   }
 
@@ -68,25 +67,21 @@ export class ProjectController {
         throw new Error("That project does not exist");
       }
 
-      res.json({
-        errors: [],
-        payload: ((record: ProjectDbo) =>
-          ({
-            id: record.id,
-            title: record.title,
-            suites: record.suites.map(s => ({
-              id: s.id,
-              title: s.title
-            }))
-          })
-        )(project)
-      } as IApiResponse<IProjectResponse>);
-      res.status(OK);
+      this.OK<IProjectResponse>(res, {
+        id: project.id,
+        title: project.title,
+        suites: project.suites.map(s => ({
+          id: s.id,
+          title: s.title
+        }))
+      });
     } catch (error) {
-      res.status(NOT_FOUND);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<IProjectResponse>);
+      if(error.message === "That project does not exist") {
+        this.notFound(res, [error.message]);
+        return;
+      }
+
+      this.serverError(res);
     }
   }
 
@@ -96,20 +91,14 @@ export class ProjectController {
       let projects = await this.projectRepository.getProjectsForUser((req.user as IUserToken).email);
       projects = projects ? projects : [];
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: projects.map(r =>
-          ({
-            id: r.id,
-            title: r.title
-          }))
-      } as IApiResponse<IProjectResponse[]>)
+      this.OK<IProjectResponse[]>(res, projects.map(r =>
+        ({
+          id: r.id,
+          title: r.title
+        }))
+      );
     } catch (error) {
-      res.status(INTERNAL_SERVER_ERROR);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<IProjectResponse>);
+      this.serverError(res);
     }
   }
 
@@ -119,17 +108,9 @@ export class ProjectController {
 
     try {
       const deletedProject = await this.projectRepository.deleteProjectById(projectId);
-      res.status(OK);
-      res.json({
-        errors: []
-      } as unknown as IApiResponse<any>);
-      return;
-
+      this.OK(res);
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+      this.serverError(res);
     }
   }
 }
