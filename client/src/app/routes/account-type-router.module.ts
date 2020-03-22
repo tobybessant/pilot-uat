@@ -28,7 +28,7 @@ export function getRouterForAccountType(sessionService: SessionService, router: 
     return routes;
   }
 
-  if (user.userType.type === "Supplier") {
+  if (user.type === "Supplier") {
     routes = [
       {
         path: "", loadChildren: () => import("./supplier-routes.module").then(mod => mod.SupplierRoutingModule),
