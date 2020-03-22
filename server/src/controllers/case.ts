@@ -4,10 +4,8 @@ import { checkAuthentication } from "../services/middleware/checkAuthentication"
 import { CaseRepository } from "../repositories/caseRepository";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/suiteRepository";
-import { CaseDbo } from "../database/entities/caseDbo";
 import { ICaseResponse } from "../dto/supplier/case";
-import { IApiResponse } from "../dto/common/apiResponse";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
+import { BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "./baseController";
 import { ApiError } from "../services/apiError";
 
@@ -21,7 +19,6 @@ export class TestController extends BaseController {
   ) {
     super();
   }
-
 
   @Post("create")
   public async addTest(req: Request, res: Response) {
@@ -39,8 +36,8 @@ export class TestController extends BaseController {
         id: test.id,
         title: test.title
       });
-    } catch(error) {
-      if(error instanceof ApiError) {
+    } catch (error) {
+      if (error instanceof ApiError) {
         this.errorResponse(res, error.statusCode, [error.message]);
       } else {
         this.serverError(res);
@@ -55,16 +52,15 @@ export class TestController extends BaseController {
     try {
       const tests = await this.testRepository.getCasesForTestSuite(suiteId);
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: tests!.map(t =>
-          ({
-            id: t.id,
-            title: t.title
-          }))
-      } as IApiResponse<ICaseResponse[]>);
-    } catch (error) { }
+      this.OK<ICaseResponse[]>(res, tests.map(t =>
+        ({
+          id: t.id,
+          title: t.title
+        }))
+      )
+    } catch (error) {
+      this.serverError(res);
+    }
   }
 
   @Post("update")
@@ -74,21 +70,12 @@ export class TestController extends BaseController {
     try {
       const savedTest = await this.testRepository.updateCase(test);
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: ((record: CaseDbo) =>
-          ({
-            id: record.id,
-            title: record.title
-          })
-        )(savedTest)
-      } as IApiResponse<ICaseResponse>);
+      this.OK<ICaseResponse>(res, {
+        id: savedTest.id,
+        title: savedTest.title
+      });
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+     this.serverError(res);
     }
   }
 
@@ -98,15 +85,9 @@ export class TestController extends BaseController {
 
     try {
       await this.testRepository.deleteCaseById(testId);
-      res.status(OK);
-      res.json({
-        errors: []
-      } as unknown as IApiResponse<any>);
+      this.OK(res);
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+      this.serverError(res);
     }
   }
 }
