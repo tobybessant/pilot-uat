@@ -9,7 +9,7 @@ suite("PermittedAccountTypes", () => {
   let res: IMock<Response>;
   let nextFunction: IMock<NextFunction>;
 
-  suiteSetup(() => {
+  setup(() => {
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
     nextFunction = Mock.ofType<NextFunction>();

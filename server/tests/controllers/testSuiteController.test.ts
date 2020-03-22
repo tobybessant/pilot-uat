@@ -19,7 +19,7 @@ suite("TestSuiteController", () => {
 
   let subject: TestSuiteController;
 
-  suiteSetup(() => {
+  setup(() => {
     repositoryService = Mock.ofType<RepositoryService>();
     projectRepository = Mock.ofType<ProjectRepository>();
     testSuiteRepository = Mock.ofType<TestSuiteRepository>();
@@ -46,7 +46,7 @@ suite("TestSuiteController", () => {
     let createTestSuiteResponse: ISuiteResponse | undefined;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         createTestSuiteBody = {
           suiteName: "New Suite"
         };
@@ -93,7 +93,7 @@ suite("TestSuiteController", () => {
     const getAllTestSuitesResponse: ISuiteResponse[] = [];
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         getTestSuitesBody = {
           projectId: "5"
         };
@@ -138,7 +138,7 @@ suite("TestSuiteController", () => {
     let deleteTestSuiteBody: any;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         deleteTestSuiteBody = {
           suiteId: "500"
         }

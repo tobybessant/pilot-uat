@@ -25,7 +25,7 @@ suite("Auth Controller", () => {
   let bcrypt: IMock<Bcrypt>;
   let subject: AuthController;
 
-  suiteSetup(() => {
+  setup(() => {
     userRepository = Mock.ofType<Repository<UserDbo>>();
     userTypeRepository = Mock.ofType<Repository<UserTypeDbo>>();
     organisationRepository = Mock.ofType<Repository<OrganisationDbo>>();
@@ -58,7 +58,7 @@ suite("Auth Controller", () => {
       let saveUserResponse: UserDbo;
       let createUserResponse: IUserResponse;
 
-      suiteSetup(() => {
+      setup(() => {
         createUserBody = {
           email: "toby@me.com",
           password: "CorrectHorseBatteryStaple",
@@ -125,7 +125,7 @@ suite("Auth Controller", () => {
       let saveUserResponse: UserDbo;
       let createUserResponse: IUserResponse;
 
-      suiteSetup(() => {
+      setup(() => {
         createUserBody = {
           email: "toby@me.com",
           password: "CorrectHorseBatteryStaple",

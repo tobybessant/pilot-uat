@@ -19,7 +19,7 @@ suite("BodyMatches", () => {
   let nextFunction: IMock<NextFunction>;
   let jfValidator: IMock<jf.Validator>;
 
-  suiteSetup(() => {
+  setup(() => {
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
     nextFunction = Mock.ofType<NextFunction>();

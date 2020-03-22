@@ -25,7 +25,7 @@ suite("Project Controller", () => {
 
   let subject: ProjectController;
 
-  suiteSetup(() => {
+  setup(() => {
     userRepository = Mock.ofType<UserRepository>();
     projectRepository = Mock.ofType<ProjectRepository>();
     suiteRepository = Mock.ofType<TestSuiteRepository>();
@@ -51,7 +51,7 @@ suite("Project Controller", () => {
     let user: UserDbo | undefined;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         createProjectBody = {
           title: "New Project!"
         }
@@ -86,6 +86,7 @@ suite("Project Controller", () => {
 
       test("It should have statusCode 201", async () => {
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_addProject_returns(savedProject);
         given_Request_body_is(createProjectBody);
 
         await subject.createProject(req.object, res.object);
@@ -95,7 +96,7 @@ suite("Project Controller", () => {
     });
 
     suite("Find user by email fails", async () => {
-      suiteSetup(() => {
+      setup(() => {
         createProjectBody = {
           projectName: "New Project2!"
         };
@@ -131,7 +132,7 @@ suite("Project Controller", () => {
     let projectResponse: IProjectResponse;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
 
         const testSuite = new SuiteDbo();
         testSuite.id = "3";
@@ -180,7 +181,7 @@ suite("Project Controller", () => {
     });
 
     suite("Find project by id does not find project", () => {
-      suiteSetup(() => {
+      setup(() => {
         getProjectBody = {
           id: "4000"
         };
@@ -214,7 +215,7 @@ suite("Project Controller", () => {
     const projectsResponse: IProjectResponse[] = [];
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         userToken = {
           email: "test@me.com",
           type: "Supplier"
@@ -262,7 +263,7 @@ suite("Project Controller", () => {
     let requestParams: any;
 
     suite("Valid request condtions", () => {
-      suiteSetup(() => {
+      setup(() => {
         requestParams =  {
           id: "10"
         };
