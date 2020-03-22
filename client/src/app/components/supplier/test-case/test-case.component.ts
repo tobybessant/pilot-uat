@@ -4,6 +4,7 @@ import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/co
 import { NbDialogService } from "@nebular/theme";
 import { CaseApiService } from "src/app/services/api/case-api.service";
 import { StepApiService } from "src/app/services/api/step-api.service";
+import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
 
 @Component({
   selector: "app-test-case",
@@ -21,7 +22,7 @@ export class TestCaseComponent implements OnInit {
   @Output()
   public testUpdated = new EventEmitter<ICaseResponse>();
 
-  public steps: any[] = [];
+  public steps: IStepResponse[] = [];
 
   constructor(
     private testCaseApiService: CaseApiService,

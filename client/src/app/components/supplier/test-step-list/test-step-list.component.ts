@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { StepApiService } from "src/app/services/api/step-api.service";
+import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
 
 @Component({
   selector: "app-test-step-list",
@@ -9,7 +9,7 @@ import { StepApiService } from "src/app/services/api/step-api.service";
 export class TestStepListComponent implements OnInit {
 
   @Input()
-  public steps: any[] = [];
+  public steps: IStepResponse[] = [];
 
   @Output()
   public stepAdded = new EventEmitter<string>();
