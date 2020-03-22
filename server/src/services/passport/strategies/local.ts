@@ -1,5 +1,5 @@
 import { Strategy } from "passport-local";
-import { Repository, AdvancedConsoleLogger } from "typeorm";
+import { Repository } from "typeorm";
 import { injectable } from "tsyringe";
 
 import { Bcrypt } from "../../utils/bcryptHash";
@@ -19,7 +19,7 @@ export class Local {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
-	public init (this: Local, _passport: any): any {
+	public init(this: Local, _passport: any): any {
     const userRepository = this.userRepository;
     const bcrypt = this.bcrypt;
 
