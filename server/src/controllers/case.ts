@@ -1,4 +1,4 @@
-import { Controller, ClassMiddleware, Post, Delete } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Delete, Middleware } from "@overnightjs/core";
 import { injectable } from "tsyringe";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { CaseRepository } from "../repositories/caseRepository";
@@ -8,6 +8,13 @@ import { ICaseResponse } from "../dto/response/supplier/case";
 import { BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "./baseController";
 import { ApiError } from "../services/apiError";
+import { BodyMatches } from "../services/middleware/joi/bodyMatches";
+import { Validator } from "joiful";
+import { CreateCase } from "../services/middleware/joi/schemas/createCase";
+import { GetAllCases } from "../services/middleware/joi/schemas/getAllCases";
+import { IGetAllCasesRequest } from "../dto/request/supplier/getAllCases";
+import { UpdateCase } from "../services/middleware/joi/schemas/updateCase";
+import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
 
 @injectable()
 @Controller("case")
@@ -21,6 +28,9 @@ export class TestController extends BaseController {
   }
 
   @Post("create")
+  @Middleware([
+    new BodyMatches(new Validator()).schema(CreateCase)
+  ])
   public async addCase(req: Request, res: Response) {
     const { title, suiteId } = req.body;
 
@@ -46,11 +56,14 @@ export class TestController extends BaseController {
   }
 
   @Post()
+  @Middleware([
+    new BodyMatches(new Validator()).schema(GetAllCases)
+  ])
   public async getCasesForSuite(req: Request, res: Response) {
-    const { suiteId } = req.body;
+    const model: IGetAllCasesRequest = req.body;
 
     try {
-      const tests = await this.testRepository.getCasesForTestSuite(suiteId);
+      const tests = await this.testRepository.getCasesForTestSuite(model.suiteId);
 
       this.OK<ICaseResponse[]>(res, tests.map(t =>
         ({
@@ -64,11 +77,14 @@ export class TestController extends BaseController {
   }
 
   @Post("update")
+  @Middleware([
+    new BodyMatches(new Validator()).schema(UpdateCase)
+  ])
   public async updateCase(req: Request, res: Response) {
-    const test: ICaseResponse = req.body;
+    const model: IUpdateCaseRequest = req.body;
 
     try {
-      const savedTest = await this.testRepository.updateCase(test);
+      const savedTest = await this.testRepository.updateCase(model);
 
       this.OK<ICaseResponse>(res, {
         id: savedTest.id,

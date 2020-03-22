@@ -10,20 +10,30 @@ export class BodyMatches {
   public schema<T extends Constructor<any>>(model: T) {
     const jfScoped = this.jf;
     return function(req: Request, res: Response, next: NextFunction) {
-      const check = jfScoped.validateAsClass(req.body, model);
+      try {
+        const check = jfScoped.validateAsClass(req.body, model);
 
-      const { error, value } = check;
-      if (error) {
-        const errors: string[] = [];
-        error.details.forEach(err => errors.push(err.message));
+        const { error, value } = check;
+        if (error) {
+          const errors: string[] = [];
+          error.details.forEach(err => errors.push(err.message));
 
+          res.status(BAD_REQUEST);
+          res.json({
+            errors
+          } as IApiResponse<void>);
+          return;
+        }
+
+        next();
+      } catch (error) {
         res.status(BAD_REQUEST);
-        res.json({
-          errors
-        } as IApiResponse<void>);
-        return;
+          res.json({
+            errors: [
+              "Malformed JSON request body"
+            ]
+          } as IApiResponse<void>);
       }
-      next();
     }
   }
 }

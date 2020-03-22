@@ -4,6 +4,7 @@ import { CaseDbo } from "../database/entities/caseDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { SuiteDbo } from "../database/entities/suiteDbo";
 import { ICaseResponse } from "../dto/response/supplier/case";
+import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
 
 @injectable()
 @EntityRepository()
@@ -36,11 +37,8 @@ export class CaseRepository {
     return this.baseCaseRepository.delete({ id });
   }
 
-  public async updateCase(test: ICaseResponse): Promise<CaseDbo> {
-    return this.baseCaseRepository.save({
-      id: test.id,
-      title: test.title
-    });
+  public async updateCase(testCase: IUpdateCaseRequest): Promise<CaseDbo> {
+    return this.baseCaseRepository.save(testCase);
   }
 
   public async getCaseById(id: string): Promise<CaseDbo | undefined> {
