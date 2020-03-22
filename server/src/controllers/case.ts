@@ -8,41 +8,43 @@ import { CaseDbo } from "../database/entities/caseDbo";
 import { ICaseResponse } from "../dto/supplier/case";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
+import { BaseController } from "./baseController";
+import { ApiError } from "../services/apiError";
 
 @injectable()
 @Controller("case")
 @ClassMiddleware(checkAuthentication)
-export class TestController {
+export class TestController extends BaseController {
   constructor(
     private testRepository: CaseRepository,
     private suiteRepository: TestSuiteRepository
-  ) { }
+  ) {
+    super();
+  }
 
 
   @Post("create")
   public async addTest(req: Request, res: Response) {
     const { title, suiteId } = req.body;
 
-    const suite = await this.suiteRepository.getTestSuiteById(suiteId);
-    if (suite) {
+    try {
+      const suite = await this.suiteRepository.getTestSuiteById(suiteId);
+      if (!suite) {
+        throw new ApiError("Suite not found", BAD_REQUEST);
+      }
+
       const test = await this.testRepository.addCase(suite, title);
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: ((record: CaseDbo) =>
-          ({
-            id: record.id,
-            title: record.title
-          })
-        )(test)
-      } as IApiResponse<ICaseResponse>);
-
-    } else {
-      res.status(INTERNAL_SERVER_ERROR);
-      res.json({
-        errors: ["Failure adding suite"],
-      } as IApiResponse<ICaseResponse>);
+      this.OK<ICaseResponse>(res, {
+        id: test.id,
+        title: test.title
+      });
+    } catch(error) {
+      if(error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
+      } else {
+        this.serverError(res);
+      }
     }
   }
 
@@ -82,7 +84,7 @@ export class TestController {
           })
         )(savedTest)
       } as IApiResponse<ICaseResponse>);
-    } catch(error) {
+    } catch (error) {
       res.status(BAD_REQUEST);
       res.json({
         errors: [error.message]
@@ -100,7 +102,7 @@ export class TestController {
       res.json({
         errors: []
       } as unknown as IApiResponse<any>);
-    } catch(error) {
+    } catch (error) {
       res.status(BAD_REQUEST);
       res.json({
         errors: [error.message]

@@ -7,13 +7,15 @@ import { OK } from "http-status-codes";
 import { StepDbo } from "../database/entities/stepDbo";
 import { IApiResponse } from "../dto/common/apiResponse";
 import { IStepResponse } from "../dto/supplier/step";
+import { BaseController } from "./baseController";
 
 @injectable()
 @Controller("step")
 @ClassMiddleware(checkAuthentication)
-export class StepController {
+export class StepController extends BaseController {
 
   constructor(private stepRepository: StepRepository) {
+    super();
   }
 
   @Post("create")
@@ -23,17 +25,13 @@ export class StepController {
     try {
       const step = await this.stepRepository.addStepForCase(description, caseId);
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: ((record: StepDbo) =>
-          ({
-            id: record.id,
-            description: record.description
-          })
-        )(step)
-      } as IApiResponse<IStepResponse>);
-    } catch { }
+      this.OK<IStepResponse>(res, {
+        id: step.id,
+        description: step.description
+      });
+    } catch(error) {
+      this.serverError(res);
+    }
   }
 
   @Post("all")
@@ -43,15 +41,13 @@ export class StepController {
     try {
       const steps = await this.stepRepository.getStepsForCase(caseId);
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: steps.map(record =>
-          ({
-            description: record.description,
-            id: record.id
-          }))
-      } as IApiResponse<IStepResponse[]>);
-    } catch { }
+      this.OK<IStepResponse[]>(res, steps.map(step => ({
+          description: step.description,
+          id: step.id
+        }))
+      )
+    } catch(error) {
+      this.serverError(res);
+    }
   }
 }

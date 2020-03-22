@@ -9,16 +9,20 @@ import { IApiResponse } from "../dto/common/apiResponse";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { ISuiteResponse } from "../dto/supplier/suite";
 import { SuiteDbo } from "../database/entities/suiteDbo";
+import { BaseController } from "./baseController";
+import { ApiError } from "../services/apiError";
 
 @injectable()
 @Controller("suite")
 @ClassMiddleware(checkAuthentication)
-export class TestSuiteController {
+export class TestSuiteController extends BaseController {
 
   constructor(
     private testSuiteRepository: TestSuiteRepository,
     private projectsRepository: ProjectRepository
-  ) { }
+  ) {
+    super();
+  }
 
   @Post("create")
   @Middleware(PermittedAccountTypes.are(["Supplier"]))
@@ -28,30 +32,26 @@ export class TestSuiteController {
     try {
       const project = await this.projectsRepository.getProjectById(projectId);
       if (!project) {
-        throw new Error("Project does not exist");
+        throw new ApiError("Project does not exist", BAD_REQUEST);
       }
 
       const suite = await this.testSuiteRepository.addTestSuite(project, title);
 
-      if(!suite) {
-        throw new Error("Failed to add suite");
+      if (!suite) {
+        throw new ApiError("Failed to add suite", INTERNAL_SERVER_ERROR);
       }
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: ((record: SuiteDbo): ISuiteResponse =>
-        ({
-          title: record.title,
-          id: record.id
-        })
-      )(suite)
-      } as IApiResponse<ISuiteResponse>);
+      this.OK<ISuiteResponse>(res, {
+        title: suite.title,
+        id: suite.id
+      });
+
     } catch (error) {
-      res.status(INTERNAL_SERVER_ERROR);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+      if (error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
+      } else {
+        this.serverError(res);
+      }
     }
   }
 
@@ -62,20 +62,13 @@ export class TestSuiteController {
     try {
       const testSuites = await this.projectsRepository.getTestSuitesForProject(projectId);
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: testSuites.map(record =>
-          ({
-            title: record.title,
-            id: record.id
-          }))
-      } as IApiResponse<ISuiteResponse[]>);
+      this.OK<ISuiteResponse[]>(res, testSuites.map(suite =>
+        ({
+          title: suite.title,
+          id: suite.id
+        })))
     } catch (error) {
-      res.status(INTERNAL_SERVER_ERROR);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+      this.serverError(res);
     }
   }
 
@@ -86,17 +79,9 @@ export class TestSuiteController {
 
     try {
       const deletedSuite = await this.testSuiteRepository.deleteTestSuiteById(suiteId);
-      res.status(OK);
-      res.json({
-        errors: []
-      } as unknown as IApiResponse<any>);
-      return;
-
+      this.OK(res);
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+      this.serverError(res);
     }
   }
 }

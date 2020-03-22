@@ -50,12 +50,19 @@ export abstract class BaseController {
 
   protected serverError(res: Response): void {
     const response: Partial<IApiResponse<void>> = {
-      errors: [
-        "Something went wrong..."
-      ]
+      errors: [ "Something went wrong..." ]
     };
 
     res.status(INTERNAL_SERVER_ERROR);
+    res.json(response);
+  }
+
+  protected errorResponse(res: Response, statusCode: number, errors: string[]): void {
+    const response: Partial<IApiResponse<void>> = {
+      errors,
+    };
+
+    res.status(statusCode);
     res.json(response);
   }
 }
