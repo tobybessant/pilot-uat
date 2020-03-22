@@ -19,7 +19,7 @@ import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
 @injectable()
 @Controller("case")
 @ClassMiddleware(checkAuthentication)
-export class TestController extends BaseController {
+export class CaseController extends BaseController {
   constructor(
     private testRepository: CaseRepository,
     private suiteRepository: TestSuiteRepository
@@ -42,7 +42,7 @@ export class TestController extends BaseController {
 
       const test = await this.testRepository.addCase(suite, title);
 
-      this.OK<ICaseResponse>(res, {
+      this.created<ICaseResponse>(res, {
         id: test.id,
         title: test.title
       });
