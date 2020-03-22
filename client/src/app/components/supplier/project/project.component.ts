@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { ProjectApiService } from "src/app/services/api/project-api.service";
+import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { NbMenuService, NbMenuItem, NbDialogService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgxSpinnerService } from "ngx-spinner";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
-import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
+import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
 import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
-import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
-import { NavbarService } from "src/app/services/navbar.service";
+import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
+import { NavbarService } from "src/app/services/navbar/navbar.service";
 
 @Component({
   selector: "app-project",

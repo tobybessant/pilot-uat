@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from "@angular/core";
 import { NbDialogService } from "@nebular/theme";
-import { ProjectApiService } from "src/app/services/api/project-api.service";
+import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { Router } from "@angular/router";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";

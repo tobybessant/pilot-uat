@@ -2,8 +2,8 @@ import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
 import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { NbDialogService } from "@nebular/theme";
-import { CaseApiService } from "src/app/services/api/case-api.service";
-import { StepApiService } from "src/app/services/api/step-api.service";
+import { CaseApiService } from "src/app/services/api/case/case-api.service";
+import { StepApiService } from "src/app/services/api/step/step-api.service";
 import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
 
 @Component({

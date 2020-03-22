@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject, Observable } from "rxjs";
-import { ISuiteResponse } from "../models/api/response/supplier/suite.interface";
+import { ISuiteResponse } from "../../models/api/response/supplier/suite.interface";
 
 @Injectable({
   providedIn: "root"

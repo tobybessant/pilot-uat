@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ICaseResponse } from "../models/api/response/supplier/test.interface";
+import { ICaseResponse } from "../../models/api/response/supplier/test.interface";
 import { Subject, Observable } from "rxjs";
 
 @Injectable({

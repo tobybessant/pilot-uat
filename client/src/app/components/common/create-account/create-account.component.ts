@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "src/app/services/api/auth-service.service";
+import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
 import { Router } from "@angular/router";
 

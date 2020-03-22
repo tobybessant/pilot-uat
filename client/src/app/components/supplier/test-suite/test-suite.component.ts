@@ -2,11 +2,11 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from "@angu
 import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
-import { TestSuiteApiService } from "src/app/services/api/test-suite-api.service";
-import { CaseApiService } from "src/app/services/api/case-api.service";
+import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
+import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
-import { ActiveTestSuiteService } from "src/app/services/active-test-suite.service";
-import { ActiveTestCaseService } from "src/app/services/active-test-case.service";
+import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
+import { ActiveTestCaseService } from "src/app/services/active-test/active-test-case.service";
 
 @Component({
   selector: "app-test-suite",

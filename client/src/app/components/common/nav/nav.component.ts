@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { SessionService } from "src/app/services/session.service";
+import { SessionService } from "src/app/services/session/session.service";
 import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 import { NbMenuService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
 import { Router } from "@angular/router";
-import { AuthService } from "src/app/services/api/auth-service.service";
-import { NavbarService } from "src/app/services/navbar.service";
+import { AuthService } from "src/app/services/api/auth/auth-service.service";
+import { NavbarService } from "src/app/services/navbar/navbar.service";
 
 @Component({
   selector: "app-nav",

@@ -1,7 +1,7 @@
 import { Routes, RouterModule, ROUTES, Router } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { SessionService } from "../services/session.service";
+import { SessionService } from "../services/session/session.service";
 
 @NgModule({
   declarations: [],

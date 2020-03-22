@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { ApiService } from "./api.service";
-import { IProjectResponse } from "../../models/api/response/supplier/project.interface";
+import { ApiService } from "../api.service";
+import { IProjectResponse } from "../../../models/api/response/supplier/project.interface";
 import { ICreateProjectRequest } from "src/app/models/api/request/supplier/create-project.interface";
 import { ICreateProjectResponse } from "src/app/models/api/response/supplier/create-project.interface";
 

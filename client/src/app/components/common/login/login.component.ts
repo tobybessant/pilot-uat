@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "src/app/services/api/auth-service.service";
+import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interface";
 import { Router } from "@angular/router";
 import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
