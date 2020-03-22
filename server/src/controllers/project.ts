@@ -4,16 +4,16 @@ import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { CreateProjectSchema } from "../services/middleware/joi/schemas/createProject";
-import { ProjectDbo } from "../database/entities/projectDbo";
-import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
-import { IApiResponse } from "../dto/common/apiResponse";
-import { ICreateProjectResponse } from "../dto/supplier/createProject";
-import { IUserToken } from "../dto/common/userToken";
-import { IProjectResponse } from "../dto/supplier/project";
+import { CreateProject } from "../services/middleware/joi/schemas/createProject";
+import { IUserToken } from "../dto/response/common/userToken";
+import { IProjectResponse } from "../dto/response/supplier/project";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
 import { BaseController } from "./baseController";
+import { ICreateProjectRequest } from "../dto/request/supplier/createProject";
+import { GetProject } from "../services/middleware/joi/schemas/getProject";
+import { IGetProjectRequest } from "../dto/request/supplier/getProject";
+import { Validator } from "joiful";
 
 @injectable()
 @Controller("project")
@@ -29,11 +29,11 @@ export class ProjectController extends BaseController {
 
   @Post("create")
   @Middleware([
-    BodyMatches.schema(CreateProjectSchema),
+    new BodyMatches(new Validator()).schema(CreateProject),
     PermittedAccountTypes.are(["Supplier"])
   ])
   public async createProject(req: Request, res: Response) {
-    const { title } = req.body;
+    const model: ICreateProjectRequest = req.body;
 
     try {
       const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
@@ -41,10 +41,12 @@ export class ProjectController extends BaseController {
         throw new Error("Error finding user");
       }
 
-      await this.projectRepository.addProject(user, title);
+      const project = await this.projectRepository.addProject(user, model.title);
 
-      this.created<ICreateProjectResponse>(res, {
-        title
+      this.created<IProjectResponse>(res, {
+        title: project.title,
+        id: project.id,
+        suites: project.suites
       });
 
     } catch (error) {
@@ -57,11 +59,14 @@ export class ProjectController extends BaseController {
   }
 
   @Post()
+  @Middleware(
+    new BodyMatches(new Validator()).schema(GetProject)
+  )
   public async getProjectById(req: Request, res: Response) {
-    const { id } = req.body;
+    const model: IGetProjectRequest = req.body;
 
     try {
-      const project = await this.projectRepository.getProjectById(id);
+      const project = await this.projectRepository.getProjectById(model.id);
 
       if (!project) {
         throw new Error("That project does not exist");

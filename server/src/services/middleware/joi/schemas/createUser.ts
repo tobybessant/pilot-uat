@@ -1,35 +1,39 @@
-import * as joi from "joi";
+import * as jf from "joiful";
+import { ICreateUserRequest } from "../../../../dto/request/common/createUser";
 
-export const CreateUserSchema = joi.object({
-  firstName: joi
-    .string()
-    .label("First Name")
-    .max(30)
-    .required(),
+export class CreateUser implements ICreateUserRequest {
 
-  lastName: joi
-    .string()
-    .label("Last Name")
-    .max(30)
-    .required(),
-
-  organisationName: joi
-    .string()
-    .label("Organisation")
-    .required(),
-
-  email: joi
-    .string()
+  @jf.string()
     .label("Email")
     .email()
-    .required(),
-
-  password: joi
-    .string()
-    .label("Password")
-    .required(),
-
-  type: joi
-    .string()
     .required()
-});
+  email!: string;
+
+  @jf.string()
+    .label("Password")
+    .required()
+  password!: string;
+
+  @jf.string()
+    .label("First Name")
+    .max(30)
+    .required()
+  firstName!: string;
+
+  @jf.string()
+    .label("Last Name")
+    .max(30)
+    .required()
+  lastName!: string;
+
+  @jf.string()
+    .label("Type")
+    .required()
+  type!: string;
+
+  @jf.string()
+    .label("Organisation")
+    .optional()
+  organisationName!: string;
+
+}

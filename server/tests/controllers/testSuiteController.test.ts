@@ -4,7 +4,7 @@ import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
 import { TestSuiteController } from "../../src/controllers";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
-import { ISuiteResponse } from "../../src/dto/supplier/suite";
+import { ISuiteResponse } from "../../src/dto/response/supplier/suite";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { OK } from "http-status-codes";

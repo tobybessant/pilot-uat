@@ -5,8 +5,8 @@ import { Request, Response } from "express";
 import StepRepository from "../repositories/stepRepository";
 import { OK } from "http-status-codes";
 import { StepDbo } from "../database/entities/stepDbo";
-import { IApiResponse } from "../dto/common/apiResponse";
-import { IStepResponse } from "../dto/supplier/step";
+import { IApiResponse } from "../dto/response/common/apiResponse";
+import { IStepResponse } from "../dto/response/supplier/step";
 import { BaseController } from "./baseController";
 
 @injectable()

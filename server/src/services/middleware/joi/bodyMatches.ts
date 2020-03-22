@@ -1,12 +1,16 @@
+import{ Validator } from "joiful";
 import { Request, Response, NextFunction } from "express";
-import { ObjectSchema, ValidationResult } from "joi";
 import { BAD_REQUEST } from "http-status-codes";
-import { IApiResponse } from "../../../dto/common/apiResponse";
+import { IApiResponse } from "../../../dto/response/common/apiResponse";
+import { Constructor } from "joiful/core";
 
 export class BodyMatches {
-  public static schema(model: ObjectSchema) {
+  constructor(private jf: Validator) { }
+
+  public schema<T extends Constructor<any>>(model: T) {
+    const jfScoped = this.jf;
     return function(req: Request, res: Response, next: NextFunction) {
-      const check: ValidationResult<any> = model.validate(req.body);
+      const check = jfScoped.validateAsClass(req.body, model);
 
       const { error, value } = check;
       if (error) {

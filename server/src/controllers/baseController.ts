@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND } from "http-status-codes";
-import { IApiResponse } from "../dto/common/apiResponse";
+import { IApiResponse } from "../dto/response/common/apiResponse";
 
 export abstract class BaseController {
 

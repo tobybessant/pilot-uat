@@ -6,8 +6,8 @@ import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryService";
-import { IApiResponse } from "../dto/common/apiResponse";
-import { IUserResponse } from "../dto/common/user";
+import { IApiResponse } from "../dto/response/common/apiResponse";
+import { IUserResponse } from "../dto/response/common/user";
 import { BaseController } from "./baseController";
 import { ApiError } from "../services/apiError";
 

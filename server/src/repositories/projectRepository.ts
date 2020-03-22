@@ -18,7 +18,7 @@ export class ProjectRepository {
     this.userProjectRoleRepository = repositoryService.getRepositoryFor(UserProjectRoleDbo);
   }
 
-  public async addProject(user: UserDbo, projectName: string) {
+  public async addProject(user: UserDbo, projectName: string): Promise<ProjectDbo> {
     // save new project
     const project = new ProjectDbo();
     project.organisation = user.organisations[0];
@@ -30,6 +30,8 @@ export class ProjectRepository {
     userProjectRole.user = user;
     userProjectRole.project = savedProject;
     await this.userProjectRoleRepository.save(userProjectRole);
+
+    return savedProject;
   }
 
   public async getProjectById(id: string): Promise<ProjectDbo | undefined> {

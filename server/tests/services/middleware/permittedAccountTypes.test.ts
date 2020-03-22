@@ -64,7 +64,7 @@ suite("PermittedAccountTypes", () => {
   });
 
   function given_Request_user_type_is(type: string) {
-    const userToken = { type };
+    const userToken = { type, email: "xyz" };
 
     req
     .setup(r => r.user)

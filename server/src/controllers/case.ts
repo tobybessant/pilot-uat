@@ -4,7 +4,7 @@ import { checkAuthentication } from "../services/middleware/checkAuthentication"
 import { CaseRepository } from "../repositories/caseRepository";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/suiteRepository";
-import { ICaseResponse } from "../dto/supplier/case";
+import { ICaseResponse } from "../dto/response/supplier/case";
 import { BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "./baseController";
 import { ApiError } from "../services/apiError";

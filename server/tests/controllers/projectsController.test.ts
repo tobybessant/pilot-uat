@@ -6,12 +6,11 @@ import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
-import { ICreateProjectResponse } from "../../src/dto/supplier/createProject";
+import { IProjectResponse } from "../../src/dto/response/supplier/project";
 import { UserRepository } from "../../src/repositories/userRepository";
-import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND, BAD_REQUEST } from "http-status-codes";
+import { CREATED, OK, NOT_FOUND, BAD_REQUEST } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { IProjectResponse } from "../../src/dto/supplier/project";
-import { IUserToken } from "../../src/dto/common/userToken";
+import { IUserToken } from "../../src/dto/response/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 
@@ -47,7 +46,8 @@ suite("Project Controller", () => {
 
   suite("Create Project", async () => {
     let createProjectBody: any;
-    let createProjectResponse: ICreateProjectResponse | undefined;
+    let savedProject: ProjectDbo;
+    let createProjectResponse: IProjectResponse | undefined;
     let user: UserDbo | undefined;
 
     suite("Valid request conditions", () => {
@@ -56,15 +56,24 @@ suite("Project Controller", () => {
           title: "New Project!"
         }
 
+        savedProject = new ProjectDbo();
+        savedProject.id = "4";
+        savedProject.createdDate = new Date();
+        savedProject.suites = [];
+        savedProject.title = createProjectBody.title;
+
         createProjectResponse = {
-          title: createProjectBody.title
-        }
+          title: savedProject.title,
+          id: savedProject.id,
+          suites: savedProject.suites
+        };
 
         user = new UserDbo();
       });
 
       test("It should return the projectName in the response body", async () => {
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_addProject_returns(savedProject);
         given_Request_body_is(createProjectBody);
 
         await subject.createProject(req.object, res.object);
@@ -302,6 +311,12 @@ suite("Project Controller", () => {
   function given_userRepository_getUserByEmail_returns_whenGiven(returns: UserDbo | undefined, whenGiven: any) {
     userRepository
       .setup(ur => ur.getUserByEmail(whenGiven))
+      .returns(async () => returns);
+  }
+
+  function given_projectRepository_addProject_returns(returns: ProjectDbo) {
+    projectRepository
+      .setup(pr => pr.addProject(It.isAny(), It.isAny()))
       .returns(async () => returns);
   }
 
