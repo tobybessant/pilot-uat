@@ -29,9 +29,7 @@ export class BodyMatches {
       } catch (error) {
         res.status(BAD_REQUEST);
           res.json({
-            errors: [
-              "Malformed JSON request body"
-            ]
+            errors: [ "Malformed JSON request body" ]
           } as IApiResponse<void>);
       }
     }
