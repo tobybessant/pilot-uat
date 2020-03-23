@@ -10,7 +10,7 @@ export class CreateCase implements ICreateCaseRequest {
 
   @jf.string()
     .label("Case Title")
-    .max(30)
+    .max(255)
     .required()
   title!: string;
 
