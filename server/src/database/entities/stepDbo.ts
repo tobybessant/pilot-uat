@@ -7,7 +7,7 @@ export const TABLE_NAME: string = "Step";
 })
 export class StepDbo {
   @PrimaryGeneratedColumn()
-  id!: string;
+  id!: number;
 
   @Column({ type: "nvarchar" })
   description!: string;

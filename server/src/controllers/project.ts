@@ -45,8 +45,11 @@ export class ProjectController extends BaseController {
 
       this.created<IProjectResponse>(res, {
         title: project.title,
-        id: project.id,
-        suites: project.suites
+        id: project.id.toString(),
+        suites: project.suites.map(suite => ({
+          id: suite.id.toString(),
+          title: suite.title
+        }))
       });
 
     } catch (error) {
@@ -73,10 +76,10 @@ export class ProjectController extends BaseController {
       }
 
       this.OK<IProjectResponse>(res, {
-        id: project.id,
+        id: project.id.toString(),
         title: project.title,
         suites: project.suites.map(s => ({
-          id: s.id,
+          id: s.id.toString(),
           title: s.title
         }))
       });
@@ -98,7 +101,7 @@ export class ProjectController extends BaseController {
 
       this.OK<IProjectResponse[]>(res, projects.map(r =>
         ({
-          id: r.id,
+          id: r.id.toString(),
           title: r.title
         }))
       );

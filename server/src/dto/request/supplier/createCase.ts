@@ -1,4 +1,4 @@
 export interface ICreateCaseRequest {
   title: string;
-  projectId: string;
+  suiteId: string;
 }

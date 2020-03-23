@@ -53,12 +53,12 @@ suite("Case Controller", () => {
         savedCase.steps = [];
 
         createCaseResponse = {
-          id: savedCase.id,
+          id: savedCase.id.toString(),
           title: savedCase.title
         };
 
         testSuite = new SuiteDbo();
-        testSuite.id = "4";
+        testSuite.id = 4;
       });
 
       test("Should return case in response body", async () => {

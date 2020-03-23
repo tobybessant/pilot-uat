@@ -50,7 +50,7 @@ export class TestSuiteController extends BaseController {
 
       this.OK<ISuiteResponse>(res, {
         title: suite.title,
-        id: suite.id
+        id: suite.id.toString()
       });
 
     } catch (error) {
@@ -73,7 +73,7 @@ export class TestSuiteController extends BaseController {
       this.OK<ISuiteResponse[]>(res, testSuites.map(suite =>
         ({
           title: suite.title,
-          id: suite.id
+          id: suite.id.toString()
         })))
     } catch (error) {
       this.serverError(res);

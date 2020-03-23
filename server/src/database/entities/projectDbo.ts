@@ -9,7 +9,7 @@ export const TABLE_NAME: string = "Project";
 })
 export class ProjectDbo {
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @Column()
     title!: string;

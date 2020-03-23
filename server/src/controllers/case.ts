@@ -15,6 +15,7 @@ import { GetAllCases } from "../services/middleware/joi/schemas/getAllCases";
 import { IGetAllCasesRequest } from "../dto/request/supplier/getAllCases";
 import { UpdateCase } from "../services/middleware/joi/schemas/updateCase";
 import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
+import { ICreateCaseRequest } from "../dto/request/supplier/createCase";
 
 @injectable()
 @Controller("case")
@@ -32,18 +33,18 @@ export class CaseController extends BaseController {
     new BodyMatches(new Validator()).schema(CreateCase)
   ])
   public async addCase(req: Request, res: Response) {
-    const { title, suiteId } = req.body;
+    const model: ICreateCaseRequest = req.body;
 
     try {
-      const suite = await this.suiteRepository.getTestSuiteById(suiteId);
+      const suite = await this.suiteRepository.getTestSuiteById(model.suiteId);
       if (!suite) {
         throw new ApiError("Suite not found", BAD_REQUEST);
       }
 
-      const test = await this.testRepository.addCase(suite, title);
+      const test = await this.testRepository.addCase(suite, model.title);
 
       this.created<ICaseResponse>(res, {
-        id: test.id,
+        id: test.id.toString(),
         title: test.title
       });
     } catch (error) {
@@ -67,7 +68,7 @@ export class CaseController extends BaseController {
 
       this.OK<ICaseResponse[]>(res, tests.map(t =>
         ({
-          id: t.id,
+          id: t.id.toString(),
           title: t.title
         }))
       )
@@ -87,7 +88,7 @@ export class CaseController extends BaseController {
       const savedTest = await this.testRepository.updateCase(model);
 
       this.OK<ICaseResponse>(res, {
-        id: savedTest.id,
+        id: savedTest.id.toString(),
         title: savedTest.title
       });
     } catch (error) {

@@ -30,7 +30,7 @@ export class StepController extends BaseController {
       const step = await this.stepRepository.addStepForCase(model.description, model.caseId);
 
       this.OK<IStepResponse>(res, {
-        id: step.id,
+        id: step.id.toString(),
         description: step.description
       });
     } catch(error) {
@@ -48,7 +48,7 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse[]>(res, steps.map(step => ({
           description: step.description,
-          id: step.id
+          id: step.id.toString()
         }))
       )
     } catch(error) {

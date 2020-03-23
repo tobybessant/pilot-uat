@@ -35,7 +35,7 @@ export class ProjectRepository {
   }
 
   public async getProjectById(id: string): Promise<ProjectDbo | undefined> {
-    const project: ProjectDbo | undefined = await this.baseProjectRepository.findOne({ id });
+    const project: ProjectDbo | undefined = await this.baseProjectRepository.findOne({ id: Number(id) });
     return project;
   }
 
@@ -54,7 +54,7 @@ export class ProjectRepository {
 
   public async deleteProjectById(id: string) {
     const deletedProject = await this.baseProjectRepository.delete({
-      id
+      id: Number(id)
     });
    return;
   }

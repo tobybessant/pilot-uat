@@ -7,7 +7,7 @@ import { StepDbo } from "./stepDbo";
 })
 export class CaseDbo {
   @PrimaryGeneratedColumn()
-  id!: string;
+  id!: number;
 
   @Column({ length: 255 })
   title!: string;

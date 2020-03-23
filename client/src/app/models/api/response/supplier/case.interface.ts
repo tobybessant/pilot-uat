@@ -1,7 +1,7 @@
 import { IStepResponse } from "./step.interface";
 
 export interface ICaseResponse {
-  id: number;
+  id: string;
   title: string;
   steps: IStepResponse[];
 }

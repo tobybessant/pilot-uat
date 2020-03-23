@@ -4,7 +4,7 @@ import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
 import { CaseApiService } from "src/app/services/api/case/case-api.service";
-import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
+import { ICaseResponse } from "src/app/models/api/response/supplier/case.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test/active-test-case.service";
 
@@ -21,7 +21,7 @@ export class TestSuiteComponent implements OnInit {
   public activeSuite: ISuiteResponse;
 
   @Output()
-  public suiteDeleted = new EventEmitter<number>();
+  public suiteDeleted = new EventEmitter<string>();
 
   @ViewChild("testTableContainer")
   public tableContainer;
@@ -81,7 +81,7 @@ export class TestSuiteComponent implements OnInit {
 
   public async addTest() {
     if (this.newTestCase) {
-      await this.testApiService.addTest({
+      await this.testApiService.addCase({
         suiteId: this.activeSuite.id,
         title: this.newTestCase
       });
@@ -92,7 +92,7 @@ export class TestSuiteComponent implements OnInit {
 
   private async fetchTestsForActiveSuite() {
     if (this.activeSuite) {
-      const response = await this.testApiService.getTestsForSuite(this.activeSuite.id);
+      const response = await this.testApiService.getCasesForSuite(this.activeSuite.id);
       this.cases = response.payload;
     }
   }

@@ -9,7 +9,7 @@ export const TABLE_NAME: string = "Suite";
 export class SuiteDbo {
 
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @Column()
     title!: string;

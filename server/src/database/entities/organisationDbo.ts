@@ -7,7 +7,7 @@ export const TABLE_NAME: string = "Organisation";
 })
 export class OrganisationDbo {
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @Column({ type: "varchar", length: 255 })
     organisationName!: string;

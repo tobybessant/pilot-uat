@@ -77,7 +77,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     await this.fetchSuites();
   }
 
-  public async suiteDeleted(suiteId: number) {
+  public async suiteDeleted(suiteId: string) {
     const deletedIndex = this.project.suites.findIndex(suite => suite.id === suiteId);
     await this.fetchSuites();
 

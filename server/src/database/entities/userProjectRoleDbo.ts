@@ -9,7 +9,7 @@ export const TABLE_NAME: string = "UserProjectRole";
 })
 export class UserProjectRoleDbo {
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @ManyToOne(type => UserDbo, user => user.projects, { primary: true, onDelete: "NO ACTION" })
     user!: UserDbo;

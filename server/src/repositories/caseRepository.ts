@@ -3,7 +3,6 @@ import { EntityRepository, Repository } from "typeorm";
 import { CaseDbo } from "../database/entities/caseDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { SuiteDbo } from "../database/entities/suiteDbo";
-import { ICaseResponse } from "../dto/response/supplier/case";
 import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
 
 @injectable()
@@ -29,20 +28,21 @@ export class CaseRepository {
     return this.baseCaseRepository
       .createQueryBuilder("case")
       .leftJoin("case.suite", "suite")
-      .where("suite.id = :id", { id })
+      .where("suite.id = :id", { id: Number(id) })
       .getMany();
   }
 
   public async deleteCaseById(id: string) {
-    return this.baseCaseRepository.delete({ id });
+    return this.baseCaseRepository.delete({ id: Number(id) });
   }
 
   public async updateCase(testCase: IUpdateCaseRequest): Promise<CaseDbo> {
-    return this.baseCaseRepository.save(testCase);
+    // convert the id key into a number
+    return this.baseCaseRepository.save({ ...testCase, id: Number(testCase.id) });
   }
 
   public async getCaseById(id: string): Promise<CaseDbo | undefined> {
-    return this.baseCaseRepository.findOne({ id });
+    return this.baseCaseRepository.findOne({ id: Number(id) });
   }
 
 }

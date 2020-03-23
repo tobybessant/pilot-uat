@@ -14,7 +14,7 @@ export class TestSuiteRepository {
   }
 
   public async getTestSuiteById(id: string): Promise<SuiteDbo | undefined> {
-    return this.baseTestSuiteRepository.findOne({ id });
+    return this.baseTestSuiteRepository.findOne({ id: Number(id) });
   }
 
   public async addTestSuite(project: ProjectDbo, title: string): Promise<SuiteDbo | undefined> {
@@ -25,7 +25,7 @@ export class TestSuiteRepository {
   }
 
   public async deleteTestSuiteById(id: string) {
-    await this.baseTestSuiteRepository.delete({ id });
+    await this.baseTestSuiteRepository.delete({ id: Number(id) });
     return;
   }
 }

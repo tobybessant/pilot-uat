@@ -4,9 +4,9 @@ import { ICreateCaseRequest } from "../../../../dto/request/supplier/createCase"
 export class CreateCase implements ICreateCaseRequest {
 
   @jf.string()
-    .label("Project ID")
+    .label("Suite ID")
     .required()
-  projectId!: string;
+  suiteId!: string;
 
   @jf.string()
     .label("Case Title")

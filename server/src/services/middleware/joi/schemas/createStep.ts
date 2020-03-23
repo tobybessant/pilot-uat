@@ -9,7 +9,7 @@ export class CreateStep implements ICreateStepRequest {
     caseId!: string;
 
   @jf.string()
-    .label("Description Title")
+    .label("Description")
     .required()
     description!: string;
 

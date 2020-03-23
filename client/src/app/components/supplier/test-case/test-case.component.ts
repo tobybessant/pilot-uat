@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
-import { ICaseResponse } from "src/app/models/api/response/supplier/test.interface";
+import { ICaseResponse } from "src/app/models/api/response/supplier/case.interface";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { NbDialogService } from "@nebular/theme";
 import { CaseApiService } from "src/app/services/api/case/case-api.service";
@@ -17,7 +17,7 @@ export class TestCaseComponent implements OnInit {
   public case: ICaseResponse;
 
   @Output()
-  public testDeleted = new EventEmitter<number>();
+  public testDeleted = new EventEmitter<string>();
 
   @Output()
   public testUpdated = new EventEmitter<ICaseResponse>();
@@ -45,14 +45,14 @@ export class TestCaseComponent implements OnInit {
   }
 
   public async deleteTest() {
-    const response = await this.testCaseApiService.deleteTestById(this.case.id);
+    const response = await this.testCaseApiService.deleteCaseById(this.case.id);
     if (response.errors.length === 0) {
       this.testDeleted.emit(this.case.id);
     }
   }
 
   public async saveTest() {
-    const response = await this.testCaseApiService.updateTest(this.case);
+    const response = await this.testCaseApiService.updateCase(this.case);
     this.testUpdated.emit(response.payload);
   }
 
