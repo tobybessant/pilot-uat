@@ -1,3 +1,5 @@
+//   background: #EEF2F7;
+
 .projects {
   display: flex;
   flex-wrap: wrap;
@@ -9,6 +11,7 @@
   height: 100px;
   text-decoration: none;
   margin: 20px;
+  border-radius: var(--border-radius);
 }
 
 .project-add:hover {

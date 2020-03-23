@@ -46,6 +46,11 @@ p {
   left: 50%;
 }
 
+.existing-step:hover {
+  background: red;
+  cursor: pointer;
+}
+
 /* Make sure all circles are at the same spot */
 .left::after,
 .right::after {
