@@ -2,6 +2,7 @@ import { IMock, Mock, It, Times } from "typemoq";
 import { ProjectController } from "../../src/controllers";
 
 import { RepositoryService } from "../../src/services/repositoryService";
+import { BaseController } from "../../src/controllers/baseController";
 
 import { Request, Response } from "express";
 import { UserDbo } from "../../src/database/entities/userDbo";
@@ -136,13 +137,13 @@ suite("Project Controller", () => {
         }
       });
 
-      test("Response payload contains generic 'Something went wrong...' error message", async () => {
+      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
         given_Request_body_is(createProjectBody);
         given_userRepository_getUserByEmail_throws();
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -166,14 +167,14 @@ suite("Project Controller", () => {
         user = new UserDbo();
       });
 
-      test("Response payload contains generic 'Something went wrong...' error message", async () => {
+      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
         given_Request_body_is(createProjectBody);
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
         given_projectRepository_getProjectById_throws();
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -279,13 +280,13 @@ suite("Project Controller", () => {
         };
       });
 
-      test("Generic error 'Something went wrong...' returned in response errors", async () => {
+      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
         given_Request_body_is(getProjectBody);
         given_projectRepository_getProjectById_throws();
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -359,13 +360,13 @@ suite("Project Controller", () => {
         };
       });
 
-      test("Generic error 'Something went wrong...' returned in response errors", async () => {
+      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
         given_Request_user_is(userToken);
         given_projectRepository_getProjectsForUser_throws();
 
         await subject.getProjects(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -419,13 +420,13 @@ suite("Project Controller", () => {
         };
       });
 
-      test("Generic error 'Something went wrong...' returned in response errors", async () => {
+      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
         given_Request_params_are(requestParams);
         given_projectRepository_deleteProjectById_throws();
 
         await subject.deleteProject(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."]}), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {

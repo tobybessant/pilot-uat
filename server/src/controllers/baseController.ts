@@ -4,6 +4,8 @@ import { IApiResponse } from "../dto/response/common/apiResponse";
 
 export abstract class BaseController {
 
+  public static readonly INTERNAL_SERVER_ERROR_MESSAGE: string = "Something went wrong...";
+
   protected OK<T>(res: Response, payload?: T): void {
     const response: Partial<IApiResponse<T>> = {
       errors: []
@@ -50,7 +52,7 @@ export abstract class BaseController {
 
   protected serverError(res: Response): void {
     const response: Partial<IApiResponse<void>> = {
-      errors: [ "Something went wrong..." ]
+      errors: [ BaseController.INTERNAL_SERVER_ERROR_MESSAGE ]
     };
 
     res.status(INTERNAL_SERVER_ERROR);

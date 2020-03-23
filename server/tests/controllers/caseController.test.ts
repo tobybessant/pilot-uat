@@ -11,6 +11,7 @@ import { CREATED, BAD_REQUEST, INTERNAL_SERVER_ERROR, OK } from "http-status-cod
 import { IGetAllCasesRequest } from "../../src/dto/request/supplier/getAllCases";
 import { IUpdateCaseRequest } from "../../src/dto/request/supplier/updateCase";
 import { DeleteResult } from "typeorm";
+import { BaseController } from "../../src/controllers/baseController";
 
 suite("Case Controller", () => {
 
@@ -144,14 +145,14 @@ suite("Case Controller", () => {
       testSuite = new SuiteDbo();
       testSuite.id = 4;
 
-      test("Generic error thrown, containing 'Something went wrong...'", async () => {
+      test(`Generic error thrown, containing '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}'`, async () => {
         given_suiteRepository_throws();
         given_caseRepository_save_returns(savedCase);
         given_Request_body_is(createCaseBody);
 
         await subject.addCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Returns statusCode 500", async () => {
@@ -184,14 +185,14 @@ suite("Case Controller", () => {
       testSuite = new SuiteDbo();
       testSuite.id = 4;
 
-      test("Generic error thrown, containing 'Something went wrong...'", async () => {
+      test(`Generic error thrown, containing '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}'`, async () => {
         given_suiteRepository_getTestSuiteById_returns_whenGiven(testSuite, It.isAny());
         given_caseRepository_throws();
         given_Request_body_is(createCaseBody);
 
         await subject.addCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Returns statusCode 500", async () => {
@@ -260,13 +261,13 @@ suite("Case Controller", () => {
         };
       });
 
-      test("Error returned in response reads 'Something went wrong...'", async () => {
+      test(`Error returned in response reads '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}'`, async () => {
         given_Request_body_is(getAllCasesBody);
         given_caseRepository_getCasesForTestSuite_throws();
 
         await subject.getCasesForSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns status code 500", async () => {
@@ -333,13 +334,13 @@ suite("Case Controller", () => {
         };
       });
 
-      test("Response returns error 'Something went wrong...'", async () => {
+      test(`Response returns error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}'`, async () => {
         given_Request_body_is(updateCaseBody);
         given_caseRepository_updateCase_throws();
 
         await subject.updateCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -389,13 +390,13 @@ suite("Case Controller", () => {
         deleteCaseId = 1;
       });
 
-      test("Response payload contains generic 'Something went wrong...' error message", async () => {
+      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
         given_Request_params_contain({ id: deleteCaseId });
         given_caseRepository_deleteCaseById_throws();
 
         await subject.deleteCaseById(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
