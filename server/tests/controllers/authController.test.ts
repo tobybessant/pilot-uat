@@ -139,7 +139,7 @@ suite("Auth Controller", () => {
         };
 
         saveUserResponse = {
-          id: "XYZ-ABC",
+          id: "XYZ ABC",
           email: createUserBody.email,
           passwordHash: bcrypt.object.hash(createUserBody.password),
           firstName: createUserBody.firstName,

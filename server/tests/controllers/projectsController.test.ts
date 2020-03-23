@@ -57,15 +57,18 @@ suite("Project Controller", () => {
         }
 
         savedProject = new ProjectDbo();
-        savedProject.id = "4";
+        savedProject.id = 4;
         savedProject.createdDate = new Date();
         savedProject.suites = [];
         savedProject.title = createProjectBody.title;
 
         createProjectResponse = {
           title: savedProject.title,
-          id: savedProject.id,
-          suites: savedProject.suites
+          id: savedProject.id.toString(),
+          suites: savedProject.suites.map(suite => ({
+            id: suite.id.toString(),
+            title: suite.title
+          }))
         };
 
         user = new UserDbo();
@@ -135,11 +138,11 @@ suite("Project Controller", () => {
       setup(() => {
 
         const testSuite = new SuiteDbo();
-        testSuite.id = "3";
+        testSuite.id = 3;
         testSuite.title = "Suite 1";
 
         project = new ProjectDbo();
-        project.id = "4000";
+        project.id = 4000;
         project.title = "Fetched Project Title"
         project.suites = [ testSuite ];
 
@@ -148,10 +151,10 @@ suite("Project Controller", () => {
         };
 
         projectResponse = {
-          id: project.id,
+          id: project.id.toString(),
           title: project.title,
           suites: project.suites.map(s => ({
-            id: s.id,
+            id: s.id.toString(),
             title: s.title
           }))
         };
@@ -223,14 +226,14 @@ suite("Project Controller", () => {
 
         for (let i = 0; i < 10; i++) {
           const p = new ProjectDbo();
-          p.id = i + "";
+          p.id = i;
           p.title = "Project " + i;
           projects.push(p);
         }
 
         for (const project of projects) {
           projectsResponse.push({
-            id: project.id,
+            id: project.id.toString(),
             title: project.title
           });
         }

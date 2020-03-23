@@ -56,11 +56,11 @@ suite("TestSuiteController", () => {
 
         testSuiteDbo = new SuiteDbo();
         testSuiteDbo.title = createTestSuiteBody.suiteName;
-        testSuiteDbo.id = "5";
+        testSuiteDbo.id = 5;
 
         createTestSuiteResponse = {
           title: testSuiteDbo.title,
-          id: testSuiteDbo.id
+          id: testSuiteDbo.id.toString()
         };
 
       });
@@ -100,14 +100,14 @@ suite("TestSuiteController", () => {
 
         for (let i = 0; i < 1; i++) {
           const ts = new SuiteDbo();
-          ts.id = i + "";
+          ts.id = i;
           ts.title = "Suite " + i;
           testSuiteDboList.push(ts);
         }
 
         for (const suite of testSuiteDboList) {
           getAllTestSuitesResponse.push({
-            id: suite.id,
+            id: suite.id.toString(),
             title: suite.title
           });
         }

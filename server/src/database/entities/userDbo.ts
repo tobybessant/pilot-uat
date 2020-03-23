@@ -11,7 +11,7 @@ export const TABLE_NAME: string = "User";
 })
 export class UserDbo {
     @PrimaryGeneratedColumn("uuid")
-    id!: number;
+    id!: string;
 
     @Column({ type: "varchar", length: 255, unique: true })
     email!: string;
