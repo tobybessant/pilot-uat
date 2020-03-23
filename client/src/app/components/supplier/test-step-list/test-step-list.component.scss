@@ -59,3 +59,14 @@ p {
     top: 50%;
   }
 }
+
+.new-step-input.timeline::after {
+  content: "";
+  left: 31px;
+  position: absolute;
+  width: 2px;
+  background-color: var(--divider-color);
+  top: 0;
+  bottom: 50%;
+  margin-left: -3px;
+}
