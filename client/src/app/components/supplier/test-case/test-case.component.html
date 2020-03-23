@@ -4,15 +4,6 @@
       <div>
         <div class="heading"></div>
       </div>
-      <button
-        nbButton
-        size="large"
-        ghost
-        status="danger"
-        (click)="promptDeleteTest()"
-      >
-        <nb-icon icon="trash-2-outline"></nb-icon>
-      </button>
       <app-test-step-list
         [steps]="steps"
         (stepAdded)="caseStepAdded($event)"
@@ -22,6 +13,14 @@
           <nb-icon icon="checkmark-square-outline"></nb-icon>
           Save Changes
         </button> -->
+        <button
+        nbButton
+        ghost
+        status="danger"
+        (click)="promptDeleteTest()"
+      >
+        <nb-icon icon="trash-2-outline"></nb-icon> Delete Case
+      </button>
       </div>
     </div>
   </ng-container>

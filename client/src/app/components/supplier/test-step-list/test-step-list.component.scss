@@ -47,8 +47,14 @@ p {
 }
 
 .existing-step:hover {
-  background: red;
   cursor: pointer;
+}
+
+.existing-step.container:hover::after {
+  background: var(--color-primary-default);
+  border: 2px solid var(--color-primary-default);
+  cursor: pointer;
+  transition: 0.3s;
 }
 
 /* Make sure all circles are at the same spot */

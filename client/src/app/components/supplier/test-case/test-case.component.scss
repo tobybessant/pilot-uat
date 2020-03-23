@@ -4,7 +4,6 @@
 }
 
 .details {
-  width: 100%;
   padding: 0 20px 0px 20px;
 }
 
@@ -20,6 +19,6 @@ h5 {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
