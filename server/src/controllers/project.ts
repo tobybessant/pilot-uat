@@ -14,6 +14,8 @@ import { ICreateProjectRequest } from "../dto/request/supplier/createProject";
 import { GetProject } from "../services/middleware/joi/schemas/getProject";
 import { IGetProjectRequest } from "../dto/request/supplier/getProject";
 import { Validator } from "joiful";
+import { BAD_REQUEST } from "http-status-codes";
+import { ApiError } from "../services/apiError";
 
 @injectable()
 @Controller("project")
@@ -38,7 +40,7 @@ export class ProjectController extends BaseController {
     try {
       const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
       if (!user) {
-        throw new Error("Error finding user");
+        throw new ApiError("Error finding user", BAD_REQUEST);
       }
 
       const project = await this.projectRepository.addProject(user, model.title);
@@ -53,8 +55,8 @@ export class ProjectController extends BaseController {
       });
 
     } catch (error) {
-      if(error.message === "Error finding user") {
-        this.badRequest(res, [ error.message ]);
+      if(error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [ error.message ]);
         return;
       }
       this.serverError(res);
@@ -72,7 +74,7 @@ export class ProjectController extends BaseController {
       const project = await this.projectRepository.getProjectById(model.id);
 
       if (!project) {
-        throw new Error("That project does not exist");
+        throw new ApiError("That project does not exist", BAD_REQUEST);
       }
 
       this.OK<IProjectResponse>(res, {
@@ -84,8 +86,8 @@ export class ProjectController extends BaseController {
         }))
       });
     } catch (error) {
-      if(error.message === "That project does not exist") {
-        this.notFound(res, [error.message]);
+      if(error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
         return;
       }
 

@@ -389,7 +389,7 @@ suite("Case Controller", () => {
         deleteCaseId = 1;
       });
 
-      test("Request payload contains generic 'Something went wrong...' error message", async () => {
+      test("Response payload contains generic 'Something went wrong...' error message", async () => {
         given_Request_params_contain({ id: deleteCaseId });
         given_caseRepository_deleteCaseById_throws();
 
@@ -398,7 +398,7 @@ suite("Case Controller", () => {
         res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
       });
 
-      test("Request returns statusCode 500", async () => {
+      test("Response returns statusCode 500", async () => {
         given_Request_params_contain({ id: deleteCaseId });
         given_caseRepository_deleteCaseById_throws();
 

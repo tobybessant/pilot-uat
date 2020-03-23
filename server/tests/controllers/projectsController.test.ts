@@ -8,7 +8,7 @@ import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { IProjectResponse } from "../../src/dto/response/supplier/project";
 import { UserRepository } from "../../src/repositories/userRepository";
-import { CREATED, OK, NOT_FOUND, BAD_REQUEST } from "http-status-codes";
+import { CREATED, OK, NOT_FOUND, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IUserToken } from "../../src/dto/response/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
@@ -98,7 +98,7 @@ suite("Project Controller", () => {
       })
     });
 
-    suite("Find user by email fails", async () => {
+    suite("Find user by email fails to find a user", async () => {
       setup(() => {
         createProjectBody = {
           projectName: "New Project2!"
@@ -127,6 +127,67 @@ suite("Project Controller", () => {
         res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by userRepository", () => {
+
+      setup(() => {
+        createProjectBody = {
+          title: "New Project!"
+        }
+      });
+
+      test("Response payload contains generic 'Something went wrong...' error message", async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        createProjectBody = {
+          title: "New Project!"
+        };
+
+        user = new UserDbo();
+      });
+
+      test("Response payload contains generic 'Something went wrong...' error message", async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_getProjectById_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_getProjectById_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
   });
 
   suite("Get Project by ID", async () => {
@@ -144,7 +205,7 @@ suite("Project Controller", () => {
         project = new ProjectDbo();
         project.id = 4000;
         project.title = "Fetched Project Title"
-        project.suites = [ testSuite ];
+        project.suites = [testSuite];
 
         getProjectBody = {
           id: project.id
@@ -190,7 +251,7 @@ suite("Project Controller", () => {
         };
       });
 
-      test("Should return project in response body", async () => {
+      test("Should return 'That project does not exist' in response errors", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(undefined, It.isAny());
         given_Request_body_is(getProjectBody);
 
@@ -201,15 +262,43 @@ suite("Project Controller", () => {
         }), Times.once());
       });
 
-      test("Should have statusCode 404", async () => {
+      test("Should have statusCode 400", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(undefined, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.status(NOT_FOUND), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+      setup(() => {
+        getProjectBody = {
+          id: project.id
+        };
+      });
+
+      test("Generic error 'Something went wrong...' returned in response errors", async () => {
+        given_Request_body_is(getProjectBody);
+        given_projectRepository_getProjectById_throws();
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(getProjectBody);
+        given_projectRepository_getProjectById_throws();
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
   });
 
   suite("Get projects", () => {
@@ -260,6 +349,35 @@ suite("Project Controller", () => {
         res.verify(r => r.status(OK), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        userToken = {
+          email: "test@me.com",
+          type: "Supplier"
+        };
+      });
+
+      test("Generic error 'Something went wrong...' returned in response errors", async () => {
+        given_Request_user_is(userToken);
+        given_projectRepository_getProjectsForUser_throws();
+
+        await subject.getProjects(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Something went wrong..."] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_user_is(userToken);
+        given_projectRepository_getProjectsForUser_throws();
+
+        await subject.getProjects(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
   });
 
   suite("Delete project", () => {
@@ -267,7 +385,7 @@ suite("Project Controller", () => {
 
     suite("Valid request condtions", () => {
       setup(() => {
-        requestParams =  {
+        requestParams = {
           id: "10"
         };
       });
@@ -290,6 +408,33 @@ suite("Project Controller", () => {
         await subject.deleteProject(req.object, res.object);
 
         res.verify(r => r.status(OK), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        requestParams = {
+          id: "10"
+        };
+      });
+
+      test("Generic error 'Something went wrong...' returned in response errors", async () => {
+        given_Request_params_are(requestParams);
+        given_projectRepository_deleteProjectById_throws();
+
+        await subject.deleteProject(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Something went wrong..."]}), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are(requestParams);
+        given_projectRepository_deleteProjectById_throws();
+
+        await subject.deleteProject(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
       });
     });
   });
@@ -316,6 +461,12 @@ suite("Project Controller", () => {
     userRepository
       .setup(ur => ur.getUserByEmail(whenGiven))
       .returns(async () => returns);
+  }
+
+  function given_userRepository_getUserByEmail_throws() {
+    userRepository
+      .setup(ur => ur.getUserByEmail(It.isAny()))
+      .throws(new Error("Error containing sensitive database information!"));
   }
 
   function given_projectRepository_addProject_returns(returns: ProjectDbo) {
@@ -346,5 +497,23 @@ suite("Project Controller", () => {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(whenGiven))
       .returns(async () => returns);
+  }
+
+  function given_projectRepository_getProjectById_throws() {
+    projectRepository
+      .setup(pr => pr.getProjectById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  }
+
+  function given_projectRepository_getProjectsForUser_throws() {
+    projectRepository
+      .setup(pr => pr.getProjectsForUser(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  }
+
+  function given_projectRepository_deleteProjectById_throws() {
+    projectRepository
+      .setup(pr => pr.deleteProjectById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
   }
 });
