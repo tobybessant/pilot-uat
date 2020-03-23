@@ -22,7 +22,7 @@ import { ICreateCaseRequest } from "../dto/request/supplier/createCase";
 @ClassMiddleware(checkAuthentication)
 export class CaseController extends BaseController {
   constructor(
-    private testRepository: CaseRepository,
+    private caseRepository: CaseRepository,
     private suiteRepository: TestSuiteRepository
   ) {
     super();
@@ -41,7 +41,7 @@ export class CaseController extends BaseController {
         throw new ApiError("Suite not found", BAD_REQUEST);
       }
 
-      const test = await this.testRepository.addCase(suite, model.title);
+      const test = await this.caseRepository.addCase(suite, model.title);
 
       this.created<ICaseResponse>(res, {
         id: test.id.toString(),
@@ -64,7 +64,7 @@ export class CaseController extends BaseController {
     const model: IGetAllCasesRequest = req.body;
 
     try {
-      const tests = await this.testRepository.getCasesForTestSuite(model.suiteId);
+      const tests = await this.caseRepository.getCasesForTestSuite(model.suiteId);
 
       this.OK<ICaseResponse[]>(res, tests.map(t =>
         ({
@@ -85,14 +85,14 @@ export class CaseController extends BaseController {
     const model: IUpdateCaseRequest = req.body;
 
     try {
-      const savedTest = await this.testRepository.updateCase(model);
+      const savedTest = await this.caseRepository.updateCase(model);
 
       this.OK<ICaseResponse>(res, {
         id: savedTest.id.toString(),
         title: savedTest.title
       });
     } catch (error) {
-     this.serverError(res);
+      this.serverError(res);
     }
   }
 
@@ -101,7 +101,7 @@ export class CaseController extends BaseController {
     const testId = req.params.id;
 
     try {
-      await this.testRepository.deleteCaseById(testId);
+      await this.caseRepository.deleteCaseById(testId);
       this.OK(res);
     } catch (error) {
       this.serverError(res);
