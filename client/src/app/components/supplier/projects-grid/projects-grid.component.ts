@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
-import { ICreateProjectResponse } from "src/app/models/api/response/supplier/create-project.interface";
 
 @Component({
-  selector: "app-projects-dashboard",
-  templateUrl: "./projects-dashboard.component.html",
-  styleUrls: ["./projects-dashboard.component.scss"]
+  selector: "app-projects-grid",
+  templateUrl: "./projects-grid.component.html",
+  styleUrls: ["./projects-grid.component.scss"]
 })
-export class ProjectsDashboardComponent implements OnInit {
+export class ProjectsGridComponent implements OnInit {
 
   public projects: IProjectResponse[];
   public newProjectName: string = "";

@@ -20,7 +20,7 @@ import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from "./components/common/login/login.component";
 import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
-import { ProjectsDashboardComponent } from "./components/supplier/projects-dashboard/projects-dashboard.component";
+import { ProjectsGridComponent } from "./components/supplier/projects-grid/projects-grid.component";
 import { initApp } from "./app-initialiser";
 import { SessionService } from "./services/session/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
@@ -39,7 +39,7 @@ import { StepStatusChipComponent } from "./components/supplier/step-status-chip/
     AppComponent,
     CreateAccountComponent,
     LoginComponent,
-    ProjectsDashboardComponent,
+    ProjectsGridComponent,
     NavComponent,
     ProjectComponent,
     ConfirmationPromptComponent,

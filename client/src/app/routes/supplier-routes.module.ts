@@ -1,13 +1,13 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { ProjectsDashboardComponent } from "../components/supplier/projects-dashboard/projects-dashboard.component";
+import { ProjectsGridComponent } from "../components/supplier/projects-grid/projects-grid.component";
 import { ProjectComponent } from "../components/supplier/project/project.component";
 import { NbDialogModule } from "@nebular/theme";
 
 const routes: Routes = [
   {
     path: "",
-    component: ProjectsDashboardComponent,
+    component: ProjectsGridComponent,
     pathMatch: "full"
   },
   {
