@@ -6,6 +6,7 @@
       fullWidth
       type="text"
       [(ngModel)]="stepDescriptionInput"
+      (keyup.enter)="saveStep()"
     />
   </nb-card-body>
   <nb-card-footer>

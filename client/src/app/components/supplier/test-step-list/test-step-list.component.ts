@@ -33,6 +33,9 @@ export class TestStepListComponent implements OnInit {
 
   public async editStep(id: string): Promise<void> {
     const step: IStepResponse = this.steps.find(s => s.id === id);
-    this.dialogService.open(EditTestStepDialogComponent, { context: { step } });
+    this.dialogService.open(EditTestStepDialogComponent, {
+      autoFocus: true,
+      context: { step }
+    });
   }
 }
