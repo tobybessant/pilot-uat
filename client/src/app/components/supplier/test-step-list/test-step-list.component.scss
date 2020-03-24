@@ -110,3 +110,9 @@ p {
 .existing-step:hover #edit-step-button {
   visibility: visible;
 }
+
+.step-details {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}

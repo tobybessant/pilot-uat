@@ -2,7 +2,12 @@
   <div class="timeline" *ngFor="let step of steps">
     <div class="existing-step container right">
       <div class="content">
-        <p>{{ step.description }}</p>
+        <div class="step-details">
+          <app-step-status-chip
+            [status]="step.status"
+          ></app-step-status-chip>
+          <p>{{ step.description }}</p>
+        </div>
         <button id="edit-step-button" nbButton ghost size="medium" (click)="editStep(step.id)">Edit</button>
       </div>
     </div>
