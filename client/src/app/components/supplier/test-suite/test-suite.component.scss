@@ -57,6 +57,10 @@ mat-expansion-panel {
 
 .mat-expansion-panel-header-title {
   flex-grow: 0;
+  color: rgba(0,0,0,0.54);
+}
+.mat-expansion-panel-header-description {
+  color: var(--layout-text-color);
 }
 
 mat-panel-title {

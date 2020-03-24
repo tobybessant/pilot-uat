@@ -31,6 +31,7 @@ import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.
 import { ProjectSettingsComponent } from "./components/supplier/project-settings/project-settings.component";
 import { TestCaseComponent } from "./components/supplier/test-case/test-case.component";
 import { TestStepListComponent } from "./components/supplier/test-step-list/test-step-list.component";
+import { EditTestStepDialogComponent } from './components/supplier/edit-test-step-dialog/edit-test-step-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { TestStepListComponent } from "./components/supplier/test-step-list/test
     TestSuiteComponent,
     ProjectSettingsComponent,
     TestCaseComponent,
-    TestStepListComponent
+    TestStepListComponent,
+    EditTestStepDialogComponent
   ],
   imports: [
     /* Angular */

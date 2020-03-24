@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
+import { NbDialogService } from "@nebular/theme";
+import { EditTestStepDialogComponent } from "../edit-test-step-dialog/edit-test-step-dialog.component";
 
 @Component({
   selector: "app-test-step-list",
@@ -16,7 +18,7 @@ export class TestStepListComponent implements OnInit {
 
   public newStepDescription: string;
 
-  constructor() { }
+  constructor(private dialogService: NbDialogService) { }
 
   ngOnInit(): void {
   }
@@ -26,4 +28,8 @@ export class TestStepListComponent implements OnInit {
     this.newStepDescription = "";
   }
 
+  public async editStep(id: string): Promise<void> {
+    const step: IStepResponse = this.steps.find(s => s.id === id);
+    this.dialogService.open(EditTestStepDialogComponent, { context: { step } });
+  }
 }

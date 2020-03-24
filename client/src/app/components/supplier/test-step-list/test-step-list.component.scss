@@ -46,13 +46,32 @@ p {
   left: 50%;
 }
 
+.existing-step .content p {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.existing-step {
+  border: 1px solid transparent;
+}
+
+.existing-step .content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .existing-step:hover {
+  z-index: 3;
   cursor: pointer;
+  background: var(--color-primary-transparent-100);
+  border: 1px solid var(--color-primary-transparent-200);
+  border-radius: var(--border-radius);
 }
 
 .existing-step.container:hover::after {
-  background: var(--color-primary-default);
-  border: 2px solid var(--color-primary-default);
+  background: var(--color-primary-300);
+  border: 2px solid var(--color-primary-300);
   cursor: pointer;
   transition: 0.3s;
 }
@@ -80,4 +99,14 @@ p {
   top: 0;
   bottom: 50%;
   margin-left: -3px;
+}
+
+#edit-step-button {
+  margin: 0;
+  padding: 2px 5px;
+  visibility: hidden;
+}
+
+.existing-step:hover #edit-step-button {
+  visibility: visible;
 }

@@ -3,6 +3,7 @@
     <div class="existing-step container right">
       <div class="content">
         <p>{{ step.description }}</p>
+        <button id="edit-step-button" nbButton ghost size="small" (click)="editStep(step.id)">Edit</button>
       </div>
     </div>
   </div>
