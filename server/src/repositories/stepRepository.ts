@@ -16,7 +16,7 @@ export default class StepRepository {
     this.baseStepStatusRepository = respositoryService.getRepositoryFor(StepStatusDbo);
   }
 
-  public async addStepForCase(description: string, caseId: string) {
+  public async addStepForCase(description: string, caseId: string): Promise<StepDbo> {
     const testCase = await this.caseRepository.getCaseById(caseId);
     const defaultStatus = await this.baseStepStatusRepository.findOne({ label: StepStatus.NOT_STARTED });
 
