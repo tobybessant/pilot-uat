@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-export enum TestStatus {
+export enum StepStatus {
   NOT_STARTED = "Not Started",
   PASSED = "Passed",
   FAILED = "Failed"
@@ -15,5 +15,5 @@ export class StepStatusDbo {
   id!: number;
 
   @Column()
-  status!: TestStatus;
+  label!: StepStatus;
 }

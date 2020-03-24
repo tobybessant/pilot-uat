@@ -13,7 +13,7 @@ export class StepDbo {
   @Column({ type: "nvarchar" })
   description!: string;
 
-  @ManyToOne(type => StepStatusDbo)
+  @ManyToOne(type => StepStatusDbo, { eager: true })
   @JoinColumn()
   status!: StepStatusDbo;
 

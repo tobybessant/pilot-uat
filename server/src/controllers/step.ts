@@ -33,7 +33,11 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse>(res, {
         id: step.id.toString(),
-        description: step.description
+        description: step.description,
+        status: {
+          id: step.status.id.toString(),
+          label: step.status.label
+        }
       });
     } catch (error) {
       this.serverError(res);
@@ -47,12 +51,14 @@ export class StepController extends BaseController {
 
     try {
       const steps = await this.stepRepository.getStepsForCase(model.caseId);
-
       this.OK<IStepResponse[]>(res, steps.map(step => ({
         description: step.description,
-        id: step.id.toString()
-      }))
-      )
+        id: step.id.toString(),
+        status: {
+          id: step.status.id.toString(),
+          label: step.status.label
+        }
+      })));
     } catch (error) {
       this.serverError(res);
     }
@@ -68,7 +74,11 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse>(res, {
         id: updateStep.id.toString(),
-        description: updateStep.description
+        description: updateStep.description,
+        status: {
+          id: updateStep.status.id.toString(),
+          label: updateStep.status.label
+        }
       });
     } catch (error) {
       this.serverError(res);

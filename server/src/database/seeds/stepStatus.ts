@@ -5,13 +5,13 @@ import { MSSQLDatabase } from "..";
 import { getConnection } from "typeorm";
 import { Logger } from "@overnightjs/logger";
 
-import { TABLE_NAME, TestStatus } from "../entities/stepStatusDbo";
+import { TABLE_NAME, StepStatus } from "../entities/stepStatusDbo";
 let database: MSSQLDatabase;
 
 const records = [
-  { status: TestStatus.NOT_STARTED },
-  { status: TestStatus.PASSED },
-  { status: TestStatus.FAILED }
+  { status: StepStatus.NOT_STARTED },
+  { status: StepStatus.PASSED },
+  { status: StepStatus.FAILED }
 ];
 
 async function seed() {
