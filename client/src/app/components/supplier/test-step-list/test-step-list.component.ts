@@ -16,6 +16,9 @@ export class TestStepListComponent implements OnInit {
   @Output()
   public stepAdded = new EventEmitter<string>();
 
+  @Output()
+  public stepUpdated = new EventEmitter<void>();
+
   public newStepDescription: string;
 
   constructor(private dialogService: NbDialogService) { }

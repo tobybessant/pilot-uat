@@ -7,6 +7,7 @@
       <app-test-step-list
         [steps]="steps"
         (stepAdded)="caseStepAdded($event)"
+        (stepUpdated)="caseStepUpdated()"
       ></app-test-step-list>
       <div class="action-buttons">
         <!-- <button nbButton status="primary" (click)="saveTest()">

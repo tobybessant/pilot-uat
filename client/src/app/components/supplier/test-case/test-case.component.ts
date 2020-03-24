@@ -68,4 +68,8 @@ export class TestCaseComponent implements OnInit {
     }
   }
 
+  public async caseStepUpdated() {
+    await this.fetchStepsForCase();
+  }
+
 }
