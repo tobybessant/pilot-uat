@@ -3,6 +3,7 @@ import { RepositoryService } from "../services/repositoryService";
 import { Repository } from "typeorm";
 import { StepDbo } from "../database/entities/stepDbo";
 import { CaseRepository } from "./caseRepository";
+import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 
 @injectable()
 export default class StepRepository {
@@ -26,5 +27,9 @@ export default class StepRepository {
       .leftJoin("step.case", "case")
       .where("case.id = :id", { id })
       .getMany();
+  }
+
+  public async updateStep(step: IUpdateStepRequest): Promise<StepDbo> {
+    return this.baseStepRepository.save({ ...step, id: Number(step.id) });
   }
 }

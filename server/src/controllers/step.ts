@@ -11,6 +11,8 @@ import { CreateStep } from "../services/middleware/joi/schemas/createStep";
 import { ICreateStepRequest } from "../dto/request/supplier/createStep";
 import { GetAllSteps } from "../services/middleware/joi/schemas/getAllSteps";
 import { IGetAllStepsRequest } from "../dto/request/supplier/getAllSteps";
+import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
+import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 
 @injectable()
 @Controller("step")
@@ -33,7 +35,7 @@ export class StepController extends BaseController {
         id: step.id.toString(),
         description: step.description
       });
-    } catch(error) {
+    } catch (error) {
       this.serverError(res);
     }
   }
@@ -47,11 +49,28 @@ export class StepController extends BaseController {
       const steps = await this.stepRepository.getStepsForCase(model.caseId);
 
       this.OK<IStepResponse[]>(res, steps.map(step => ({
-          description: step.description,
-          id: step.id.toString()
-        }))
+        description: step.description,
+        id: step.id.toString()
+      }))
       )
-    } catch(error) {
+    } catch (error) {
+      this.serverError(res);
+    }
+  }
+
+  @Post("update")
+  @Middleware(new BodyMatches(new Validator()).schema(UpdateStep))
+  public async updateStep(req: Request, res: Response) {
+    const model: IUpdateStepRequest = req.body;
+
+    try {
+      const updateStep = await this.stepRepository.updateStep(model);
+
+      this.OK<IStepResponse>(res, {
+        id: updateStep.id.toString(),
+        description: updateStep.description
+      });
+    } catch (error) {
       this.serverError(res);
     }
   }
