@@ -5,6 +5,7 @@ import { NbDialogService } from "@nebular/theme";
 import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { StepApiService } from "src/app/services/api/step/step-api.service";
 import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
+import { EditCaseDialogComponent } from "../edit-case-dialog/edit-case-dialog.component";
 
 @Component({
   selector: "app-test-case",
@@ -66,5 +67,13 @@ export class TestCaseComponent implements OnInit {
       await this.stepApiService.addStepToCase($event, this.case.id);
       await this.fetchStepsForCase();
     }
+  }
+
+  public promptEditTest(): void {
+    this.dialogService.open(EditCaseDialogComponent, {
+      context: {
+        case: this.case
+      }
+    });
   }
 }

@@ -5,12 +5,12 @@
       nbInput
       fullWidth
       type="text"
-      [(ngModel)]="stepDescriptionInput"
-      (keyup.enter)="saveStep()"
+      [(ngModel)]="caseTitleInput"
+      (keyup.enter)="saveCase()"
     />
   </nb-card-body>
   <nb-card-footer>
-    <button nbButton status="primary" (click)="saveStep()">
+    <button nbButton status="primary" (click)="saveCase()">
       <nb-icon icon="checkmark-square-outline"></nb-icon>Save Changes
     </button>
     <button nbButton status="basic" (click)="close()">Cancel</button>

@@ -24,7 +24,7 @@ export class EditTestStepDialogComponent implements OnInit {
     this.stepDescriptionInput = this.step.description;
   }
 
-  close() {
+  public close() {
     this.dialogRef.close(this.step);
   }
 

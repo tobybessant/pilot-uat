@@ -33,6 +33,7 @@ import { TestCaseComponent } from "./components/supplier/test-case/test-case.com
 import { TestStepListComponent } from "./components/supplier/test-step-list/test-step-list.component";
 import { EditTestStepDialogComponent } from "./components/supplier/edit-test-step-dialog/edit-test-step-dialog.component";
 import { StepStatusChipComponent } from "./components/supplier/step-status-chip/step-status-chip.component";
+import { EditCaseDialogComponent } from './components/supplier/edit-case-dialog/edit-case-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { StepStatusChipComponent } from "./components/supplier/step-status-chip/
     TestCaseComponent,
     TestStepListComponent,
     EditTestStepDialogComponent,
-    StepStatusChipComponent
+    StepStatusChipComponent,
+    EditCaseDialogComponent
   ],
   imports: [
     /* Angular */
