@@ -3,7 +3,6 @@ import { RepositoryService } from "../services/repositoryService";
 import { Repository } from "typeorm";
 import { StepDbo } from "../database/entities/stepDbo";
 import { CaseRepository } from "./caseRepository";
-import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { StepStatusDbo, StepStatus } from "../database/entities/stepStatusDbo";
 
 @injectable()
@@ -14,6 +13,11 @@ export default class StepRepository {
   constructor(private respositoryService: RepositoryService, private caseRepository: CaseRepository) {
     this.baseStepRepository = respositoryService.getRepositoryFor(StepDbo);
     this.baseStepStatusRepository = respositoryService.getRepositoryFor(StepStatusDbo);
+  }
+
+  public async getStepById(id: string): Promise<StepDbo | undefined> {
+    const step = await this.baseStepRepository.findOne({ id: Number(id) });
+    return step;
   }
 
   public async addStepForCase(description: string, caseId: string): Promise<StepDbo> {
@@ -36,20 +40,7 @@ export default class StepRepository {
       .getMany();
   }
 
-  public async updateStep(step: IUpdateStepRequest): Promise<StepDbo> {
-    const stepFormatted: any = {
-      id: Number(step.id)
-    };
-
-    if (step.description) {
-      stepFormatted.description = step.description
-    }
-
-    if (step.status) {
-      const status = await this.baseStepStatusRepository.findOne(step.status as any);
-      stepFormatted.status = status;
-    }
-
-    return this.baseStepRepository.save(stepFormatted);
+  public async updateStep(step: StepDbo): Promise<StepDbo> {
+    return this.baseStepRepository.save(step);
   }
 }

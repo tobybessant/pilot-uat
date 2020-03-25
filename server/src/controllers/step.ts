@@ -13,6 +13,8 @@ import { GetAllSteps } from "../services/middleware/joi/schemas/getAllSteps";
 import { IGetAllStepsRequest } from "../dto/request/supplier/getAllSteps";
 import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
+import { ApiError } from "../services/apiError";
+import { BAD_REQUEST } from "http-status-codes";
 
 @injectable()
 @Controller("step")
@@ -70,7 +72,19 @@ export class StepController extends BaseController {
     const model: IUpdateStepRequest = req.body;
 
     try {
-      const updateStep = await this.stepRepository.updateStep(model);
+      const stepDbo = await this.stepRepository.getStepById(model.id);
+      if (!stepDbo) {
+        throw new ApiError("Error finding step", BAD_REQUEST);
+      }
+
+      // map model properties to step dbo
+      for(const key of Object.keys(model)) {
+        if(stepDbo.hasOwnProperty(key) && key !== "id") {
+          (stepDbo as any)[key] = (model as any)[key];
+        }
+      }
+
+      const updateStep = await this.stepRepository.updateStep(stepDbo);
 
       this.OK<IStepResponse>(res, {
         id: updateStep.id.toString(),
@@ -81,6 +95,10 @@ export class StepController extends BaseController {
         }
       });
     } catch (error) {
+      if (error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
+        return;
+      }
       this.serverError(res);
     }
   }
