@@ -43,4 +43,9 @@ export default class StepRepository {
   public async updateStep(step: StepDbo): Promise<StepDbo> {
     return this.baseStepRepository.save(step);
   }
+
+  public async deleteStepById(id: string): Promise<void> {
+    await this.baseStepRepository.delete({ id: Number(id) });
+    return;
+  }
 }

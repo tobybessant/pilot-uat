@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Controller, ClassMiddleware, Post, Middleware } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Middleware, Delete } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
 import StepRepository from "../repositories/stepRepository";
@@ -15,6 +15,7 @@ import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { ApiError } from "../services/apiError";
 import { BAD_REQUEST } from "http-status-codes";
+import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 
 @injectable()
 @Controller("step")
@@ -78,8 +79,8 @@ export class StepController extends BaseController {
       }
 
       // map model properties to step dbo
-      for(const key of Object.keys(model)) {
-        if(stepDbo.hasOwnProperty(key) && key !== "id") {
+      for (const key of Object.keys(model)) {
+        if (stepDbo.hasOwnProperty(key) && key !== "id") {
           (stepDbo as any)[key] = (model as any)[key];
         }
       }
@@ -99,6 +100,19 @@ export class StepController extends BaseController {
         this.errorResponse(res, error.statusCode, [error.message]);
         return;
       }
+      this.serverError(res);
+    }
+  }
+
+  @Delete(":id")
+  @Middleware(PermittedAccountTypes.are(["Supplier"]))
+  public async deleteStep(req: Request, res: Response) {
+    const stepId = req.params.id;
+
+    try {
+      const deletedStep = await this.stepRepository.deleteStepById(stepId);
+      this.OK(res);
+    } catch (error) {
       this.serverError(res);
     }
   }
