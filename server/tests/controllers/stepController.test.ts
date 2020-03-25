@@ -293,7 +293,6 @@ suite("Step Controller", () => {
 
     });
 
-
     suite("Unexpected 'Error' thrown by stepRepository getStepById", () => {
 
       setup(() => {
@@ -362,6 +361,69 @@ suite("Step Controller", () => {
     });
   });
 
+  suite("Delete Step", () => {
+
+    let deleteStepParams: any;
+
+    suite("Valid request conditions", () => {
+
+      setup(() => {
+        deleteStepParams = {
+          id: "5"
+        };
+      });
+
+
+      test("Response returns only empty errors array", async () => {
+        given_Request_params_are(deleteStepParams);
+        given_stepRepository_deleteStepById_returns(undefined);
+
+        await subject.deleteStep(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [] }), Times.once());
+      });
+
+      test("Response returns statusCode 200", async () => {
+        given_Request_params_are(deleteStepParams);
+        given_stepRepository_deleteStepById_returns(undefined);
+
+        await subject.deleteStep(req.object, res.object);
+
+        res.verify(r => r.status(OK), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by stepRepository", () => {
+
+      setup(() => {
+        deleteStepParams = {
+          id: "1"
+        };
+      });
+
+      test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}`, async () => {
+        given_Request_params_are(deleteStepParams);
+        given_stepRepository_deleteStepById_throws();
+
+        await subject.deleteStep(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are(deleteStepParams);
+        given_stepRepository_deleteStepById_throws();
+
+        await subject.deleteStep(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
+  });
+
+
   function given_Request_body_is(body: any) {
     req
       .setup(r => r.body)
@@ -412,5 +474,23 @@ suite("Step Controller", () => {
     stepRepository
       .setup(sr => sr.updateStep(It.isAny()))
       .throws(new Error("Sensetive database information!"));
+  }
+
+  function given_Request_params_are(params: any) {
+    req
+      .setup(r => r.params)
+      .returns(() => params);
+  }
+
+  function given_stepRepository_deleteStepById_returns(returns: any) {
+    stepRepository
+      .setup(sr => sr.deleteStepById(It.isAny()))
+      .returns(async () => returns);
+  }
+
+  function given_stepRepository_deleteStepById_throws() {
+    stepRepository
+      .setup(sr => sr.deleteStepById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
   }
 });
