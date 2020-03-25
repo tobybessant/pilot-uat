@@ -45,7 +45,7 @@ export class TestSuiteComponent implements OnInit {
     });
 
     // NOTE: this will catch the race condition where this component initialises
-    // after the on-init active suite has been set by the project component.
+    // after the on-init active suite has been set by the parent project component.
     if (!this.activeSuite) {
       this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
     }
@@ -104,11 +104,6 @@ export class TestSuiteComponent implements OnInit {
 
   public async testSuiteUpdated(test: ICaseResponse) {
     await this.fetchTestsForActiveSuite();
-    if (this.activeSuite) {
-      // const existingSelectionIndex = this.tests.findIndex(t => t.id === test.id);
-      // this.table.selected.push(this.tests[existingSelectionIndex]);
-      // console.log(this.table.selected);
-    }
   }
 
   public newCaseSelected({ selected }) {

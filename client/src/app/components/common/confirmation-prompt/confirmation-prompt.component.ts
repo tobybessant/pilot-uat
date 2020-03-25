@@ -15,7 +15,7 @@ export class ConfirmationPromptComponent {
   bodyText: string = "";
 
   @Input()
-  confirmAction: () => void;
+  confirmAction: (...args: any[]) => void;
 
   @Input()
   cancelAction: () => void;

@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
 import { NbDialogService } from "@nebular/theme";
 import { EditTestStepDialogComponent } from "../edit-test-step-dialog/edit-test-step-dialog.component";
+import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
+import { StepApiService } from "src/app/services/api/step/step-api.service";
 
 @Component({
   selector: "app-test-step-list",
@@ -19,9 +21,12 @@ export class TestStepListComponent implements OnInit {
   @Output()
   public stepUpdated = new EventEmitter<void>();
 
+  @Output()
+  public stepDeleted = new EventEmitter<void>();
+
   public newStepDescription: string;
 
-  constructor(private dialogService: NbDialogService) { }
+  constructor(private dialogService: NbDialogService, private stepApiService: StepApiService) { }
 
   ngOnInit(): void {
   }
@@ -37,5 +42,23 @@ export class TestStepListComponent implements OnInit {
       autoFocus: true,
       context: { step }
     });
+  }
+
+  public async promptDeleteStep(id: string, description: string): Promise<void> {
+    this.dialogService.open(ConfirmationPromptComponent, {
+      autoFocus: true,
+      context: {
+        bodyText: "You are about to delete this step (" + description + ")",
+        confirmButtonText: "Delete",
+        confirmAction: async () => {
+          this.deleteStep(id);
+        }
+      }
+    });
+  }
+
+  public async deleteStep(id: string) {
+    await this.stepApiService.deleteStepById(id);
+    this.stepDeleted.emit();
   }
 }

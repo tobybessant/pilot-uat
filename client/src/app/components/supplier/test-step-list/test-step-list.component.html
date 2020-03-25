@@ -3,12 +3,29 @@
     <div class="existing-step container right">
       <div class="content">
         <div class="step-details">
-          <app-step-status-chip
-            [status]="step.status"
-          ></app-step-status-chip>
+          <app-step-status-chip [status]="step.status"></app-step-status-chip>
           <p>{{ step.description }}</p>
         </div>
-        <button id="edit-step-button" nbButton ghost size="medium" (click)="editStep(step.id)">Edit</button>
+        <div id="step-actions">
+          <button
+            id="edit-step-button"
+            nbButton
+            ghost
+            size="medium"
+            (click)="editStep(step.id)"
+          >
+            Edit
+          </button>
+          <button
+            nbButton
+            ghost
+            size="medium"
+            status="danger"
+            (click)="promptDeleteStep(step.id, step.description)"
+          >
+            <nb-icon icon="trash-2-outline"></nb-icon>
+          </button>
+        </div>
       </div>
     </div>
   </div>

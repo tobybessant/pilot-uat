@@ -101,13 +101,19 @@ p {
   margin-left: -3px;
 }
 
-#edit-step-button {
+#step-actions > button {
   margin: 0;
   padding: 2px 5px;
+}
+
+#step-actions {
+  width: 90px;
+  display:flex;
+  justify-content: space-between;
   visibility: hidden;
 }
 
-.existing-step:hover #edit-step-button {
+.existing-step:hover #step-actions {
   visibility: visible;
 }
 
