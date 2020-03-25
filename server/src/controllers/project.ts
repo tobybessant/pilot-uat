@@ -4,88 +4,94 @@ import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
-import { CreateProjectSchema } from "../services/middleware/joi/schemas/createProject";
-import { ProjectDbo } from "../database/entities/projectDbo";
-import { BAD_REQUEST, CREATED, OK, INTERNAL_SERVER_ERROR, NOT_FOUND } from "http-status-codes";
-import { IApiResponse } from "../dto/common/apiResponse";
-import { ICreateProjectResponse } from "../dto/supplier/createProject";
-import { IUserToken } from "../dto/common/userToken";
-import { IProjectResponse } from "../dto/supplier/project";
+import { CreateProject } from "../services/middleware/joi/schemas/createProject";
+import { IUserToken } from "../dto/response/common/userToken";
+import { IProjectResponse } from "../dto/response/supplier/project";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
+import { BaseController } from "./baseController";
+import { ICreateProjectRequest } from "../dto/request/supplier/createProject";
+import { GetProject } from "../services/middleware/joi/schemas/getProject";
+import { IGetProjectRequest } from "../dto/request/supplier/getProject";
+import { Validator } from "joiful";
+import { BAD_REQUEST } from "http-status-codes";
+import { ApiError } from "../services/apiError";
 
 @injectable()
 @Controller("project")
 @ClassMiddleware(checkAuthentication)
-export class ProjectController {
+export class ProjectController extends BaseController {
 
   constructor(
     private projectRepository: ProjectRepository,
     private userRepository: UserRepository
-  ) { }
+  ) {
+    super();
+  }
 
   @Post("create")
   @Middleware([
-    BodyMatches.schema(CreateProjectSchema),
+    new BodyMatches(new Validator()).schema(CreateProject),
     PermittedAccountTypes.are(["Supplier"])
   ])
   public async createProject(req: Request, res: Response) {
-    const { projectName } = req.body;
+    const model: ICreateProjectRequest = req.body;
 
     try {
       const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
       if (!user) {
-        throw new Error("Error finding user");
+        throw new ApiError("Error finding user", BAD_REQUEST);
       }
 
-      await this.projectRepository.addProject(user, projectName);
+      const project = await this.projectRepository.addProject(user, model.title);
 
-      res.status(CREATED);
-      res.json({
-        errors: [],
-        payload: {
-          projectName
-        }
-      } as IApiResponse<ICreateProjectResponse>);
+      this.created<IProjectResponse>(res, {
+        title: project.title,
+        id: project.id.toString(),
+        suites: project.suites.map(suite => ({
+          id: suite.id.toString(),
+          title: suite.title
+        }))
+      });
+
     } catch (error) {
-      const errors: string[] = [
-        error.message ? error.message : "Error creating project"
-      ];
-
-      res.status(INTERNAL_SERVER_ERROR);
-      res.json({ errors } as IApiResponse<ICreateProjectResponse>);
+      if(error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [ error.message ]);
+        return;
+      }
+      this.serverError(res);
     }
   }
 
   @Post()
+  @Middleware(
+    new BodyMatches(new Validator()).schema(GetProject)
+  )
   public async getProjectById(req: Request, res: Response) {
-    const { id } = req.body;
+    const model: IGetProjectRequest = req.body;
 
     try {
-      const project = await this.projectRepository.getProjectById(id);
+      const project = await this.projectRepository.getProjectById(model.id);
 
       if (!project) {
-        throw new Error("That project does not exist");
+        throw new ApiError("That project does not exist", BAD_REQUEST);
       }
 
-      const suites = await this.projectRepository.getTestSuitesForProject(project.id);
-
-      res.json({
-        errors: [],
-        payload: ((record: ProjectDbo) =>
-          ({
-            id: record.id,
-            projectName: record.projectName,
-            suites
-          })
-        )(project)
-      } as IApiResponse<IProjectResponse>);
-      res.status(OK);
+      this.OK<IProjectResponse>(res, {
+        id: project.id.toString(),
+        title: project.title,
+        suites: project.suites.map(s => ({
+          id: s.id.toString(),
+          title: s.title
+        }))
+      });
     } catch (error) {
-      res.status(NOT_FOUND);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<IProjectResponse>);
+      if(error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
+        return;
+      }
+
+      this.serverError(res);
     }
   }
 
@@ -95,21 +101,14 @@ export class ProjectController {
       let projects = await this.projectRepository.getProjectsForUser((req.user as IUserToken).email);
       projects = projects ? projects : [];
 
-      res.status(OK);
-      res.json({
-        errors: [],
-        payload: projects!.map(r =>
-          ({
-            id: r.id,
-            projectName: r.projectName,
-            suites: []
-          }))
-      } as IApiResponse<IProjectResponse[]>)
+      this.OK<IProjectResponse[]>(res, projects.map(r =>
+        ({
+          id: r.id.toString(),
+          title: r.title
+        }))
+      );
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<IProjectResponse>);
+      this.serverError(res);
     }
   }
 
@@ -119,17 +118,9 @@ export class ProjectController {
 
     try {
       const deletedProject = await this.projectRepository.deleteProjectById(projectId);
-      res.status(OK);
-      res.json({
-        errors: []
-      } as unknown as IApiResponse<any>);
-      return;
-
+      this.OK(res);
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<any>);
+      this.serverError(res);
     }
   }
 }

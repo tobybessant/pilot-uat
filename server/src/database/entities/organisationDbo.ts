@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToMany, JoinTable, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToMany } from "typeorm";
 import { UserDbo } from "./userDbo";
 
 export const TABLE_NAME: string = "Organisation";
@@ -7,13 +7,13 @@ export const TABLE_NAME: string = "Organisation";
 })
 export class OrganisationDbo {
     @PrimaryGeneratedColumn()
-    id!: string;
+    id!: number;
 
     @Column({ type: "varchar", length: 255 })
     organisationName!: string;
 
     @ManyToMany(type => UserDbo, user => user.organisations)
-    users!: UserDbo[]
+    users!: UserDbo[];
 
     @CreateDateColumn()
     createdDate!: Date;

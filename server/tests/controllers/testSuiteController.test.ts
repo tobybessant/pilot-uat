@@ -3,11 +3,12 @@ import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
 import { TestSuiteController } from "../../src/controllers";
-import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
-import { ITestSuiteResponse } from "../../src/dto/supplier/testSuite";
-import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
+import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
+import { ISuiteResponse } from "../../src/dto/response/supplier/suite";
+import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { OK } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
+import { BaseController } from "../../src/controllers/baseController";
 
 suite("TestSuiteController", () => {
   let repositoryService: IMock<RepositoryService>;
@@ -19,7 +20,7 @@ suite("TestSuiteController", () => {
 
   let subject: TestSuiteController;
 
-  suiteSetup(() => {
+  setup(() => {
     repositoryService = Mock.ofType<RepositoryService>();
     projectRepository = Mock.ofType<ProjectRepository>();
     testSuiteRepository = Mock.ofType<TestSuiteRepository>();
@@ -42,25 +43,26 @@ suite("TestSuiteController", () => {
   suite("Create Test Suite", async () => {
     let createTestSuiteBody: any;
     let projectDbo: ProjectDbo;
-    let testSuiteDbo: TestSuiteDbo;
-    let createTestSuiteResponse: ITestSuiteResponse | undefined;
+    let testSuiteDbo: SuiteDbo;
+    let createTestSuiteResponse: ISuiteResponse | undefined;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         createTestSuiteBody = {
+          projectId: 5,
           suiteName: "New Suite"
         };
 
         projectDbo = new ProjectDbo();
-        projectDbo.projectName = "New Project";
+        projectDbo.title = "New Project";
 
-        testSuiteDbo = new TestSuiteDbo();
-        testSuiteDbo.suiteName = createTestSuiteBody.suiteName;
-        testSuiteDbo.id = "5";
+        testSuiteDbo = new SuiteDbo();
+        testSuiteDbo.title = createTestSuiteBody.suiteName;
+        testSuiteDbo.id = 5;
 
         createTestSuiteResponse = {
-          suiteName: testSuiteDbo.suiteName,
-          id: testSuiteDbo.id
+          title: testSuiteDbo.title,
+          id: testSuiteDbo.id.toString()
         };
 
       });
@@ -85,30 +87,156 @@ suite("TestSuiteController", () => {
         res.verify(r => r.status(OK), Times.once());
       });
     });
+
+    suite("projectRepository silently fails to find project and returns undefined", () => {
+
+      setup(() => {
+        createTestSuiteBody = {
+          projectId: 5,
+          suiteName: "New Suite"
+        };
+      });
+
+      test("Response returns error 'Project does not exist' in errors array", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(undefined);
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Project does not exist"] }), Times.once());
+      });
+
+      test("Response returns statusCode 400", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(undefined);
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
+      });
+
+    });
+
+    suite("suiteRepository silently fails to add suite and returns undefined", () => {
+
+      setup(() => {
+        createTestSuiteBody = {
+          projectId: 5,
+          suiteName: "New Suite"
+        };
+
+        projectDbo = new ProjectDbo();
+        projectDbo.title = "New Project";
+      });
+
+      test("Response returns error 'Failed to add suite' in response errors array", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(projectDbo);
+        given_testSuiteRepository_addTestSuite_returns(undefined);
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.json({ errors: ["Failed to add suite"] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(projectDbo);
+        given_testSuiteRepository_addTestSuite_returns(undefined);
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        createTestSuiteBody = {
+          projectId: 5,
+          suiteName: "New Suite"
+        };
+      });
+
+      test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in response errors`, async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_throws();
+
+        subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Reponse returns statusCode 500", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_throws();
+
+        subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
+    suite("Unexpected 'Error' thrown by testSuiteRepository", () => {
+
+      setup(() => {
+        createTestSuiteBody = {
+          projectId: 5,
+          suiteName: "New Suite"
+        };
+
+        projectDbo = new ProjectDbo();
+        projectDbo.title = "New Project";
+      });
+
+      test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in response errors`, async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(projectDbo);
+        given_testSuiteRepository_addTestSuite_throws();
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(createTestSuiteBody);
+        given_projectRepository_getProjectById_returns(projectDbo);
+        given_testSuiteRepository_addTestSuite_throws();
+
+        await subject.createTestSuite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
   });
 
   suite("Get all test suites for a project", async () => {
     let getTestSuitesBody: any;
-    let testSuiteDboList: TestSuiteDbo[] = [];
-    let getAllTestSuitesResponse: ITestSuiteResponse[] = [];
+    const testSuiteDboList: SuiteDbo[] = [];
+    const getAllTestSuitesResponse: ISuiteResponse[] = [];
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         getTestSuitesBody = {
           projectId: "5"
         };
 
         for (let i = 0; i < 1; i++) {
-          const ts = new TestSuiteDbo();
-          ts.id = i + "";
-          ts.suiteName = "Suite " + i;
+          const ts = new SuiteDbo();
+          ts.id = i;
+          ts.title = "Suite " + i;
           testSuiteDboList.push(ts);
         }
 
         for (const suite of testSuiteDboList) {
           getAllTestSuitesResponse.push({
-            id: suite.id,
-            suiteName: suite.suiteName
+            id: suite.id.toString(),
+            title: suite.title
           });
         }
       });
@@ -131,21 +259,48 @@ suite("TestSuiteController", () => {
         res.verify(r => r.status(OK), Times.once());
       });
 
-    })
+    });
+
+    suite("Unexpected 'Error' thrown by projectsRepository", () => {
+
+      setup(() => {
+        getTestSuitesBody = {
+          projectId: "5"
+        };
+      });
+
+      test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in response errors`, async () => {
+        given_Request_body_is(getTestSuitesBody);
+        given_projectRepository_getTestSuitesForProject_throws();
+
+        await subject.getTestSuites(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(getTestSuitesBody);
+        given_projectRepository_getTestSuitesForProject_throws();
+
+        await subject.getTestSuites(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
   });
 
   suite("Delete test suite from project", async () => {
-    let deleteTestSuiteBody: any;
+    let deleteTestSuiteParams: any;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
-        deleteTestSuiteBody = {
-          suiteId: "500"
-        }
+      setup(() => {
+        deleteTestSuiteParams = {
+          suiteId: "50"
+        };
       });
 
       test("Should return nothing in response body", async () => {
-        given_Request_body_is(deleteTestSuiteBody);
+        given_Request_params_are(deleteTestSuiteParams);
 
         await subject.deleteSuite(req.object, res.object);
 
@@ -153,13 +308,41 @@ suite("TestSuiteController", () => {
       });
 
       test("Should return statusCode 200", async () => {
-        given_Request_body_is(deleteTestSuiteBody);
+        given_Request_params_are(deleteTestSuiteParams);
 
         await subject.deleteSuite(req.object, res.object);
 
         res.verify(r => r.status(OK), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        deleteTestSuiteParams = {
+          suiteId: "50"
+        };
+      });
+
+      test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in response errors`, async () => {
+        given_Request_params_are(deleteTestSuiteParams);
+        given_suiteRepository_deleteTestSuiteById_throws();
+
+        await subject.deleteSuite(req.object, res.object);
+
+        res.verify(r => r.json({errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]}), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are(deleteTestSuiteParams);
+        given_suiteRepository_deleteTestSuiteById_throws();
+
+        await subject.deleteSuite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
   });
 
   function given_Request_body_is(body: any): void {
@@ -168,21 +351,51 @@ suite("TestSuiteController", () => {
       .returns(() => body);
   };
 
-  function given_testSuiteRepository_addTestSuite_returns(returns: TestSuiteDbo) {
+  function given_Request_params_are(params: any): void {
+    req
+      .setup(r => r.params)
+      .returns(() => params);
+  };
+
+  function given_testSuiteRepository_addTestSuite_returns(returns: SuiteDbo | undefined) {
     testSuiteRepository
       .setup(tsr => tsr.addTestSuite(It.isAny(), It.isAny()))
       .returns(async () => returns);
   };
 
-  function given_projectRepository_getProjectById_returns(returns: ProjectDbo) {
+  function given_testSuiteRepository_addTestSuite_throws() {
+    testSuiteRepository
+      .setup(tsr => tsr.addTestSuite(It.isAny(), It.isAny()))
+      .throws(new Error("Sensitive database inforamtion!"));
+  }
+
+  function given_projectRepository_getProjectById_returns(returns: ProjectDbo | undefined) {
     projectRepository
       .setup(pr => pr.getProjectById(It.isAny()))
       .returns(async () => returns);
   };
 
-  function given_projectRepository_getTestSuitesForProject_returns(returns: TestSuiteDbo[]) {
+  function given_projectRepository_getTestSuitesForProject_returns(returns: SuiteDbo[]) {
     projectRepository
-    .setup(pr => pr.getTestSuitesForProject(It.isAny()))
-    .returns(async () => returns);
+      .setup(pr => pr.getTestSuitesForProject(It.isAny()))
+      .returns(async () => returns);
   };
+
+  function given_projectRepository_getProjectById_throws() {
+    projectRepository
+      .setup(pr => pr.getProjectById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  };
+
+  function given_projectRepository_getTestSuitesForProject_throws() {
+    projectRepository
+      .setup(pr => pr.getTestSuitesForProject(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  };
+
+  function given_suiteRepository_deleteTestSuiteById_throws() {
+    testSuiteRepository
+      .setup(tsr => tsr.deleteTestSuiteById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  }
 });

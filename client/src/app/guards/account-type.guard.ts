@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { SessionService } from "../services/session.service";
+import { SessionService } from "../services/session/session.service";
 
 @Injectable({
   providedIn: "root"
@@ -20,7 +20,7 @@ export class AccountTypeGuard implements CanActivate {
 
       if (loggedInUser) {
           // check if route is restricted by role
-          if (next.data.permittedTypes && next.data.permittedTypes.indexOf(loggedInUser.userType.type) === -1) {
+          if (next.data.permittedTypes && next.data.permittedTypes.indexOf(loggedInUser.type) === -1) {
               // role not authorised so redirect to home page
               // this.router.navigate(["/"]);
               return false;

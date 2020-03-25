@@ -1,7 +1,7 @@
 import { Routes, RouterModule, ROUTES, Router } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { SessionService } from "../services/session.service";
+import { SessionService } from "../services/session/session.service";
 
 @NgModule({
   declarations: [],
@@ -28,7 +28,7 @@ export function getRouterForAccountType(sessionService: SessionService, router: 
     return routes;
   }
 
-  if (user.userType.type === "Supplier") {
+  if (user.type === "Supplier") {
     routes = [
       {
         path: "", loadChildren: () => import("./supplier-routes.module").then(mod => mod.SupplierRoutingModule),

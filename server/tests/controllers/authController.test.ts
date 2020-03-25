@@ -9,7 +9,7 @@ import { CREATED, BAD_REQUEST } from "http-status-codes";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { UserTypeDbo } from "../../src/database/entities/userTypeDbo";
 import { Bcrypt } from "../../src/services/utils/bcryptHash";
-import { ICreateUserResponse } from "../../src/dto/common/createUser";
+import { IUserResponse } from "../../src/dto/response/common/user";
 import { OrganisationDbo } from "../../src/database/entities/organisationDbo";
 
 suite("Auth Controller", () => {
@@ -25,7 +25,7 @@ suite("Auth Controller", () => {
   let bcrypt: IMock<Bcrypt>;
   let subject: AuthController;
 
-  suiteSetup(() => {
+  setup(() => {
     userRepository = Mock.ofType<Repository<UserDbo>>();
     userTypeRepository = Mock.ofType<Repository<UserTypeDbo>>();
     organisationRepository = Mock.ofType<Repository<OrganisationDbo>>();
@@ -56,9 +56,9 @@ suite("Auth Controller", () => {
       let createUserBody: any;
       let userType: UserTypeDbo;
       let saveUserResponse: UserDbo;
-      let createUserResponse: ICreateUserResponse;
+      let createUserResponse: IUserResponse;
 
-      suiteSetup(() => {
+      setup(() => {
         createUserBody = {
           email: "toby@me.com",
           password: "CorrectHorseBatteryStaple",
@@ -86,7 +86,10 @@ suite("Auth Controller", () => {
         createUserResponse = {
           email: createUserBody.email,
           firstName: createUserBody.firstName,
-          type: userType.type
+          type: userType.type,
+          createdDate: saveUserResponse.createdDate,
+          lastName: createUserBody.lastName,
+          organisations: saveUserResponse.organisations
         }
       });
 
@@ -120,9 +123,9 @@ suite("Auth Controller", () => {
       let createUserBody: any;
       let userType: UserTypeDbo;
       let saveUserResponse: UserDbo;
-      let createUserResponse: ICreateUserResponse;
+      let createUserResponse: IUserResponse;
 
-      suiteSetup(() => {
+      setup(() => {
         createUserBody = {
           email: "toby@me.com",
           password: "CorrectHorseBatteryStaple",
@@ -136,7 +139,7 @@ suite("Auth Controller", () => {
         };
 
         saveUserResponse = {
-          id: "XYZ-ABC",
+          id: "XYZ ABC",
           email: createUserBody.email,
           passwordHash: bcrypt.object.hash(createUserBody.password),
           firstName: createUserBody.firstName,
@@ -150,7 +153,10 @@ suite("Auth Controller", () => {
         createUserResponse = {
           email: createUserBody.email,
           firstName: createUserBody.firstName,
-          type: userType.type
+          type: userType.type,
+          createdDate: saveUserResponse.createdDate,
+          lastName: createUserBody.lastName,
+          organisations: saveUserResponse.organisations
         }
       });
 

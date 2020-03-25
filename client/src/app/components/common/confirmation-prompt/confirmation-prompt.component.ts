@@ -6,7 +6,7 @@ import { NbDialogRef } from "@nebular/theme";
   templateUrl: "./confirmation-prompt.component.html",
   styleUrls: ["./confirmation-prompt.component.scss"]
 })
-export class ConfirmationPromptComponent implements OnDestroy {
+export class ConfirmationPromptComponent {
 
   @Input()
   confirmButtonText: string = "";
@@ -15,15 +15,12 @@ export class ConfirmationPromptComponent implements OnDestroy {
   bodyText: string = "";
 
   @Input()
-  confirmAction: () => void;
+  confirmAction: (...args: any[]) => void;
 
   @Input()
   cancelAction: () => void;
 
   constructor(protected dialogRef: NbDialogRef<any>) {
-  }
-
-  ngOnDestroy(): void {
   }
 
   close() {

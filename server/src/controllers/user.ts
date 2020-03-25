@@ -6,19 +6,22 @@ import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryService";
-import { IApiResponse } from "../dto/common/apiResponse";
-import { IUserResponse } from "../dto/common/user";
+import { IApiResponse } from "../dto/response/common/apiResponse";
+import { IUserResponse } from "../dto/response/common/user";
+import { BaseController } from "./baseController";
+import { ApiError } from "../services/apiError";
 
 @injectable()
 @Controller("user")
 @ClassMiddleware(checkAuthentication)
-export class UserController {
+export class UserController extends BaseController {
 
   private userRepository: Repository<UserDbo>;
 
   constructor(
     private repositoryService: RepositoryService,
   ) {
+    super();
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
@@ -33,16 +36,25 @@ export class UserController {
           .where("user.email = :email", { email })
           .getOne();
 
-      res.status(OK)
-      res.json({
-        errors: [],
-        payload: user
-      } as IApiResponse<IUserResponse>);
+      if(!user) {
+        throw new ApiError("User could not be found", BAD_REQUEST);
+      }
+
+      this.OK<IUserResponse>(res, {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdDate: user.createdDate,
+        organisations: user.organisations,
+        type: user.userType.type
+      });
+
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<IUserResponse>);
+      if(error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [ error.message ]);
+      } else {
+        this.serverError(res);
+      }
     }
   }
 }

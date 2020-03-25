@@ -1,16 +1,55 @@
-<div class="suite" *ngIf="activeSuite">
+<div class="first-suite-modal" *ngIf="!activeSuite">
+  <h3>Add your first test suite</h3>
+</div>
+
+<div class="suite">
   <div class="suite-header">
     <div class="suite-details">
-      <h5>{{ activeSuite.id }} | {{ activeSuite.suiteName }}</h5>
+      <h5>{{ getSuiteId() }} | {{ getSuiteName() }}</h5>
     </div>
     <button
       nbButton
       ghost
+      size="medium"
       status="danger"
-      size="giant"
       (click)="promptDeleteSuite()"
     >
       <nb-icon icon="trash-2-outline"></nb-icon>
+      Delete Suite
     </button>
+  </div>
+
+  <div class="test-input">
+    <input
+      type="text"
+      nbInput
+      fullWidth
+      placeholder="Enter New Scenario"
+      [(ngModel)]="newTestCase"
+      (keyup.enter)="addTest()"
+    />
+  </div>
+
+  <div class="tests">
+    <div class="table-container" #testTableContainer>
+      <mat-accordion [multi]="true">
+        <mat-expansion-panel *ngFor="let case of cases">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ case.id }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ case.title }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <app-test-case
+            (testDeleted)="updateSelectedTestCase($event)"
+            (testUpdated)="testSuiteUpdated($event)"
+            [case]="case"
+          >
+          </app-test-case>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
   </div>
 </div>

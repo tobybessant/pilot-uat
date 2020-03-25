@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, Jo
 import { UserTypeDbo } from "./userTypeDbo";
 import { OrganisationDbo } from "./organisationDbo";
 import { ProjectDbo } from "./projectDbo";
-import { UserProjectRoleDbo } from "./userProjectRole";
+import { UserProjectRoleDbo } from "./userProjectRoleDbo";
 
 
 export const TABLE_NAME: string = "User";

@@ -1,9 +1,12 @@
-import * as joi from "joi";
+import * as jf from "joiful";
+import { ICreateProjectRequest } from "../../../../dto/request/supplier/createProject";
 
-export const CreateProjectSchema = joi.object({
-  projectName: joi
-    .string()
-    .label("Project Name")
+export class CreateProject implements ICreateProjectRequest {
+
+  @jf.string()
+    .label("Project Title")
     .max(30)
-    .required(),
-});
+    .required()
+  title!: string;
+
+}

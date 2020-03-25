@@ -1,0 +1,46 @@
+<div class="steps">
+  <div class="timeline" *ngFor="let step of steps">
+    <div class="existing-step container right">
+      <div class="content">
+        <div class="step-details">
+          <app-step-status-chip [status]="step.status"></app-step-status-chip>
+          <p>{{ step.description }}</p>
+        </div>
+        <div id="step-actions">
+          <button
+            id="edit-step-button"
+            nbButton
+            ghost
+            size="medium"
+            (click)="editStep(step.id)"
+          >
+            Edit
+          </button>
+          <button
+            nbButton
+            ghost
+            size="medium"
+            status="danger"
+            (click)="promptDeleteStep(step.id, step.description)"
+          >
+            <nb-icon icon="trash-2-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="timeline new-step-input">
+    <div class="container right">
+      <div class="content">
+        <input
+          nbInput
+          fullWidth
+          type="text"
+          placeholder="Next Step"
+          [(ngModel)]="newStepDescription"
+          (keyup.enter)="addTestToCase()"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,18 +2,18 @@ import { IMock, Mock, It, Times } from "typemoq";
 import { ProjectController } from "../../src/controllers";
 
 import { RepositoryService } from "../../src/services/repositoryService";
+import { BaseController } from "../../src/controllers/baseController";
 
 import { Request, Response } from "express";
 import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
-import { ICreateProjectResponse } from "../../src/dto/supplier/createProject";
+import { IProjectResponse } from "../../src/dto/response/supplier/project";
 import { UserRepository } from "../../src/repositories/userRepository";
-import { CREATED, INTERNAL_SERVER_ERROR, OK, NOT_FOUND } from "http-status-codes";
+import { CREATED, OK, NOT_FOUND, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { IProjectResponse } from "../../src/dto/supplier/project";
-import { IUserToken } from "../../src/dto/common/userToken";
-import { TestSuiteRepository } from "../../src/repositories/testSuiteRepository";
-import { TestSuiteDbo } from "../../src/database/entities/testSuiteDbo";
+import { IUserToken } from "../../src/dto/response/common/userToken";
+import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
+import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -26,7 +26,7 @@ suite("Project Controller", () => {
 
   let subject: ProjectController;
 
-  suiteSetup(() => {
+  setup(() => {
     userRepository = Mock.ofType<UserRepository>();
     projectRepository = Mock.ofType<ProjectRepository>();
     suiteRepository = Mock.ofType<TestSuiteRepository>();
@@ -47,24 +47,37 @@ suite("Project Controller", () => {
 
   suite("Create Project", async () => {
     let createProjectBody: any;
-    let createProjectResponse: ICreateProjectResponse | undefined;
+    let savedProject: ProjectDbo;
+    let createProjectResponse: IProjectResponse | undefined;
     let user: UserDbo | undefined;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         createProjectBody = {
-          projectName: "New Project!"
+          title: "New Project!"
         }
 
+        savedProject = new ProjectDbo();
+        savedProject.id = 4;
+        savedProject.createdDate = new Date();
+        savedProject.suites = [];
+        savedProject.title = createProjectBody.title;
+
         createProjectResponse = {
-          projectName: createProjectBody.projectName
-        }
+          title: savedProject.title,
+          id: savedProject.id.toString(),
+          suites: savedProject.suites.map(suite => ({
+            id: suite.id.toString(),
+            title: suite.title
+          }))
+        };
 
         user = new UserDbo();
       });
 
       test("It should return the projectName in the response body", async () => {
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_addProject_returns(savedProject);
         given_Request_body_is(createProjectBody);
 
         await subject.createProject(req.object, res.object);
@@ -77,6 +90,7 @@ suite("Project Controller", () => {
 
       test("It should have statusCode 201", async () => {
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_addProject_returns(savedProject);
         given_Request_body_is(createProjectBody);
 
         await subject.createProject(req.object, res.object);
@@ -85,8 +99,8 @@ suite("Project Controller", () => {
       })
     });
 
-    suite("Find user by email fails", async () => {
-      suiteSetup(() => {
+    suite("Find user by email fails to find a user", async () => {
+      setup(() => {
         createProjectBody = {
           projectName: "New Project2!"
         };
@@ -105,15 +119,76 @@ suite("Project Controller", () => {
         }), Times.once());
       });
 
-      test("It should have statusCode 500", async () => {
+      test("It should have statusCode 400", async () => {
         given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
         given_Request_body_is(createProjectBody);
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by userRepository", () => {
+
+      setup(() => {
+        createProjectBody = {
+          title: "New Project!"
+        }
+      });
+
+      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        createProjectBody = {
+          title: "New Project!"
+        };
+
+        user = new UserDbo();
+      });
+
+      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_getProjectById_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(createProjectBody);
+        given_userRepository_getUserByEmail_returns_whenGiven(user, It.isAny());
+        given_projectRepository_getProjectById_throws();
+
+        await subject.createProject(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
   });
 
   suite("Get Project by ID", async () => {
@@ -122,30 +197,34 @@ suite("Project Controller", () => {
     let projectResponse: IProjectResponse;
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
 
-        let testSuite = new TestSuiteDbo();
-        testSuite.suiteName = "Suite 1";
+        const testSuite = new SuiteDbo();
+        testSuite.id = 3;
+        testSuite.title = "Suite 1";
 
         project = new ProjectDbo();
-        project.id = "4000";
-        project.projectName = "Getted Project Name"
-        project.testSuites = [ testSuite ];
+        project.id = 4000;
+        project.title = "Fetched Project Title"
+        project.suites = [testSuite];
 
         getProjectBody = {
           id: project.id
         };
 
         projectResponse = {
-          id: project.id,
-          projectName: project.projectName,
-          suites: project.testSuites
+          id: project.id.toString(),
+          title: project.title,
+          suites: project.suites.map(s => ({
+            id: s.id.toString(),
+            title: s.title
+          }))
         };
       });
 
       test("Should return project in response body", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
-        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.testSuites, It.isAny());
+        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.suites, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
@@ -167,13 +246,13 @@ suite("Project Controller", () => {
     });
 
     suite("Find project by id does not find project", () => {
-      suiteSetup(() => {
+      setup(() => {
         getProjectBody = {
           id: "4000"
         };
       });
 
-      test("Should return project in response body", async () => {
+      test("Should return 'That project does not exist' in response errors", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(undefined, It.isAny());
         given_Request_body_is(getProjectBody);
 
@@ -184,15 +263,43 @@ suite("Project Controller", () => {
         }), Times.once());
       });
 
-      test("Should have statusCode 404", async () => {
+      test("Should have statusCode 400", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(undefined, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.status(NOT_FOUND), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+      setup(() => {
+        getProjectBody = {
+          id: project.id
+        };
+      });
+
+      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
+        given_Request_body_is(getProjectBody);
+        given_projectRepository_getProjectById_throws();
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(getProjectBody);
+        given_projectRepository_getProjectById_throws();
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
   });
 
   suite("Get projects", () => {
@@ -201,25 +308,23 @@ suite("Project Controller", () => {
     const projectsResponse: IProjectResponse[] = [];
 
     suite("Valid request conditions", () => {
-      suiteSetup(() => {
+      setup(() => {
         userToken = {
           email: "test@me.com",
           type: "Supplier"
         };
 
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 10; i++) {
           const p = new ProjectDbo();
-          p.id = i + "";
-          p.projectName = "Project " + i;
-          p.testSuites = []
+          p.id = i;
+          p.title = "Project " + i;
           projects.push(p);
         }
 
         for (const project of projects) {
           projectsResponse.push({
-            id: project.id,
-            projectName: project.projectName,
-            suites: project.testSuites
+            id: project.id.toString(),
+            title: project.title
           });
         }
       });
@@ -245,14 +350,43 @@ suite("Project Controller", () => {
         res.verify(r => r.status(OK), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        userToken = {
+          email: "test@me.com",
+          type: "Supplier"
+        };
+      });
+
+      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
+        given_Request_user_is(userToken);
+        given_projectRepository_getProjectsForUser_throws();
+
+        await subject.getProjects(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_user_is(userToken);
+        given_projectRepository_getProjectsForUser_throws();
+
+        await subject.getProjects(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
   });
 
   suite("Delete project", () => {
     let requestParams: any;
 
     suite("Valid request condtions", () => {
-      suiteSetup(() => {
-        requestParams =  {
+      setup(() => {
+        requestParams = {
           id: "10"
         };
       });
@@ -275,6 +409,33 @@ suite("Project Controller", () => {
         await subject.deleteProject(req.object, res.object);
 
         res.verify(r => r.status(OK), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository", () => {
+
+      setup(() => {
+        requestParams = {
+          id: "10"
+        };
+      });
+
+      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
+        given_Request_params_are(requestParams);
+        given_projectRepository_deleteProjectById_throws();
+
+        await subject.deleteProject(req.object, res.object);
+
+        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are(requestParams);
+        given_projectRepository_deleteProjectById_throws();
+
+        await subject.deleteProject(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
       });
     });
   });
@@ -303,6 +464,18 @@ suite("Project Controller", () => {
       .returns(async () => returns);
   }
 
+  function given_userRepository_getUserByEmail_throws() {
+    userRepository
+      .setup(ur => ur.getUserByEmail(It.isAny()))
+      .throws(new Error("Error containing sensitive database information!"));
+  }
+
+  function given_projectRepository_addProject_returns(returns: ProjectDbo) {
+    projectRepository
+      .setup(pr => pr.addProject(It.isAny(), It.isAny()))
+      .returns(async () => returns);
+  }
+
   function given_projectRepository_getProjectById_returns_whenGiven(returns: ProjectDbo | undefined, whenGiven: any) {
     projectRepository
       .setup(pr => pr.getProjectById(whenGiven))
@@ -321,9 +494,27 @@ suite("Project Controller", () => {
       .returns(async () => returns);
   }
 
-  function given_projectRepository_getTestSuitesForProject_returns_whenGiven(returns: TestSuiteDbo[], whenGiven: any) {
+  function given_projectRepository_getTestSuitesForProject_returns_whenGiven(returns: SuiteDbo[], whenGiven: any) {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(whenGiven))
       .returns(async () => returns);
+  }
+
+  function given_projectRepository_getProjectById_throws() {
+    projectRepository
+      .setup(pr => pr.getProjectById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  }
+
+  function given_projectRepository_getProjectsForUser_throws() {
+    projectRepository
+      .setup(pr => pr.getProjectsForUser(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
+  }
+
+  function given_projectRepository_deleteProjectById_throws() {
+    projectRepository
+      .setup(pr => pr.deleteProjectById(It.isAny()))
+      .throws(new Error("Sensitive database information!"));
   }
 });

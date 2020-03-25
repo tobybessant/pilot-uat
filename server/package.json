@@ -25,6 +25,7 @@
     "express-session": "^1.17.0",
     "http-status-codes": "^1.4.0",
     "joi": "^14.3.1",
+    "joiful": "^2.0.0",
     "mssql": "^6.1.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

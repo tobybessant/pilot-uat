@@ -4,19 +4,27 @@ import { Request, Response, NextFunction } from "express";
 import { ObjectSchema, ValidationResult, ValidationError } from "joi";
 import { BodyMatches } from "../../../src/services/middleware/joi/bodyMatches";
 import { BAD_REQUEST } from "http-status-codes";
+import * as jf from "joiful";
 
 suite("BodyMatches", () => {
 
-  let model: IMock<ObjectSchema>;
+  class ModelValidationSchema {
+    @jf.string()
+    title: string = "hello";
+  }
+
+  let model: IMock<ModelValidationSchema>;
   let req: IMock<Request>;
   let res: IMock<Response>;
   let nextFunction: IMock<NextFunction>;
+  let jfValidator: IMock<jf.Validator>;
 
-  suiteSetup(() => {
+  setup(() => {
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
     nextFunction = Mock.ofType<NextFunction>();
-    model = Mock.ofType<ObjectSchema>();
+    model = Mock.ofType<ModelValidationSchema>();
+    jfValidator = Mock.ofType<jf.Validator>();
   });
 
   teardown(() => {
@@ -31,12 +39,12 @@ suite("BodyMatches", () => {
     test("Request body still has initial model data", () => {
       const body = {
         test: "data"
-      }
+      };
 
       given_Request_body_is(body);
       given_model_validate_succeeds();
 
-      const middleware = BodyMatches.schema(model.object);
+      const middleware = new BodyMatches(jfValidator.object).schema(ModelValidationSchema);
       middleware(req.object, res.object, nextFunction.object);
 
       assert.deepInclude(req.object.body, body);
@@ -45,7 +53,7 @@ suite("BodyMatches", () => {
     test("'next()' method is called", () => {
       given_model_validate_succeeds();
 
-      const middleware = BodyMatches.schema(model.object);
+      const middleware = new BodyMatches(jfValidator.object).schema(ModelValidationSchema);
       middleware(req.object, res.object, nextFunction.object);
 
       nextFunction.verify(next => next(), Times.once());
@@ -60,7 +68,7 @@ suite("BodyMatches", () => {
       ];
       given_model_validate_fails_with(errors);
 
-      const middleware = BodyMatches.schema(model.object);
+      const middleware = new BodyMatches(jfValidator.object).schema(ModelValidationSchema);
       middleware(req.object, res.object, nextFunction.object);
 
       nextFunction.verify(next => next(), Times.never());
@@ -73,7 +81,7 @@ suite("BodyMatches", () => {
       ];
       given_model_validate_fails_with(errors);
 
-      const middleware = BodyMatches.schema(model.object);
+      const middleware = new BodyMatches(jfValidator.object).schema(ModelValidationSchema);
       middleware(req.object, res.object, nextFunction.object);
 
       res.verify(r => r.json({ errors: errors.map(err => err.message) }), Times.once());
@@ -86,7 +94,7 @@ suite("BodyMatches", () => {
       ];
       given_model_validate_fails_with(errors);
 
-      const middleware = BodyMatches.schema(model.object);
+      const middleware = new BodyMatches(jfValidator.object).schema(ModelValidationSchema);
       middleware(req.object, res.object, nextFunction.object);
 
       res.verify(r => r.status(BAD_REQUEST), Times.once());
@@ -94,8 +102,8 @@ suite("BodyMatches", () => {
   });
 
   function given_model_validate_succeeds() {
-    model
-      .setup(m => m.validate(It.isAny()))
+    jfValidator
+      .setup(m => m.validateAsClass(It.isAny(), It.isAny()))
       .returns(() => ({} as ValidationResult<any>));
   }
 
@@ -106,8 +114,8 @@ suite("BodyMatches", () => {
       ]
     } as ValidationError;
 
-    model
-      .setup(m => m.validate(It.isAny()))
+    jfValidator
+      .setup(m => m.validateAsClass(It.isAny(), It.isAny()))
       .returns(() => ({ error } as ValidationResult<any>));
   }
 

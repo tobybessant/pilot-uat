@@ -9,43 +9,60 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NbLayoutModule, NbButtonModule, NbThemeModule,
           NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
           NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-          NbActionsModule, NbTreeGridModule } from "@nebular/theme";
+          NbActionsModule, NbTreeGridModule, NbSelectModule } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
 import { NgxSpinnerModule } from "ngx-spinner";
+
+import { MatExpansionModule } from "@angular/material/expansion";
 
 import { HttpClientModule } from "@angular/common/http";
 
 import { LoginComponent } from "./components/common/login/login.component";
 import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
-import { ProjectsDashboardComponent } from "./components/supplier/projects-dashboard/projects-dashboard.component";
+import { ProjectsGridComponent } from "./components/supplier/projects-grid/projects-grid.component";
 import { initApp } from "./app-initialiser";
-import { SessionService } from "./services/session.service";
+import { SessionService } from "./services/session/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
 import { ProjectComponent } from "./components/supplier/project/project.component";
 import { ConfirmationPromptComponent } from "./components/common/confirmation-prompt/confirmation-prompt.component";
 import { TestSuiteListComponent } from "./components/supplier/test-suite-list/test-suite-list.component";
 import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.component";
+import { ProjectSettingsComponent } from "./components/supplier/project-settings/project-settings.component";
+import { TestCaseComponent } from "./components/supplier/test-case/test-case.component";
+import { TestStepListComponent } from "./components/supplier/test-step-list/test-step-list.component";
+import { EditTestStepDialogComponent } from "./components/supplier/edit-test-step-dialog/edit-test-step-dialog.component";
+import { StepStatusChipComponent } from "./components/supplier/step-status-chip/step-status-chip.component";
+import { EditCaseDialogComponent } from './components/supplier/edit-case-dialog/edit-case-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateAccountComponent,
     LoginComponent,
-    ProjectsDashboardComponent,
+    ProjectsGridComponent,
     NavComponent,
     ProjectComponent,
     ConfirmationPromptComponent,
     TestSuiteListComponent,
-    TestSuiteComponent
+    TestSuiteComponent,
+    ProjectSettingsComponent,
+    TestCaseComponent,
+    TestStepListComponent,
+    EditTestStepDialogComponent,
+    StepStatusChipComponent,
+    EditCaseDialogComponent
   ],
   imports: [
+    /* Angular */
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+
+    /* NebularUI */
     NbLayoutModule,
     NbCardModule,
     NbInputModule,
@@ -59,11 +76,15 @@ import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.
     NbTabsetModule,
     NbActionsModule,
     NbTreeGridModule,
+    NbSelectModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),
     NbButtonModule,
-    NgxSpinnerModule
+
+    /* Other Libs */
+    NgxSpinnerModule,
+    MatExpansionModule
   ],
   providers: [
     {

@@ -1,15 +1,20 @@
 @import 'themes';
-
 @import '~@nebular/theme/styles/globals';
-
-// import Nebular Theme System and the default theme
-@import '~@nebular/theme/styles/theming';
-@import '~@nebular/theme/styles/themes/default';
-@import '~@nebular/theme/styles/themes/dark';
-@import '~@nebular/theme/styles/themes/cosmic';
-@import '~@nebular/theme/styles/themes/corporate';
 
 @include nb-install() {
   @include nb-theme-global();
 };
-/* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/theming';
+@include mat-core();
+$mat-app-components-primary: mat-palette($mat-indigo);
+$mat-app-components-accent:  mat-palette($mat-pink, A200, A100, A400);
+$mat-app-components-theme:   mat-light-theme($mat-app-components-primary, $mat-app-components-accent);
+
+@include mat-expansion-panel-theme($mat-app-components-theme);
+
+// NOTE: this removes browser outline on nb tabs for project component,
+// placing this elsewhere in the app had no effect.
+[tabindex="-1"]:focus {
+  outline: 0!important;
+}
