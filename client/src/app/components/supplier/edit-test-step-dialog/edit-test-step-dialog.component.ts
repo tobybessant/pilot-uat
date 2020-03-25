@@ -29,8 +29,10 @@ export class EditTestStepDialogComponent implements OnInit {
   }
 
   public async saveStep(): Promise<void> {
-    this.step.description = this.stepDescriptionInput;
-    const update = await this.stepApiService.updateStep(this.step);
-    this.close();
+    if (this.stepDescriptionInput) {
+      this.step.description = this.stepDescriptionInput;
+      const update = await this.stepApiService.updateStep(this.step);
+      this.close();
+    }
   }
 }
