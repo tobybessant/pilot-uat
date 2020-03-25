@@ -373,7 +373,6 @@ suite("Step Controller", () => {
         };
       });
 
-
       test("Response returns only empty errors array", async () => {
         given_Request_params_are(deleteStepParams);
         given_stepRepository_deleteStepById_returns(undefined);
