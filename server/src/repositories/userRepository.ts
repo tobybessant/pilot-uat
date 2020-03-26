@@ -13,6 +13,11 @@ export class UserRepository {
     this.baseUserRepository = this.repositoryService.getRepositoryFor(UserDbo);
   }
 
+  public async accountDoesExist(email: string): Promise<boolean> {
+    const recordCount = await this.baseUserRepository.count({ email });
+    return recordCount === 1;
+  }
+
   public async getUserByEmail(email: string): Promise<UserDbo | undefined> {
     return this.baseUserRepository.createQueryBuilder("user")
       .leftJoinAndSelect("user.userType", "type")
