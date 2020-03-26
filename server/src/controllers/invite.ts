@@ -44,25 +44,20 @@ export class InviteController extends BaseController {
       res.redirect("accept/" + token);
       return;
     } else {
-      // direct to password setup page
       res.redirect("setup/" + token);
-
-      // add to project
       return;
     }
   }
 
   @Get("setup/:token")
   public async setupAndAcceptInvite(req: Request, res: Response): Promise<void> {
-      const originalUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-      res.redirect(`http://localhost:4200/setup?r=${encodeURIComponent(originalUrl)}`);
+    res.redirect(`http://localhost:4200/setup?t=${encodeURIComponent(req.params.token)}`);
   }
 
   @Get("accept/:token")
   public async acceptInvite(req: Request, res: Response): Promise<void> {
     if (!req.isAuthenticated()) {
       const originalUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-      console.log(originalUrl);
       res.redirect(`http://localhost:4200/login?r=${encodeURIComponent(originalUrl)}`);
       return;
     }
