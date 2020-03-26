@@ -55,6 +55,7 @@ import { InvitedAccountSetupComponent } from './components/common/invited-accoun
     StepStatusChipComponent,
     EditCaseDialogComponent,
     NotFoundComponent,
+    InvitedAccountSetupComponent
   ],
   imports: [
     /* Angular */
