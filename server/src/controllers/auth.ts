@@ -1,4 +1,4 @@
-import { OK, BAD_REQUEST, CREATED } from "http-status-codes";
+import { OK, BAD_REQUEST } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import * as passport from "passport";
@@ -8,7 +8,6 @@ import { injectable } from "tsyringe";
 import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcryptHash";
 import { CreateUser } from "../services/middleware/joi/schemas/createUser";
-import { IApiResponse } from "../dto/response/common/apiResponse";
 import { UserDbo } from "../database/entities/userDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
@@ -55,7 +54,7 @@ export class AuthController extends BaseController {
 
       // add organisation if added
       const organisations = [];
-      if(model.organisationName) {
+      if (model.organisationName) {
         const newOrganisation = await this.organisationRepository.save({
           organisationName: model.organisationName
         });
@@ -77,11 +76,10 @@ export class AuthController extends BaseController {
         organisations
       });
 
-      req.login(
-        {
-          email: model.email,
-          type: user.userType.type
-        } as IUserToken,
+      req.login({
+        email: model.email,
+        type: user.userType.type
+      },
         function (err) {
           if (err) {
             console.log(err);
@@ -99,7 +97,7 @@ export class AuthController extends BaseController {
       });
 
     } catch (error) {
-      if(error instanceof ApiError) {
+      if (error instanceof ApiError) {
         this.errorResponse(res, error.statusCode, [error.message]);
       } else {
         this.serverError(res);
