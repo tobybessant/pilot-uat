@@ -18,19 +18,19 @@ export class EmailService {
     });
   }
 
-  public sendHTML(subject: string, to: string[], html: string): void {
+  public sendHtml(subject: string, to: string, html: string): void {
     this.transporter.sendMail({
       from: "<rafael.barton9@ethereal.email>",
-      to: to.join(", "),
+      to,
       subject,
       html
     });
   }
 
-  public sendPlaintext(subject: string, to: string[], text: string): void {
+  public sendPlaintext(subject: string, to: string, text: string): void {
     this.transporter.sendMail({
       from: "<rafael.barton9@ethereal.email>",
-      to: to.join(", "),
+      to,
       subject,
       text
     });
