@@ -4,24 +4,22 @@
     for you!
   </p>
   <div class="setup-form">
-    <input
-      nbInput
-      fullWidth
-      type="text"
-      name=""
-      id=""
-      placeholder="First name"
-      [(ngModel)]="firstName"
-    />
-    <input
-      nbInput
-      fullWidth
-      type="text"
-      name=""
-      id=""
-      placeholder="Last name"
-      [(ngModel)]="lastName"
-    />
+    <div class="name-fields">
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="First name"
+        [(ngModel)]="firstName"
+      />
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Last name"
+        [(ngModel)]="lastName"
+      />
+    </div>
     <input
       nbInput
       fullWidth

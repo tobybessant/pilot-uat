@@ -5,8 +5,17 @@
 }
 
 .setup-form {
-  height: 100px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.name-fields {
+  display: flex;
+  justify-content: space-between;
+}
+
+.name-fields > input {
+  max-width: 48%;
 }
