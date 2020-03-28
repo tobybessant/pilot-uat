@@ -1,25 +1,25 @@
 import { injectable } from "tsyringe";
-import { EntityRepository, Repository } from "typeorm";
+import { EntityRepository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
 import { OrganisationDbo } from "../database/entities/organisationDbo";
 import { RepositoryService } from "../services/repositoryService";
+import { TypeORMRepository } from "./baseRepository.abstract";
 
 @injectable()
 @EntityRepository()
-export class UserRepository {
-  private baseUserRepository: Repository<UserDbo>;
+export class UserRepository extends TypeORMRepository<UserDbo> {
 
   constructor(private repositoryService: RepositoryService) {
-    this.baseUserRepository = this.repositoryService.getRepositoryFor(UserDbo);
+    super(UserDbo, repositoryService);
   }
 
   public async accountDoesExist(email: string): Promise<boolean> {
-    const recordCount = await this.baseUserRepository.count({ email });
+    const recordCount = await this.baseRepo.count({ email });
     return recordCount === 1;
   }
 
   public async getUserByEmail(email: string): Promise<UserDbo | undefined> {
-    return this.baseUserRepository.createQueryBuilder("user")
+    return this.baseRepo.createQueryBuilder("user")
       .leftJoinAndSelect("user.userType", "type")
       .leftJoinAndSelect("user.organisations", "organisations")
       .where("user.email = :email", { email })
@@ -27,7 +27,7 @@ export class UserRepository {
   }
 
   public async getOrganisationsForUser(email: string): Promise<OrganisationDbo[] | undefined> {
-    const user: UserDbo | undefined = await this.baseUserRepository
+    const user: UserDbo | undefined = await this.baseRepo
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.organisations", "orgs")
       .where("user.email = :email", { email })

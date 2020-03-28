@@ -1,17 +1,19 @@
 import { injectable } from "tsyringe";
 import { EmailService } from "../utils/emailService";
 import { JwtService } from "../utils/jwtService";
+import { IProjectInviteToken } from "../../dto/request/common/inviteToken";
 
 @injectable()
 export class InviteService {
-  private readonly inviteUrl = "http://localhost:8080/invite/";
+  private readonly serverUrl = process.env.SERVER_URL || "http://localhost:8080";
+  private readonly inviteUrl = this.serverUrl + "/invite/";
 
   constructor(
     private emailService: EmailService,
     private jwtService: JwtService
   ) { }
 
-  public decodeInviteToken(token: string): any {
+  public decodeInviteToken(token: string): IProjectInviteToken {
     return this.jwtService.decode(token);
   }
 

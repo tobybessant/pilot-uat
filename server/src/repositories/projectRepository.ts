@@ -5,6 +5,7 @@ import { ProjectDbo } from "../database/entities/projectDbo";
 import { UserProjectRoleDbo } from "../database/entities/userProjectRoleDbo";
 import { RepositoryService } from "../services/repositoryService";
 import { SuiteDbo } from "../database/entities/suiteDbo";
+import { UserRepository } from "./userRepository";
 
 @injectable()
 @EntityRepository()
@@ -13,7 +14,7 @@ export class ProjectRepository {
   private baseProjectRepository: Repository<ProjectDbo>;
   private userProjectRoleRepository: Repository<UserProjectRoleDbo>;
 
-  constructor(private repositoryService: RepositoryService) {
+  constructor(private repositoryService: RepositoryService, private userRepository: UserRepository) {
     this.baseProjectRepository = repositoryService.getRepositoryFor(ProjectDbo);
     this.userProjectRoleRepository = repositoryService.getRepositoryFor(UserProjectRoleDbo);
   }
@@ -41,13 +42,13 @@ export class ProjectRepository {
 
   public async getProjectsForUser(email: string): Promise<ProjectDbo[] | undefined> {
     const projects: ProjectDbo[] | undefined = await this.baseProjectRepository
-    .createQueryBuilder("project")
-    .orderBy("project.createdDate", "DESC")
-    .leftJoin("project.users", "userRoles")
-    .leftJoin("userRoles.user", "user")
-    .addSelect(["user.email", "user.firstName", "user.lastName"])
-    .where("user.email = :email", { email })
-    .getMany();
+      .createQueryBuilder("project")
+      .orderBy("project.createdDate", "DESC")
+      .leftJoin("project.users", "userRoles")
+      .leftJoin("userRoles.user", "user")
+      .addSelect(["user.email", "user.firstName", "user.lastName"])
+      .where("user.email = :email", { email })
+      .getMany();
 
     return projects;
   }
@@ -56,7 +57,7 @@ export class ProjectRepository {
     const deletedProject = await this.baseProjectRepository.delete({
       id: Number(id)
     });
-   return;
+    return;
   }
 
   // TODO: Move this method into test suite repository
@@ -73,5 +74,15 @@ export class ProjectRepository {
     }
 
     return project.suites || [];
+  }
+
+  public async addUserToProject(email: string, projectId: string) {
+    const user = await this.userRepository.getUserByEmail(email);
+    const project = await this.baseProjectRepository.findOne({ id: Number(projectId) });
+
+    await this.userProjectRoleRepository.save({
+      project,
+      user
+    });
   }
 }

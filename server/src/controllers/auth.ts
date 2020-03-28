@@ -18,6 +18,7 @@ import { BaseController } from "./baseController";
 import { IUserResponse } from "../dto/response/common/user";
 import { ApiError } from "../services/apiError";
 import { Validator } from "joiful";
+import { OrganisationRepository } from "../repositories/organisationRepository";
 
 @injectable()
 @Controller("auth")
@@ -25,16 +26,15 @@ export class AuthController extends BaseController {
 
   private userRepository: Repository<UserDbo>
   private userTypeRepository: Repository<UserTypeDbo>
-  private organisationRepository: Repository<OrganisationDbo>;
 
   constructor(
     private repositoryService: RepositoryService,
+    private organisationRepository: OrganisationRepository,
     private bcrypt: Bcrypt
   ) {
     super();
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
     this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
-    this.organisationRepository = repositoryService.getRepositoryFor<OrganisationDbo>(OrganisationDbo);
   }
 
   @Post("createaccount")
@@ -52,13 +52,10 @@ export class AuthController extends BaseController {
         throw new ApiError("Account already exists with that email", BAD_REQUEST);
       }
 
-      // add organisation if added
+      // add organisation if set
       const organisations = [];
       if (model.organisationName) {
-        const newOrganisation = await this.organisationRepository.save({
-          organisationName: model.organisationName
-        });
-
+        const newOrganisation = await this.organisationRepository.createOrganisation(model.organisationName);
         organisations.push(newOrganisation);
       }
 

@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND } from "http-status-codes";
 import { IApiResponse } from "../dto/response/common/apiResponse";
+import { Logger } from "@overnightjs/logger";
 
 export abstract class BaseController {
 
@@ -50,7 +51,11 @@ export abstract class BaseController {
     res.json(response);
   }
 
-  protected serverError(res: Response): void {
+  protected serverError(res: Response, error?: Error): void {
+    if (error) {
+      Logger.Err(error);
+    }
+
     const response: Partial<IApiResponse<void>> = {
       errors: [ BaseController.INTERNAL_SERVER_ERROR_MESSAGE ]
     };

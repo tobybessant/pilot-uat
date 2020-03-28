@@ -23,7 +23,7 @@ export class AuthService {
     const response =  await this.apiService.post<ICreateAccountResponse>(this.baseUrl + "/createaccount", user);
 
     // if user successfully created account then log them in
-    if (response !== undefined) {
+    if (response.errors.length === 0) {
       await this.sessionService.setUser();
     }
 

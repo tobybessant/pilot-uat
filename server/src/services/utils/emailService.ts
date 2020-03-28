@@ -6,21 +6,22 @@ import Mail = require("nodemailer/lib/mailer");
 export class EmailService {
 
   private transporter: Mail;
+  private senderEmail: string = process.env.NOREPLY_EMAIL || "noreply@pilot-uat.com";
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
+      host: process.env.MAILER_HOST || "",
+      port: Number(process.env.MAILER_PORT) || 0,
       auth: {
-        user: "rafael.barton9@ethereal.email",
-        pass: "xJ6gXyb7Tcvy4EY6RY"
+        user: process.env.MAILER_USER || "",
+        pass: process.env.MAILER_PASSWORD || ""
       }
     });
   }
 
   public sendHtml(subject: string, to: string, html: string): void {
     this.transporter.sendMail({
-      from: "<rafael.barton9@ethereal.email>",
+      from: this.senderEmail,
       to,
       subject,
       html
@@ -29,7 +30,7 @@ export class EmailService {
 
   public sendPlaintext(subject: string, to: string, text: string): void {
     this.transporter.sendMail({
-      from: "<rafael.barton9@ethereal.email>",
+      from: this.senderEmail,
       to,
       subject,
       text

@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
-import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
+import { InviteApiService } from "src/app/services/api/invite/invite-api.service";
 
 @Component({
   selector: "app-invited-account-setup",
@@ -10,10 +10,14 @@ import { ICreateAccountRequest } from "src/app/models/api/request/common/create-
 })
 export class InvitedAccountSetupComponent implements OnInit {
 
-  public redirectUrl?: string;
+  public token?: string;
+
+  public password: string = "";
+  public firstName: string = "";
+  public lastName: string = "";
 
   constructor(
-    private userApiService: UserApiService,
+    private inviteApiService: InviteApiService,
     private activatedRoute: ActivatedRoute,
     @Inject(DOCUMENT) private document: Document
   ) { }
@@ -21,10 +25,16 @@ export class InvitedAccountSetupComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe(params => {
       console.log(params);
-      this.redirectUrl = params.get("r");
+      this.token = params.get("t");
     });
   }
 
-  public setup() {
+  public async setup() {
+    await this.inviteApiService.setupAccount({
+      password: this.password,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      token:  this.token
+    });
   }
 }

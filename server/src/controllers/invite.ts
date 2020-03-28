@@ -8,14 +8,22 @@ import { ClientInvite } from "../services/middleware/joi/schemas/inviteClient";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { Validator } from "joiful";
 import { UserRepository } from "../repositories/userRepository";
+import { ProjectRepository } from "../repositories/projectRepository";
+import { Bcrypt } from "../services/utils/bcryptHash";
+import { UserTypeRepository } from "../repositories/userTypeRepository";
 
 @injectable()
 @Controller("invite")
 export class InviteController extends BaseController {
 
+  private clientUrl = process.env.CLIENT_URL || "http://localhost:4200";
+
   constructor(
     private inviteService: InviteService,
-    private userRepository: UserRepository
+    private userRepository: UserRepository,
+    private projectRepository: ProjectRepository,
+    private userTypeRepository: UserTypeRepository,
+    private bcrypt: Bcrypt
   ) {
     super();
   }
@@ -44,25 +52,67 @@ export class InviteController extends BaseController {
       res.redirect("accept/" + token);
       return;
     } else {
-      res.redirect("setup/" + token);
+      res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
       return;
     }
   }
 
-  @Get("setup/:token")
-  public async setupAndAcceptInvite(req: Request, res: Response): Promise<void> {
-    res.redirect(`http://localhost:4200/setup?t=${encodeURIComponent(req.params.token)}`);
+  @Post("setup")
+  public async setupAndAccept(req: Request, res: Response): Promise<void> {
+    const model = req.body;
+
+    const invite = this.inviteService.decodeInviteToken(model.token);
+    try {
+      const passwordHash = this.bcrypt.hash(model.password);
+
+      const userType = await this.userTypeRepository.getTypeByType(invite.type);
+      if (!userType) {
+        throw new Error("Invalid user type");
+      }
+
+      const user = await this.userRepository.baseRepo.save({
+        userType,
+        firstName: model.firstName,
+        lastName: model.lastName,
+        email: invite.email,
+        passwordHash
+      });
+
+      await this.projectRepository.addUserToProject(user.email, invite.projectId);
+
+      req.logIn({
+        email: user.email,
+        type: user.userType.type
+      },
+        function (err) {
+          if (err) {
+            console.log(err);
+          }
+        }
+      );
+
+      res.redirect(this.clientUrl);
+    } catch (error) {
+      this.serverError(res, error);
+    }
   }
 
   @Get("accept/:token")
   public async acceptInvite(req: Request, res: Response): Promise<void> {
     if (!req.isAuthenticated()) {
       const originalUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-      res.redirect(`http://localhost:4200/login?r=${encodeURIComponent(originalUrl)}`);
+      res.redirect(`${this.clientUrl}/login?r=${encodeURIComponent(originalUrl)}`);
       return;
     }
 
-    res.send("Logged in, adding to project!");
+    try {
+      const invite = this.inviteService.decodeInviteToken(req.params.token);
+      await this.projectRepository.addUserToProject(invite.email, invite.projectId);
+
+      res.redirect(`${this.clientUrl}/projects/${invite.projectId}`);
+    } catch (error) {
+      this.serverError(res, error);
+    }
   }
 
 }

@@ -1,9 +1,12 @@
 import "reflect-metadata";
+import * as dotenv from "dotenv";
 import UATPlatformServer from "./server";
 import { MSSQLDatabase } from "./database";
 import { container } from "tsyringe";
 
 async function main() {
+  dotenv.config();
+
   const database = container.resolve<MSSQLDatabase>(MSSQLDatabase);
   await database.openConnection();
 
