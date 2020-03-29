@@ -3,6 +3,39 @@
     Invite Client
   </button>
 </div>
+
+<div *ngIf="openInvites.length > 0">
+  <h3>Pending Invites</h3>
+  <nb-card *ngFor="let invite of openInvites">
+    <nb-card-body>
+      <div class="left">
+          {{ invite.userEmail }}
+      </div>
+      <div class="right">
+        <button
+          nbButton
+          ghost
+          size="medium"
+          status="primary"
+        >
+          <nb-icon icon="paper-plane-outline"></nb-icon>
+          Resend
+        </button>
+        <button
+          nbButton
+          ghost
+          size="medium"
+          status="danger"
+        >
+          <nb-icon icon="slash-outline"></nb-icon>
+          Revoke
+        </button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>
+
+<h3>Project Users</h3>
 <nb-card *ngFor="let user of projectUsers">
   <nb-card-body>
     <div class="left">

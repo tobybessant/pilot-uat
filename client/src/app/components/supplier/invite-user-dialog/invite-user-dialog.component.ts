@@ -27,7 +27,7 @@ export class InviteUserDialogComponent implements OnInit {
   }
 
   public close() {
-    this.dialogRef.close();
+    this.dialogRef.close(this.emailList);
   }
 
   public add(event: MatChipInputEvent): void {

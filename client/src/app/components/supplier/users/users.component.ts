@@ -16,14 +16,18 @@ export class UsersComponent implements OnInit {
 
   projectUsers: IUserResponse[] = [];
 
+  openInvites: any[] = [];
+
   constructor(
     private projectApiService: ProjectApiService,
     private dialogService: NbDialogService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    const response = await this.projectApiService.getUsersForProject(this.projectId);
-    this.projectUsers = response.payload;
+    Promise.all([
+      this.fetchProjectUsers(),
+      this.fetchOpenInvites()
+    ]);
   }
 
   public showInviteClientsDialog(): void {
@@ -31,7 +35,22 @@ export class UsersComponent implements OnInit {
       context: {
         projectId: this.projectId
       }
+    }).onClose.subscribe(async emailList => {
+      if (emailList.length > 0) {
+        await this.fetchOpenInvites();
+      }
     });
+  }
+
+  private async fetchOpenInvites() {
+    const invites = await this.projectApiService.getProjectOpenInvites(this.projectId);
+    this.openInvites = invites.payload;
+    console.log(this.openInvites);
+  }
+
+  private async fetchProjectUsers() {
+    const users = await this.projectApiService.getUsersForProject(this.projectId);
+    this.projectUsers = users.payload;
   }
 
 }

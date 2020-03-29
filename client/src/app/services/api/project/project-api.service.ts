@@ -38,4 +38,9 @@ export class ProjectApiService {
     const response = await this.apiService.get<IUserResponse[]>(`${this.baseUrl}/${projectId}/users`);
     return response;
   }
+
+  public async getProjectOpenInvites(projectId: string) {
+    const response = await this.apiService.get<any[]>(`${this.baseUrl}/${projectId}/invites`);
+    return response;
+  }
 }
