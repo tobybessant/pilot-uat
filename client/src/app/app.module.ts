@@ -15,28 +15,42 @@ import { NbEvaIconsModule } from "@nebular/eva-icons";
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { MatExpansionModule } from "@angular/material/expansion";
-import { MatChipsModule, MAT_CHIPS_DEFAULT_OPTIONS } from "@angular/material/chips";
+import { MatChipsModule } from "@angular/material/chips";
 
 import { HttpClientModule } from "@angular/common/http";
 
-import { LoginComponent } from "./components/common/login/login.component";
-import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
-import { ProjectsGridComponent } from "./components/supplier/projects-grid/projects-grid.component";
 import { initApp } from "./app-initialiser";
+
 import { SessionService } from "./services/session/session.service";
 import { NavComponent } from "./components/common/nav/nav.component";
+import { LoginComponent } from "./components/common/login/login.component";
+import { CreateAccountComponent } from "./components/common/create-account/create-account.component";
 import { ProjectComponent } from "./components/supplier/project/project.component";
+import { ClientProjectComponent } from "./components/client/project/project.component";
+import { InvitedAccountSetupComponent } from "./components/common/invited-account-setup/invited-account-setup.component";
 import { ConfirmationPromptComponent } from "./components/common/confirmation-prompt/confirmation-prompt.component";
+import { NotFoundComponent } from "./components/common/not-found/not-found.component";
+
+import { ProjectsGridComponent } from "./components/supplier/projects-grid/projects-grid.component";
+import { ProjectsGridComponent as ClientProjectsGridComponent } from "./components/client/projects-grid/projects-grid.component";
+
 import { TestSuiteListComponent } from "./components/supplier/test-suite-list/test-suite-list.component";
+import { ClientTestSuiteListComponent } from "./components/client/test-suite-list/test-suite-list.component";
+
 import { TestSuiteComponent } from "./components/supplier/test-suite/test-suite.component";
+import { ClientTestSuiteComponent } from "./components/client/test-suite/test-suite.component";
+
 import { ProjectSettingsComponent } from "./components/supplier/project-settings/project-settings.component";
+
 import { TestCaseComponent } from "./components/supplier/test-case/test-case.component";
+import { ClientTestCaseComponent } from "./components/client/test-case/test-case.component";
+
 import { TestStepListComponent } from "./components/supplier/test-step-list/test-step-list.component";
+import { ClientTestStepListComponent } from "./components/client/test-step-list/test-step-list.component";
+
 import { EditTestStepDialogComponent } from "./components/supplier/edit-test-step-dialog/edit-test-step-dialog.component";
 import { StepStatusChipComponent } from "./components/supplier/step-status-chip/step-status-chip.component";
 import { EditCaseDialogComponent } from "./components/supplier/edit-case-dialog/edit-case-dialog.component";
-import { NotFoundComponent } from "./components/common/not-found/not-found.component";
-import { InvitedAccountSetupComponent } from "./components/common/invited-account-setup/invited-account-setup.component";
 import { UsersComponent } from "./components/supplier/users/users.component";
 import { InviteUserDialogComponent } from "./components/supplier/invite-user-dialog/invite-user-dialog.component";
 
@@ -45,10 +59,14 @@ import { InviteUserDialogComponent } from "./components/supplier/invite-user-dia
     AppComponent,
     CreateAccountComponent,
     LoginComponent,
-    ProjectsGridComponent,
     NavComponent,
-    ProjectComponent,
+    InvitedAccountSetupComponent,
     ConfirmationPromptComponent,
+    NotFoundComponent,
+
+    /* SUPPLIER */
+    ProjectsGridComponent,
+    ProjectComponent,
     TestSuiteListComponent,
     TestSuiteComponent,
     ProjectSettingsComponent,
@@ -57,10 +75,16 @@ import { InviteUserDialogComponent } from "./components/supplier/invite-user-dia
     EditTestStepDialogComponent,
     StepStatusChipComponent,
     EditCaseDialogComponent,
-    NotFoundComponent,
-    InvitedAccountSetupComponent,
     UsersComponent,
-    InviteUserDialogComponent
+    InviteUserDialogComponent,
+
+    /* CLIENT */
+    ClientProjectsGridComponent,
+    ClientProjectComponent,
+    ClientTestSuiteListComponent,
+    ClientTestSuiteComponent,
+    ClientTestCaseComponent,
+    ClientTestStepListComponent
   ],
   imports: [
     /* Angular */
