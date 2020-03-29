@@ -49,10 +49,11 @@ import { TestStepListComponent } from "./components/supplier/test-step-list/test
 import { ClientTestStepListComponent } from "./components/client/test-step-list/test-step-list.component";
 
 import { EditTestStepDialogComponent } from "./components/supplier/edit-test-step-dialog/edit-test-step-dialog.component";
-import { StepStatusChipComponent } from "./components/supplier/step-status-chip/step-status-chip.component";
+import { StepStatusChipComponent } from "./components/common/step-status-chip/step-status-chip.component";
 import { EditCaseDialogComponent } from "./components/supplier/edit-case-dialog/edit-case-dialog.component";
 import { UsersComponent } from "./components/supplier/users/users.component";
 import { InviteUserDialogComponent } from "./components/supplier/invite-user-dialog/invite-user-dialog.component";
+import { UserTypeChipComponent } from './components/common/user-type-chip/user-type-chip.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { InviteUserDialogComponent } from "./components/supplier/invite-user-dia
     ClientTestSuiteListComponent,
     ClientTestSuiteComponent,
     ClientTestCaseComponent,
-    ClientTestStepListComponent
+    ClientTestStepListComponent,
+    UserTypeChipComponent
   ],
   imports: [
     /* Angular */

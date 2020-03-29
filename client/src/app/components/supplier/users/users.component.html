@@ -3,9 +3,33 @@
     Invite Client
   </button>
 </div>
-<div *ngFor="let user of projectUsers">
-  {{ user.firstName }}
-  {{ user.lastName }}
-  {{ user.email }}
-  {{ user.type }}
-</div>
+<nb-card *ngFor="let user of projectUsers">
+  <nb-card-body>
+    <div class="left">
+      <app-user-type-chip
+        [type]="user.type"
+      >
+      </app-user-type-chip>
+      
+      <span class="user-names">
+        {{ user.firstName }}
+        {{ user.lastName }}
+      </span>
+      
+      <span class="email">
+        {{ user.email }}
+      </span>
+    </div>
+    <div class="right">
+      <button
+        nbButton
+        ghost
+        size="medium"
+        status="danger"
+      >
+        <nb-icon icon="person-remove-outline"></nb-icon>
+        Remove
+      </button>
+    </div>
+  </nb-card-body>
+</nb-card>

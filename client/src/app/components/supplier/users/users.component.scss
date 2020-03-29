@@ -8,3 +8,38 @@
   justify-content: flex-end;
   margin-bottom: 15px;
 }
+
+nb-card {
+  margin: 0;
+  border-top: 1px solid var(--divider-color);
+  box-shadow: none;
+}
+
+nb-card-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+}
+
+.left {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.right > button {
+  margin: 0;
+  padding: 8px 10px;
+}
+
+.user-names {
+  min-width: 200px;
+}
+
+.email {
+  color: grey;
+}
