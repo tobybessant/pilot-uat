@@ -17,6 +17,7 @@ import { Validator } from "joiful";
 import { BAD_REQUEST } from "http-status-codes";
 import { ApiError } from "../services/apiError";
 import { IUserResponse } from "../dto/response/common/user";
+import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 
 @injectable()
 @Controller("project")
@@ -25,7 +26,8 @@ export class ProjectController extends BaseController {
 
   constructor(
     private projectRepository: ProjectRepository,
-    private userRepository: UserRepository
+    private userRepository: UserRepository,
+    private projectInviteRepository: ProjectInviteRepository
   ) {
     super();
   }
@@ -137,5 +139,22 @@ export class ProjectController extends BaseController {
       organisations: role.user.organisations,
       createdDate: role.user.createdDate
     })));
+  }
+
+  @Get(":id/invites")
+  public async getOpenInvites(req: Request, res: Response) {
+    try {
+      const invites = await this.projectInviteRepository.getOpenInvitesForProject(req.params.id);
+      console.log(invites);
+      
+      
+      this.OK<any>(res, invites.map(invite => ({
+        userEmail: invite.userEmail,
+        userType: invite.userType,
+        status: invite.status
+      })));
+    } catch(error) {
+      this.serverError(res, error);
+    }
   }
 }

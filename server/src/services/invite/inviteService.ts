@@ -17,14 +17,12 @@ export class InviteService {
     return this.jwtService.decode(token);
   }
 
-  public async inviteClient(projectId: string, emails: string[]) {
-    for (const email of emails) {
-      const token = this.jwtService.encode({ email, projectId, type: "Client"});
-      await this.emailService.sendHtml(
-        "Pilot UAT Project Invitation",
-        email,
-        `You have been invited to project: <a target="_blank" href=${this.inviteUrl + token}>Click here to accept</a>.`
-      );
-    }
+  public async inviteClient(email: string, inviteId: string) {
+    const token = this.jwtService.encode({ id: inviteId });
+    await this.emailService.sendHtml(
+      "Pilot UAT Project Invitation",
+      email,
+      `You have been invited to project: <a target="_blank" href=${this.inviteUrl + token}>Click here to accept</a>.`
+    );
   }
 }

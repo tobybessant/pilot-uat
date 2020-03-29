@@ -4,6 +4,10 @@ import UATPlatformServer from "./server";
 import { MSSQLDatabase } from "./database";
 import { container } from "tsyringe";
 
+interface ILogger {
+  log: () => void;
+}
+
 async function main() {
   dotenv.config();
 

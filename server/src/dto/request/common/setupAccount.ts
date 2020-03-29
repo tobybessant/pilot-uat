@@ -1,7 +1,7 @@
 import { IProjectInviteToken } from "./inviteToken";
 
 export interface ISetupAccountRequest {
-  token: IProjectInviteToken;
+  token: string;
   password: string;
   firstName: string;
   lastName: string;
