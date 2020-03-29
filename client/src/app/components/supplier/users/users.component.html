@@ -1,0 +1,11 @@
+<div class="action-buttons">
+  <button nbButton status="primary" (click)="showInviteClientsDialog()">
+    Invite Client
+  </button>
+</div>
+<div *ngFor="let user of projectUsers">
+  {{ user.firstName }}
+  {{ user.lastName }}
+  {{ user.email }}
+  {{ user.type }}
+</div>

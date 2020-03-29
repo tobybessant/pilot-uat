@@ -28,7 +28,7 @@ class UATPlatformServer extends Server {
 
     this.app.use(cors({
       credentials: true,
-      origin: "http://localhost:4200"
+      origin: process.env.CLIENT_URL || "http://localhost:4200"
     }));
 
     this.app.use(session({

@@ -11,6 +11,7 @@ import { UserRepository } from "../repositories/userRepository";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { Bcrypt } from "../services/utils/bcryptHash";
 import { UserTypeRepository } from "../repositories/userTypeRepository";
+import { OK } from "http-status-codes";
 
 @injectable()
 @Controller("invite")
@@ -45,16 +46,15 @@ export class InviteController extends BaseController {
     const token = req.params.token;
     const invite = this.inviteService.decodeInviteToken(token);
 
-    // check token validity
+    // TODO: check token validity
 
     const existingAccount = await this.userRepository.accountDoesExist(invite.email);
     if (existingAccount) {
       res.redirect("accept/" + token);
       return;
-    } else {
-      res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
-      return;
     }
+
+    res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
   }
 
   @Post("setup")
@@ -91,7 +91,7 @@ export class InviteController extends BaseController {
         }
       );
 
-      res.redirect(this.clientUrl);
+      this.OK(res);
     } catch (error) {
       this.serverError(res, error);
     }

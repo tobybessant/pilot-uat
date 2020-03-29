@@ -6,7 +6,7 @@ import Mail = require("nodemailer/lib/mailer");
 export class EmailService {
 
   private transporter: Mail;
-  private senderEmail: string = process.env.NOREPLY_EMAIL || "noreply@pilot-uat.com";
+  private senderEmail: string = `<${process.env.MAILER_USER}>`;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -15,12 +15,16 @@ export class EmailService {
       auth: {
         user: process.env.MAILER_USER || "",
         pass: process.env.MAILER_PASSWORD || ""
+      },
+      tls: {
+        rejectUnauthorized: false,
+
       }
     });
   }
 
-  public sendHtml(subject: string, to: string, html: string): void {
-    this.transporter.sendMail({
+  public async sendHtml(subject: string, to: string, html: string): Promise<void> {
+    await this.transporter.sendMail({
       from: this.senderEmail,
       to,
       subject,
@@ -28,8 +32,8 @@ export class EmailService {
     });
   }
 
-  public sendPlaintext(subject: string, to: string, text: string): void {
-    this.transporter.sendMail({
+  public async sendPlaintext(subject: string, to: string, text: string): Promise<void> {
+    await this.transporter.sendMail({
       from: this.senderEmail,
       to,
       subject,

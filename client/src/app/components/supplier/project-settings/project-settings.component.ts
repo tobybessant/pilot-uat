@@ -43,7 +43,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async deleteProject(id: number) {
+  private async deleteProject(id: string) {
     const response = await this.projectsApiService.deleteProject(id);
     if (response.errors.length === 0) {
       this.backToAllProjects();

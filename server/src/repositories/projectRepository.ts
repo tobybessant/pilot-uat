@@ -85,4 +85,20 @@ export class ProjectRepository {
       user
     });
   }
+
+  public async getUsersForProject(projectId: string) {
+    const projectWithUsers = await this.baseProjectRepository
+      .createQueryBuilder("project")
+      .leftJoinAndSelect("project.users", "userRoles")
+      .leftJoinAndSelect("userRoles.user", "users")
+      .leftJoinAndSelect("users.userType", "type")
+      .where("project.id = :id", { id: projectId })
+      .getOne();
+
+    if (!projectWithUsers) {
+      throw new Error("Project does not exist");
+    }
+
+    return projectWithUsers.users;
+  }
 }

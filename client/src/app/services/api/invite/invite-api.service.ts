@@ -16,12 +16,19 @@ export class InviteApiService {
   ) { }
 
   public async setupAccount(payload: ISetupAccountRequest) {
-    const response = await this.apiService.post<any>(this.baseUrl + "/setup", payload);
+    const response = await this.apiService.post<void>(this.baseUrl + "/setup", payload);
 
     if (response.errors.length === 0) {
       this.sessionService.setUser();
     }
 
     return response;
+  }
+
+  public async inviteClients(emails: string[], projectId: string) {
+    const response = await this.apiService.post<void>(this.baseUrl + "/client", {
+      emails,
+      projectId
+    });
   }
 }

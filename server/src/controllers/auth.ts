@@ -89,7 +89,6 @@ export class AuthController extends BaseController {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        organisations: user.organisations,
         type: user.userType.type
       });
 

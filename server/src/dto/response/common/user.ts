@@ -6,5 +6,4 @@ export interface IUserResponse {
   lastName: string;
   createdDate: Date;
   type: string;
-  organisations: IOrganisationResponse[]
 }

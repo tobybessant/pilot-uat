@@ -15,6 +15,7 @@ import { NbEvaIconsModule } from "@nebular/eva-icons";
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { MatExpansionModule } from "@angular/material/expansion";
+import { MatChipsModule, MAT_CHIPS_DEFAULT_OPTIONS } from "@angular/material/chips";
 
 import { HttpClientModule } from "@angular/common/http";
 
@@ -35,7 +36,9 @@ import { EditTestStepDialogComponent } from "./components/supplier/edit-test-ste
 import { StepStatusChipComponent } from "./components/supplier/step-status-chip/step-status-chip.component";
 import { EditCaseDialogComponent } from "./components/supplier/edit-case-dialog/edit-case-dialog.component";
 import { NotFoundComponent } from "./components/common/not-found/not-found.component";
-import { InvitedAccountSetupComponent } from './components/common/invited-account-setup/invited-account-setup.component';
+import { InvitedAccountSetupComponent } from "./components/common/invited-account-setup/invited-account-setup.component";
+import { UsersComponent } from "./components/supplier/users/users.component";
+import { InviteUserDialogComponent } from "./components/supplier/invite-user-dialog/invite-user-dialog.component";
 
 @NgModule({
   declarations: [
@@ -55,7 +58,9 @@ import { InvitedAccountSetupComponent } from './components/common/invited-accoun
     StepStatusChipComponent,
     EditCaseDialogComponent,
     NotFoundComponent,
-    InvitedAccountSetupComponent
+    InvitedAccountSetupComponent,
+    UsersComponent,
+    InviteUserDialogComponent
   ],
   imports: [
     /* Angular */
@@ -88,7 +93,8 @@ import { InvitedAccountSetupComponent } from './components/common/invited-accoun
 
     /* Other Libs */
     NgxSpinnerModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatChipsModule
   ],
   providers: [
     {

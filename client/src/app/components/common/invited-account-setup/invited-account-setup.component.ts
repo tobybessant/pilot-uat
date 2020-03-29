@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { InviteApiService } from "src/app/services/api/invite/invite-api.service";
 
@@ -19,6 +19,7 @@ export class InvitedAccountSetupComponent implements OnInit {
   constructor(
     private inviteApiService: InviteApiService,
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     @Inject(DOCUMENT) private document: Document
   ) { }
 
@@ -30,11 +31,15 @@ export class InvitedAccountSetupComponent implements OnInit {
   }
 
   public async setup() {
-    await this.inviteApiService.setupAccount({
+    const response = await this.inviteApiService.setupAccount({
       password: this.password,
       firstName: this.firstName,
       lastName: this.lastName,
       token:  this.token
     });
+
+    if (response.errors.length === 0) {
+      this.router.navigate(["/"]);
+    }
   }
 }

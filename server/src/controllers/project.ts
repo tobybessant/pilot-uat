@@ -16,6 +16,7 @@ import { IGetProjectRequest } from "../dto/request/supplier/getProject";
 import { Validator } from "joiful";
 import { BAD_REQUEST } from "http-status-codes";
 import { ApiError } from "../services/apiError";
+import { IUserResponse } from "../dto/response/common/user";
 
 @injectable()
 @Controller("project")
@@ -55,8 +56,8 @@ export class ProjectController extends BaseController {
       });
 
     } catch (error) {
-      if(error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [ error.message ]);
+      if (error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
         return;
       }
       this.serverError(res);
@@ -86,7 +87,7 @@ export class ProjectController extends BaseController {
         }))
       });
     } catch (error) {
-      if(error instanceof ApiError) {
+      if (error instanceof ApiError) {
         this.errorResponse(res, error.statusCode, [error.message]);
         return;
       }
@@ -122,5 +123,19 @@ export class ProjectController extends BaseController {
     } catch (error) {
       this.serverError(res);
     }
+  }
+
+  @Get(":id/users")
+  public async getUsersForProject(req: Request, res: Response) {
+    const userRoles = await this.projectRepository.getUsersForProject(req.params.id);
+
+    this.OK<IUserResponse[]>(res, userRoles.map(role => ({
+      email: role.user.email,
+      firstName: role.user.firstName,
+      lastName: role.user.lastName,
+      type: role.user.userType.type,
+      organisations: role.user.organisations,
+      createdDate: role.user.createdDate
+    })));
   }
 }

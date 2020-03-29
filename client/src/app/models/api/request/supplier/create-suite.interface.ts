@@ -1,4 +1,4 @@
 export interface ICreateSuiteRequest {
   title: string;
-  projectId: number;
+  projectId: string;
 }

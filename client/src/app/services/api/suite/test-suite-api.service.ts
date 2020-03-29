@@ -18,7 +18,7 @@ export class TestSuiteApiService {
     return response;
   }
 
-  public async getTestSuitesForProject(projectId: number): Promise<IApiResponse<ISuiteResponse[]>> {
+  public async getTestSuitesForProject(projectId: string): Promise<IApiResponse<ISuiteResponse[]>> {
     const response = await this.apiService.post<ISuiteResponse[]>(this.baseUrl + "/all", { projectId });
     return response;
   }

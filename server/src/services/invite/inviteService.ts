@@ -17,10 +17,10 @@ export class InviteService {
     return this.jwtService.decode(token);
   }
 
-  public inviteClient(projectId: string, emails: string[]) {
+  public async inviteClient(projectId: string, emails: string[]) {
     for (const email of emails) {
       const token = this.jwtService.encode({ email, projectId, type: "Client"});
-      this.emailService.sendHtml(
+      await this.emailService.sendHtml(
         "Pilot UAT Project Invitation",
         email,
         `You have been invited to project: <a target="_blank" href=${this.inviteUrl + token}>Click here to accept</a>.`

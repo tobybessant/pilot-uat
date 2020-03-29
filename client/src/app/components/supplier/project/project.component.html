@@ -16,6 +16,11 @@
           ></app-test-suite>
         </div>
       </nb-tab>
+      <nb-tab tabTitle="Users">
+        <div class="tab-content">
+          <app-users [projectId]="project.id"></app-users>
+        </div>
+      </nb-tab>
       <nb-tab tabTitle="Settings">
         <div class="tab-content">
           <app-project-settings [project]="project"> </app-project-settings>

@@ -45,7 +45,6 @@ export class UserController extends BaseController {
         firstName: user.firstName,
         lastName: user.lastName,
         createdDate: user.createdDate,
-        organisations: user.organisations,
         type: user.userType.type
       });
 

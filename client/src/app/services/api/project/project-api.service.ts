@@ -3,6 +3,7 @@ import { ApiService } from "../api.service";
 import { IProjectResponse } from "../../../models/api/response/supplier/project.interface";
 import { ICreateProjectRequest } from "src/app/models/api/request/supplier/create-project.interface";
 import { ICreateProjectResponse } from "src/app/models/api/response/supplier/create-project.interface";
+import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 
 @Injectable({
   providedIn: "root"
@@ -28,8 +29,13 @@ export class ProjectApiService {
     return response;
   }
 
-  public async deleteProject(projectId: number) {
+  public async deleteProject(projectId: string) {
     const response = await this.apiService.delete<void>(this.baseUrl + "/" + projectId);
+    return response;
+  }
+
+  public async getUsersForProject(projectId: string) {
+    const response = await this.apiService.get<IUserResponse[]>(`${this.baseUrl}/${projectId}/users`);
     return response;
   }
 }
