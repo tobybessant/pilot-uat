@@ -11,9 +11,7 @@ import { UserRepository } from "../repositories/userRepository";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { Bcrypt } from "../services/utils/bcryptHash";
 import { UserTypeRepository } from "../repositories/userTypeRepository";
-import { BAD_REQUEST } from "http-status-codes";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
-import { ApiError } from "../services/apiError";
 import { ISetupAccountRequest } from "../dto/request/common/setupAccount";
 import { Logger } from "@overnightjs/logger";
 
@@ -51,11 +49,7 @@ export class InviteController extends BaseController {
 
       this.OK(res);
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
-      this.serverError(res);
+      return this.serverError(res);
     }
 
   }
@@ -70,7 +64,7 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.baseRepo.findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
-        throw new ApiError("Invite not found", BAD_REQUEST);
+        return this.badRequest(res, ["Invite does not exist"]);
       }
 
       const existingAccount = await this.userRepository.accountDoesExist(invite.userEmail);
@@ -81,11 +75,7 @@ export class InviteController extends BaseController {
 
       res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message], error.shouldRedirect);
-        return;
-      }
-      this.serverError(res);
+      return this.serverError(res);
     }
   }
 
@@ -98,14 +88,14 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.baseRepo.findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
-        throw new ApiError("Invite no longer exists", BAD_REQUEST, true);
+        return this.badRequest(res, ["Invite does not exist"]);
       }
 
       const passwordHash = this.bcrypt.hash(model.password);
 
       const userType = await this.userTypeRepository.getTypeByType(invite.userType);
       if (!userType) {
-        throw new ApiError("Invalid user type", BAD_REQUEST);
+        return this.badRequest(res, ["Invalid user type"]);
       }
 
       const user = await this.userRepository.baseRepo.save({
@@ -133,11 +123,7 @@ export class InviteController extends BaseController {
 
       this.OK(res);
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message], error.shouldRedirect);
-        return;
-      }
-      this.serverError(res, error);
+      return this.serverError(res, error);
     }
   }
 
@@ -157,7 +143,7 @@ export class InviteController extends BaseController {
 
       res.redirect(`${this.clientUrl}/projects/${invite.projectId}`);
     } catch (error) {
-      this.serverError(res, error);
+      return this.serverError(res, error);
     }
   }
 
@@ -167,21 +153,18 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.getInviteById(req.params.id);
 
       if (!invite) {
-        throw new ApiError("Invite not found", BAD_REQUEST);
+        return this.badRequest(res, ["Invite does not exist"]);
       }
 
       if (invite.status === "Accepted") {
-        throw new ApiError("Invite has already been accepted", BAD_REQUEST);
+        return this.badRequest(res, ["Invite has already been accepted"]);
       }
 
       await this.inviteService.inviteClient(invite.userEmail, invite.id.toString());
-      this.OK(res);
+      return this.OK(res);
+
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
-      this.serverError(res, error);
+      return this.serverError(res, error);
     }
   }
 

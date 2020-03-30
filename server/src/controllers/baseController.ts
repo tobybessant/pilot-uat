@@ -2,6 +2,7 @@ import { Response } from "express";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND } from "http-status-codes";
 import { IApiResponse } from "../dto/response/common/apiResponse";
 import { Logger } from "@overnightjs/logger";
+import { ApiError } from "../services/apiError";
 
 export abstract class BaseController {
 
@@ -55,6 +56,10 @@ export abstract class BaseController {
   protected serverError(res: Response, error?: Error): void {
     if (error) {
       Logger.Err(error.message);
+    }
+
+    if (error instanceof ApiError) {
+      return this.errorResponse(res, error.statusCode, [error.message]);
     }
 
     const response: Partial<IApiResponse<void>> = {
