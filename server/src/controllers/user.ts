@@ -10,26 +10,23 @@ import { IApiResponse } from "../dto/response/common/apiResponse";
 import { IUserResponse } from "../dto/response/common/user";
 import { BaseController } from "./baseController";
 import { ApiError } from "../services/apiError";
+import { UserRepository } from "../repositories/userRepository";
 
 @injectable()
 @Controller("user")
 @ClassMiddleware(checkAuthentication)
 export class UserController extends BaseController {
 
-  private userRepository: Repository<UserDbo>;
 
-  constructor(
-    private repositoryService: RepositoryService,
-  ) {
+  constructor(private userRepository: UserRepository) {
     super();
-    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
   @Get("account")
   public async getAccountDetails(req: Request, res: Response) {
     try {
       const { email } = req.user as any;
-      const user: UserDbo | undefined = await this.userRepository
+      const user: UserDbo | undefined = await this.userRepository.baseRepo
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.userType", "type")
         .leftJoinAndSelect("user.organisations", "organisations")

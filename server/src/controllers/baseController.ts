@@ -51,7 +51,7 @@ export abstract class BaseController {
 
     res.status(SERVICE_UNAVAILABLE);
     res.json(response);
-  };
+  }
 
   protected notFound(res: Response, errors: string[]): void {
     const response: Partial<IApiResponse<void>> = {
