@@ -31,4 +31,12 @@ export class InviteApiService {
       projectId
     });
   }
+
+  public async revokeInvite(inviteId: string) {
+    const response = await this.apiService.delete(this.baseUrl + "/" + inviteId);
+  }
+
+  public async resendInvite(inviteId: string) {
+    const response = await this.apiService.get(this.baseUrl + "/resend/" + inviteId);
+  }
 }

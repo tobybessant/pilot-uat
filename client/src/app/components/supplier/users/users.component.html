@@ -17,6 +17,7 @@
           ghost
           size="medium"
           status="primary"
+          (click)="resendInvite(invite)"
         >
           <nb-icon icon="paper-plane-outline"></nb-icon>
           Resend
@@ -26,6 +27,7 @@
           ghost
           size="medium"
           status="danger"
+          (click)="revokeInvite(invite)"
         >
           <nb-icon icon="slash-outline"></nb-icon>
           Revoke
@@ -59,6 +61,7 @@
         ghost
         size="medium"
         status="danger"
+        (click)="removeUserFromProject(user)"
       >
         <nb-icon icon="person-remove-outline"></nb-icon>
         Remove

@@ -3,6 +3,7 @@ import { IUserResponse } from "src/app/models/api/response/common/user.interface
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { NbDialogService } from "@nebular/theme";
 import { InviteUserDialogComponent } from "../invite-user-dialog/invite-user-dialog.component";
+import { InviteApiService } from "src/app/services/api/invite/invite-api.service";
 
 @Component({
   selector: "app-users",
@@ -20,6 +21,7 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private projectApiService: ProjectApiService,
+    private inviteApiService: InviteApiService,
     private dialogService: NbDialogService
   ) { }
 
@@ -51,6 +53,20 @@ export class UsersComponent implements OnInit {
   private async fetchProjectUsers() {
     const users = await this.projectApiService.getUsersForProject(this.projectId);
     this.projectUsers = users.payload;
+  }
+
+  public async removeUserFromProject(user: IUserResponse) {
+    await this.projectApiService.removeUserFromProject(user.email, this.projectId);
+    this.fetchProjectUsers();
+  }
+
+  public async revokeInvite(invite) {
+    await this.inviteApiService.revokeInvite(invite.id);
+    this.fetchOpenInvites();
+  }
+
+  public async resendInvite(invite) {
+    await this.inviteApiService.resendInvite(invite.id);
   }
 
 }

@@ -43,4 +43,9 @@ export class ProjectApiService {
     const response = await this.apiService.get<any[]>(`${this.baseUrl}/${projectId}/invites`);
     return response;
   }
+
+  public async removeUserFromProject(email: string, projectId: string) {
+    const response = await this.apiService.post<any>(this.baseUrl + "/removeuser", { email, projectId });
+    return response;
+  }
 }
