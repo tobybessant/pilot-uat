@@ -35,57 +35,56 @@ export abstract class BaseController {
     res.json(response);
   }
 
-  protected badRequest(res: Response, errors: string[]): void {
+  protected badRequest(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
       errors
     };
 
-    res.status(BAD_REQUEST);
-    res.json(response);
+    this.errorResponse(res, BAD_REQUEST, response, redirectToErrorPage);
   }
 
-  protected serviceUnavailable(res: Response, errors: string[]): void {
+  protected serviceUnavailable(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
       errors
     };
 
-    res.status(SERVICE_UNAVAILABLE);
-    res.json(response);
+    this.errorResponse(res, SERVICE_UNAVAILABLE, response, redirectToErrorPage);
   }
 
-  protected notFound(res: Response, errors: string[]): void {
+  protected notFound(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
       errors
     };
 
-    res.status(NOT_FOUND);
-    res.json(response);
+    this.errorResponse(res, NOT_FOUND, response, redirectToErrorPage);
   }
 
-  protected serverError(res: Response, error: Error): void {
+  protected serverError(res: Response, error: Error, redirectToErrorPage?: boolean): void {
     Logger.Err("[SERVER_ERROR] " + error.message);
 
     if (error instanceof ApiError) {
-      return this.errorResponse(res, error.statusCode, [error.message]);
+      return this.errorResponse(res, error.statusCode, { errors: [error.message] }, error.redirectToErrorPage);
     }
 
     const response: Partial<IApiResponse<void>> = {
       errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]
     };
 
-    res.status(INTERNAL_SERVER_ERROR);
-    res.json(response);
+    this.errorResponse(res, INTERNAL_SERVER_ERROR, response, redirectToErrorPage);
   }
 
-  protected errorResponse(res: Response, statusCode: number, errors: string[], shouldRedirect?: boolean): void {
-    const response: Partial<IApiResponse<void>> = {
-      errors,
-    };
+  protected errorResponse(res: Response, statusCode: number, response?: any, redirectToErrorPage?: boolean): void {
 
     res.status(statusCode);
-    if (shouldRedirect) {
-      res.redirect(`${this.clientUrl}/error?m=${JSON.stringify(errors)}`);
-      return;
+
+    if (redirectToErrorPage) {
+      let url = this.clientUrl;
+
+      if (response?.errors) {
+        url += `/error?m=${JSON.stringify(response.errors)}`;
+      }
+
+      return res.redirect(url);
     }
 
     res.json(response);

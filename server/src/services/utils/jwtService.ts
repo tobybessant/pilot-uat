@@ -21,7 +21,7 @@ export class JwtService {
     try {
       return jwt.decode(token, this.secret);
     } catch(error) {
-      throw new ApiError(error.message, UNAUTHORIZED);
+      throw new ApiError(error.message, UNAUTHORIZED, true);
     }
   }
 }

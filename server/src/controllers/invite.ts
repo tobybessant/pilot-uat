@@ -64,7 +64,11 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
-        return this.badRequest(res, ["Invite does not exist"]);
+        return this.badRequest(res, ["Invite does not exist"], true);
+      }
+
+      if (invite.status === "Accepted") {
+        return this.badRequest(res, ["Invite already accepted"], true);
       }
 
       const existingAccount = await this.userRepository.accountDoesExist(invite.userEmail);
@@ -88,14 +92,14 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
-        return this.badRequest(res, ["Invite does not exist"]);
+        return this.badRequest(res, ["Invite does not exist"], true);
       }
 
       const passwordHash = this.bcrypt.hash(model.password);
 
       const userType = await this.userTypeRepository.getTypeByType(invite.userType);
       if (!userType) {
-        return this.badRequest(res, ["Invalid user type"]);
+        return this.badRequest(res, ["Invalid user type"], true);
       }
 
       const user = await this.userRepository.getBaseRepo().save({
@@ -153,11 +157,11 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.getInviteById(req.params.id);
 
       if (!invite) {
-        return this.badRequest(res, ["Invite does not exist"]);
+        return this.badRequest(res, ["Invite does not exist"], true);
       }
 
       if (invite.status === "Accepted") {
-        return this.badRequest(res, ["Invite has already been accepted"]);
+        return this.badRequest(res, ["Invite has already been accepted"], true);
       }
 
       await this.inviteService.inviteClient(invite.userEmail, invite.id.toString());
