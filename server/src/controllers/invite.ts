@@ -1,7 +1,7 @@
 import { BaseController } from "./baseController";
 import { Request, Response } from "express";
 import { injectable } from "tsyringe";
-import { Controller, Post, Middleware, Get } from "@overnightjs/core";
+import { Controller, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { IClientInviteRequest } from "../dto/request/supplier/clientInvite";
 import { InviteService } from "../services/invite/inviteService";
 import { ClientInvite } from "../services/middleware/joi/schemas/inviteClient";
@@ -107,7 +107,7 @@ export class InviteController extends BaseController {
 
       const userType = await this.userTypeRepository.getTypeByType(invite.userType);
       if (!userType) {
-      throw new ApiError("Invalid user type", BAD_REQUEST);
+        throw new ApiError("Invalid user type", BAD_REQUEST);
       }
 
       const user = await this.userRepository.baseRepo.save({
@@ -158,6 +158,40 @@ export class InviteController extends BaseController {
       await this.projectRepository.addUserToProject(invite.userEmail, invite.projectId.toString());
 
       res.redirect(`${this.clientUrl}/projects/${invite.projectId}`);
+    } catch (error) {
+      this.serverError(res, error);
+    }
+  }
+
+  @Get("resend/:id")
+  public async resendInvite(req: Request, res: Response): Promise<void> {
+    try {
+      const invite = await this.projectInviteRepository.getInviteById(req.params.id);
+
+      if (!invite) {
+        throw new ApiError("Invite not found", BAD_REQUEST);
+      }
+
+      if (invite.status === "Accepted") {
+        throw new ApiError("Invite has already been accepted", BAD_REQUEST);
+      }
+
+      await this.inviteService.inviteClient(invite.userEmail, invite.id.toString());
+      this.OK(res);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        this.errorResponse(res, error.statusCode, [error.message]);
+        return;
+      }
+      this.serverError(res, error);
+    }
+  }
+
+  @Delete(":id")
+  public async deleteInvite(req: Request, res: Response): Promise<void> {
+    try {
+      const deletedInvite = await this.projectInviteRepository.baseRepo.delete({ id: Number(req.params.id) });
+      this.OK(res);
     } catch (error) {
       this.serverError(res, error);
     }

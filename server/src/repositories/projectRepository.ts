@@ -86,6 +86,13 @@ export class ProjectRepository {
     });
   }
 
+  public async removeUserFromProject(email: string, projectId: string) {
+    const user = await this.userRepository.getUserByEmail(email);
+    const project = await this.baseProjectRepository.findOne({ id: Number(projectId) });
+
+    return this.userProjectRoleRepository.delete({ user, project });
+  }
+
   public async getUsersForProject(projectId: string) {
     const projectWithUsers = await this.baseProjectRepository
       .createQueryBuilder("project")

@@ -145,15 +145,26 @@ export class ProjectController extends BaseController {
   public async getOpenInvites(req: Request, res: Response) {
     try {
       const invites = await this.projectInviteRepository.getOpenInvitesForProject(req.params.id);
-      console.log(invites);
-      
-      
+
       this.OK<any>(res, invites.map(invite => ({
+        id: invite.id.toString(),
         userEmail: invite.userEmail,
         userType: invite.userType,
         status: invite.status
       })));
-    } catch(error) {
+    } catch (error) {
+      this.serverError(res, error);
+    }
+  }
+
+  @Post("removeuser")
+  public async removeUser(req: Request, res: Response) {
+    const model = req.body;
+
+    try {
+      const removedJoin = await this.projectRepository.removeUserFromProject(model.email, model.projectId);
+      this.OK(res);
+    } catch (error) {
       this.serverError(res, error);
     }
   }
