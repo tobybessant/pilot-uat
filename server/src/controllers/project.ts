@@ -62,7 +62,7 @@ export class ProjectController extends BaseController {
         this.errorResponse(res, error.statusCode, [error.message]);
         return;
       }
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -94,7 +94,7 @@ export class ProjectController extends BaseController {
         return;
       }
 
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -111,7 +111,7 @@ export class ProjectController extends BaseController {
         }))
       );
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -123,7 +123,7 @@ export class ProjectController extends BaseController {
       const deletedProject = await this.projectRepository.deleteProjectById(projectId);
       this.OK(res);
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 

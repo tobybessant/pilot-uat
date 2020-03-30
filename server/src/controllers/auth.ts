@@ -96,7 +96,7 @@ export class AuthController extends BaseController {
       if (error instanceof ApiError) {
         this.errorResponse(res, error.statusCode, [error.message]);
       } else {
-        this.serverError(res);
+        this.serverError(res, error);
       }
     }
   }

@@ -43,7 +43,7 @@ export class StepController extends BaseController {
         }
       });
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -63,7 +63,7 @@ export class StepController extends BaseController {
         }
       })));
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -100,7 +100,7 @@ export class StepController extends BaseController {
         this.errorResponse(res, error.statusCode, [error.message]);
         return;
       }
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -113,7 +113,7 @@ export class StepController extends BaseController {
       const deletedStep = await this.stepRepository.deleteStepById(stepId);
       this.OK(res);
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 }

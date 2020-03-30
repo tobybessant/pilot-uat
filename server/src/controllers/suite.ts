@@ -57,7 +57,7 @@ export class TestSuiteController extends BaseController {
       if (error instanceof ApiError) {
         this.errorResponse(res, error.statusCode, [error.message]);
       } else {
-        this.serverError(res);
+        this.serverError(res, error);
       }
     }
   }
@@ -76,7 +76,7 @@ export class TestSuiteController extends BaseController {
           id: suite.id.toString()
         })))
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -89,7 +89,7 @@ export class TestSuiteController extends BaseController {
       const deletedSuite = await this.testSuiteRepository.deleteTestSuiteById(suiteId);
       this.OK(res);
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 }

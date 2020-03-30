@@ -49,7 +49,7 @@ export class InviteController extends BaseController {
 
       this.OK(res);
     } catch (error) {
-      return this.serverError(res);
+      return this.serverError(res, error);
     }
 
   }
@@ -75,7 +75,7 @@ export class InviteController extends BaseController {
 
       res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
     } catch (error) {
-      return this.serverError(res);
+      return this.serverError(res, error);
     }
   }
 

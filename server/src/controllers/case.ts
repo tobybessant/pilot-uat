@@ -51,7 +51,7 @@ export class CaseController extends BaseController {
       if (error instanceof ApiError) {
         this.errorResponse(res, error.statusCode, [error.message]);
       } else {
-        this.serverError(res);
+        this.serverError(res, error);
       }
     }
   }
@@ -73,7 +73,7 @@ export class CaseController extends BaseController {
         }))
       )
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -92,7 +92,7 @@ export class CaseController extends BaseController {
         title: savedTest.title
       });
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -104,7 +104,7 @@ export class CaseController extends BaseController {
       await this.caseRepository.deleteCaseById(testId);
       this.OK(res);
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 }

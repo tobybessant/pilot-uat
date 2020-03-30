@@ -14,7 +14,7 @@ export abstract class BaseController {
       errors: []
     };
 
-    if(payload) {
+    if (payload) {
       response.payload = payload;
     }
 
@@ -27,7 +27,7 @@ export abstract class BaseController {
       errors: []
     };
 
-    if(payload) {
+    if (payload) {
       response.payload = payload;
     }
 
@@ -53,17 +53,15 @@ export abstract class BaseController {
     res.json(response);
   }
 
-  protected serverError(res: Response, error?: Error): void {
-    if (error) {
-      Logger.Err(error.message);
-    }
+  protected serverError(res: Response, error: Error): void {
+    Logger.Err("[SERVER_ERROR] " + error.message);
 
     if (error instanceof ApiError) {
       return this.errorResponse(res, error.statusCode, [error.message]);
     }
 
     const response: Partial<IApiResponse<void>> = {
-      errors: [ BaseController.INTERNAL_SERVER_ERROR_MESSAGE ]
+      errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]
     };
 
     res.status(INTERNAL_SERVER_ERROR);
