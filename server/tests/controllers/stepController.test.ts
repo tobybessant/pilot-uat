@@ -52,7 +52,7 @@ suite("Step Controller", () => {
 
         createdStep = new StepDbo();
         createdStep.description = addStepBody.description;
-        createdStep.id = 3
+        createdStep.id = 3;
         createdStep.status = stepStatus;
 
         createdStepResponse = {
@@ -62,7 +62,7 @@ suite("Step Controller", () => {
             id: createdStep.status.id.toString(),
             label: createdStep.status.label
           }
-        }
+        };
       });
 
       test("Saved step is returned in response body", async () => {
@@ -90,7 +90,7 @@ suite("Step Controller", () => {
         addStepBody = {
           caseId: "4",
           description: " I am also a new test step!"
-        }
+        };
       });
 
       test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in errors array`, async () => {
@@ -235,7 +235,7 @@ suite("Step Controller", () => {
             id: updatedStep.status.id.toString(),
             label: updatedStep.status.label
           }
-        }
+        };
       });
 
       test("Returns updated case in response payload", async () => {

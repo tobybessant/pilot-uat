@@ -113,7 +113,7 @@ suite("Case Controller", () => {
         await subject.addCase(req.object, res.object);
 
         res.verify(r => r.json({ errors: ["Suite not found"] }), Times.once());
-      })
+      });
 
       test("Returns a statusCode of 400", async () => {
         given_suiteRepository_getTestSuiteById_returns_whenGiven(undefined, It.isAny());
@@ -123,7 +123,7 @@ suite("Case Controller", () => {
         await subject.addCase(req.object, res.object);
 
         res.verify(r => r.status(BAD_REQUEST), Times.once());
-      })
+      });
     });
 
     suite("Unexpected 'Error' is thrown inside suiteRepository", () => {

@@ -1,4 +1,4 @@
-import { IMock, Mock, It, Times } from "typemoq"
+import { IMock, Mock, It, Times } from "typemoq";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
@@ -349,19 +349,19 @@ suite("TestSuiteController", () => {
     req
       .setup(r => r.body)
       .returns(() => body);
-  };
+  }
 
   function given_Request_params_are(params: any): void {
     req
       .setup(r => r.params)
       .returns(() => params);
-  };
+  }
 
   function given_testSuiteRepository_addTestSuite_returns(returns: SuiteDbo | undefined) {
     testSuiteRepository
       .setup(tsr => tsr.addTestSuite(It.isAny(), It.isAny()))
       .returns(async () => returns);
-  };
+  }
 
   function given_testSuiteRepository_addTestSuite_throws() {
     testSuiteRepository
@@ -373,25 +373,25 @@ suite("TestSuiteController", () => {
     projectRepository
       .setup(pr => pr.getProjectById(It.isAny()))
       .returns(async () => returns);
-  };
+  }
 
   function given_projectRepository_getTestSuitesForProject_returns(returns: SuiteDbo[]) {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(It.isAny()))
       .returns(async () => returns);
-  };
+  }
 
   function given_projectRepository_getProjectById_throws() {
     projectRepository
       .setup(pr => pr.getProjectById(It.isAny()))
       .throws(new Error("Sensitive database information!"));
-  };
+  }
 
   function given_projectRepository_getTestSuitesForProject_throws() {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(It.isAny()))
       .throws(new Error("Sensitive database information!"));
-  };
+  }
 
   function given_suiteRepository_deleteTestSuiteById_throws() {
     testSuiteRepository

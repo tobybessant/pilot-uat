@@ -55,7 +55,7 @@ suite("Project Controller", () => {
       setup(() => {
         createProjectBody = {
           title: "New Project!"
-        }
+        };
 
         savedProject = new ProjectDbo();
         savedProject.id = 4;
@@ -96,7 +96,7 @@ suite("Project Controller", () => {
         await subject.createProject(req.object, res.object);
 
         res.verify(r => r.status(CREATED), Times.once());
-      })
+      });
     });
 
     suite("Find user by email fails to find a user", async () => {
@@ -134,7 +134,7 @@ suite("Project Controller", () => {
       setup(() => {
         createProjectBody = {
           title: "New Project!"
-        }
+        };
       });
 
       test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
@@ -205,7 +205,7 @@ suite("Project Controller", () => {
 
         project = new ProjectDbo();
         project.id = 4000;
-        project.title = "Fetched Project Title"
+        project.title = "Fetched Project Title";
         project.suites = [testSuite];
 
         getProjectBody = {

@@ -81,16 +81,15 @@ suite("Auth Controller", () => {
           userType: userType as UserTypeDbo,
           organisations: [],
           projects: []
-        }
+        };
 
         createUserResponse = {
           email: createUserBody.email,
           firstName: createUserBody.firstName,
           type: userType.type,
           createdDate: saveUserResponse.createdDate,
-          lastName: createUserBody.lastName,
-          organisations: saveUserResponse.organisations
-        }
+          lastName: createUserBody.lastName
+        };
       });
 
       test("Body returns created user data", async () => {
@@ -148,16 +147,15 @@ suite("Auth Controller", () => {
           userType: userType as UserTypeDbo,
           organisations: [],
           projects: []
-        }
+        };
 
         createUserResponse = {
           email: createUserBody.email,
           firstName: createUserBody.firstName,
           type: userType.type,
           createdDate: saveUserResponse.createdDate,
-          lastName: createUserBody.lastName,
-          organisations: saveUserResponse.organisations
-        }
+          lastName: createUserBody.lastName
+        };
       });
 
       test("Body returns error 'Account already exists with that email'", async () => {
