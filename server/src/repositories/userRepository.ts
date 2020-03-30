@@ -14,12 +14,12 @@ export class UserRepository extends TypeORMRepository<UserDbo> {
   }
 
   public async accountDoesExist(email: string): Promise<boolean> {
-    const recordCount = await this.baseRepo.count({ email });
+    const recordCount = await this.getBaseRepo().count({ email });
     return recordCount === 1;
   }
 
   public async getUserByEmail(email: string): Promise<UserDbo | undefined> {
-    return this.baseRepo.createQueryBuilder("user")
+    return this.getBaseRepo().createQueryBuilder("user")
       .leftJoinAndSelect("user.userType", "type")
       .leftJoinAndSelect("user.organisations", "organisations")
       .where("user.email = :email", { email })
@@ -27,12 +27,16 @@ export class UserRepository extends TypeORMRepository<UserDbo> {
   }
 
   public async getOrganisationsForUser(email: string): Promise<OrganisationDbo[] | undefined> {
-    const user: UserDbo | undefined = await this.baseRepo
+    const user: UserDbo | undefined = await this.getBaseRepo()
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.organisations", "orgs")
       .where("user.email = :email", { email })
       .getOne();
 
     return user?.organisations;
+  }
+
+  public async addUser(user: Partial<UserDbo>): Promise<UserDbo> {
+    return this.getBaseRepo().save(user);
   }
 }

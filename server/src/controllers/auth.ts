@@ -45,7 +45,7 @@ export class AuthController extends BaseController {
     // save user details to database
     try {
       // query for existing user
-      const exists: number = await this.userRepository.baseRepo.count({ email: model.email });
+      const exists: boolean = await this.userRepository.accountDoesExist(model.email);
       if (exists) {
         return this.badRequest(res, ["Account already exists with that email"]);
       }
@@ -58,11 +58,14 @@ export class AuthController extends BaseController {
       }
 
       // add user credentials
-      const userType: UserTypeDbo | undefined = await this.userTypeRepository.baseRepo.findOne({ type: model.type });
+      const userType: UserTypeDbo | undefined = await this.userTypeRepository.getTypeByType(model.type);
+      if (!userType) {
+        return this.badRequest(res, ["Invalid user type"]);
+      }
 
       // hash password
       const passwordHash = this.bcrypt.hash(model.password);
-      const user: UserDbo = await this.userRepository.baseRepo.save({
+      const user: UserDbo = await this.userRepository.addUser({
         email: model.email,
         passwordHash,
         firstName: model.firstName,

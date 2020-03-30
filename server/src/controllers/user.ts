@@ -26,7 +26,7 @@ export class UserController extends BaseController {
   public async getAccountDetails(req: Request, res: Response) {
     try {
       const { email } = req.user as any;
-      const user: UserDbo | undefined = await this.userRepository.baseRepo
+      const user: UserDbo | undefined = await this.userRepository.getBaseRepo()
         .createQueryBuilder("user")
         .leftJoinAndSelect("user.userType", "type")
         .leftJoinAndSelect("user.organisations", "organisations")

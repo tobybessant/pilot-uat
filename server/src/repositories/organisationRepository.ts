@@ -13,7 +13,7 @@ export class OrganisationRepository extends TypeORMRepository<OrganisationDbo> {
   }
 
   public async createOrganisation(organisationName: string): Promise<OrganisationDbo> {
-    return this.baseRepo.save({
+    return this.getBaseRepo().save({
       organisationName
     });
   }

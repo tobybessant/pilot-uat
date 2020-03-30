@@ -14,14 +14,14 @@ export class ProjectInviteRepository extends TypeORMRepository<ProjectInviteDbo>
 
   public inviteAccepted(invite: ProjectInviteDbo) {
     invite.status = "Accepted";
-    return this.baseRepo.save(invite);
+    return this.getBaseRepo().save(invite);
   }
 
   public async getOpenInvitesForProject(projectId: string): Promise<ProjectInviteDbo[]> {
-    return this.baseRepo.find({ projectId: Number(projectId), status: "Pending" });
+    return this.getBaseRepo().find({ projectId: Number(projectId), status: "Pending" });
   }
 
   public async getInviteById(inviteId: string): Promise<ProjectInviteDbo | undefined> {
-    return this.baseRepo.findOne({ id: Number(inviteId) });
+    return this.getBaseRepo().findOne({ id: Number(inviteId) });
   }
 }

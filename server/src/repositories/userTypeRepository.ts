@@ -13,6 +13,6 @@ export class UserTypeRepository extends TypeORMRepository<UserTypeDbo> {
   }
 
   public async getTypeByType(type: string): Promise<UserTypeDbo | undefined> {
-    return await this.baseRepo.findOne({ type });
+    return await this.getBaseRepo().findOne({ type });
   }
 }

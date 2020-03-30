@@ -38,7 +38,7 @@ export class InviteController extends BaseController {
     const model: IClientInviteRequest = req.body;
     try {
       for (const email of model.emails) {
-        const invite = await this.projectInviteRepository.baseRepo.save({
+        const invite = await this.projectInviteRepository.getBaseRepo().save({
           userEmail: email,
           userType: "Client",
           projectId: Number(model.projectId)
@@ -61,7 +61,7 @@ export class InviteController extends BaseController {
     // TODO: check token validity
     try {
       const decodedInvite = this.inviteService.decodeInviteToken(token);
-      const invite = await this.projectInviteRepository.baseRepo.findOne({ id: Number(decodedInvite.id) });
+      const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
         return this.badRequest(res, ["Invite does not exist"]);
@@ -85,7 +85,7 @@ export class InviteController extends BaseController {
 
     try {
       const decodedInvite = this.inviteService.decodeInviteToken(model.token);
-      const invite = await this.projectInviteRepository.baseRepo.findOne({ id: Number(decodedInvite.id) });
+      const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
         return this.badRequest(res, ["Invite does not exist"]);
@@ -98,7 +98,7 @@ export class InviteController extends BaseController {
         return this.badRequest(res, ["Invalid user type"]);
       }
 
-      const user = await this.userRepository.baseRepo.save({
+      const user = await this.userRepository.getBaseRepo().save({
         userType,
         firstName: model.firstName,
         lastName: model.lastName,
@@ -137,7 +137,7 @@ export class InviteController extends BaseController {
 
     try {
       const inviteId = this.inviteService.decodeInviteToken(req.params.token);
-      const invite = await this.projectInviteRepository.baseRepo.save({ id: Number(inviteId) });
+      const invite = await this.projectInviteRepository.getBaseRepo().save({ id: Number(inviteId) });
 
       await this.projectRepository.addUserToProject(invite.userEmail, invite.projectId.toString());
 
@@ -171,7 +171,7 @@ export class InviteController extends BaseController {
   @Delete(":id")
   public async deleteInvite(req: Request, res: Response): Promise<void> {
     try {
-      const deletedInvite = await this.projectInviteRepository.baseRepo.delete({ id: Number(req.params.id) });
+      const deletedInvite = await this.projectInviteRepository.getBaseRepo().delete({ id: Number(req.params.id) });
       this.OK(res);
     } catch (error) {
       this.serverError(res, error);
