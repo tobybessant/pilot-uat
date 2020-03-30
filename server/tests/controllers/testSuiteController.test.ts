@@ -7,7 +7,7 @@ import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { ISuiteResponse } from "../../src/dto/response/supplier/suite";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, SERVICE_UNAVAILABLE } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
 
 suite("TestSuiteController", () => {
@@ -117,7 +117,7 @@ suite("TestSuiteController", () => {
 
     });
 
-    suite("suiteRepository silently fails to add suite and returns undefined", () => {
+    suite("suiteRepository throws error when adding suite", () => {
 
       setup(() => {
         createTestSuiteBody = {
@@ -136,17 +136,17 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Failed to add suite"] }), Times.once());
+        res.verify(r => r.json({ errors: ["Error adding suite"] }), Times.once());
       });
 
-      test("Response returns statusCode 500", async () => {
+      test("Response returns statusCode 503", async () => {
         given_Request_body_is(createTestSuiteBody);
         given_projectRepository_getProjectById_returns(projectDbo);
         given_testSuiteRepository_addTestSuite_returns(undefined);
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        res.verify(r => r.status(SERVICE_UNAVAILABLE), Times.once());
       });
 
     });
