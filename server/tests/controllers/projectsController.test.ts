@@ -14,10 +14,12 @@ import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IUserToken } from "../../src/dto/response/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
+import { ProjectInviteRepository } from "../../src/repositories/projectInviteRepository";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
   let projectRepository: IMock<ProjectRepository>;
+  let projectInviteRepository: IMock<ProjectInviteRepository>;
   let suiteRepository: IMock<TestSuiteRepository>;
   let repositoryService: IMock<RepositoryService>;
 
@@ -29,13 +31,14 @@ suite("Project Controller", () => {
   setup(() => {
     userRepository = Mock.ofType<UserRepository>();
     projectRepository = Mock.ofType<ProjectRepository>();
+    projectInviteRepository = Mock.ofType<ProjectInviteRepository>();
     suiteRepository = Mock.ofType<TestSuiteRepository>();
     repositoryService = Mock.ofType<RepositoryService>();
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
 
-    subject = new ProjectController(projectRepository.object, userRepository.object);
+    subject = new ProjectController(projectRepository.object, userRepository.object, projectInviteRepository.object);
   });
 
   teardown(() => {
@@ -259,7 +262,7 @@ suite("Project Controller", () => {
         await subject.getProjectById(req.object, res.object);
 
         res.verify(r => r.json({
-          errors: ["That project does not exist"],
+          errors: ["Error finding project"],
         }), Times.once());
       });
 
