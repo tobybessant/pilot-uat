@@ -30,14 +30,14 @@ export class UserController extends BaseController {
     try {
       const { email } = req.user as any;
       const user: UserDbo | undefined = await this.userRepository
-          .createQueryBuilder("user")
-          .leftJoinAndSelect("user.userType", "type")
-          .leftJoinAndSelect("user.organisations", "organisations")
-          .where("user.email = :email", { email })
-          .getOne();
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.userType", "type")
+        .leftJoinAndSelect("user.organisations", "organisations")
+        .where("user.email = :email", { email })
+        .getOne();
 
-      if(!user) {
-        throw new ApiError("User could not be found", BAD_REQUEST);
+      if (!user) {
+        return this.badRequest(res, ["User could not be found"]);
       }
 
       this.OK<IUserResponse>(res, {
@@ -49,11 +49,7 @@ export class UserController extends BaseController {
       });
 
     } catch (error) {
-      if(error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [ error.message ]);
-      } else {
-        this.serverError(res, error);
-      }
+      this.serverError(res, error);
     }
   }
 }

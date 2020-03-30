@@ -38,7 +38,7 @@ export class CaseController extends BaseController {
     try {
       const suite = await this.suiteRepository.getTestSuiteById(model.suiteId);
       if (!suite) {
-        throw new ApiError("Suite not found", BAD_REQUEST);
+        return this.badRequest(res, ["Suite not found"]);
       }
 
       const test = await this.caseRepository.addCase(suite, model.title);
@@ -48,11 +48,7 @@ export class CaseController extends BaseController {
         title: test.title
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-      } else {
-        this.serverError(res, error);
-      }
+      this.serverError(res, error);
     }
   }
 
@@ -71,7 +67,7 @@ export class CaseController extends BaseController {
           id: t.id.toString(),
           title: t.title
         }))
-      )
+      );
     } catch (error) {
       this.serverError(res, error);
     }

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND, SERVICE_UNAVAILABLE } from "http-status-codes";
 import { IApiResponse } from "../dto/response/common/apiResponse";
 import { Logger } from "@overnightjs/logger";
 import { ApiError } from "../services/apiError";
@@ -43,6 +43,15 @@ export abstract class BaseController {
     res.status(BAD_REQUEST);
     res.json(response);
   }
+
+  protected serviceUnavailable(res: Response, errors: string[]): void {
+    const response: Partial<IApiResponse<void>> = {
+      errors
+    };
+
+    res.status(SERVICE_UNAVAILABLE);
+    res.json(response);
+  };
 
   protected notFound(res: Response, errors: string[]): void {
     const response: Partial<IApiResponse<void>> = {

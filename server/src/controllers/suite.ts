@@ -39,13 +39,13 @@ export class TestSuiteController extends BaseController {
     try {
       const project = await this.projectsRepository.getProjectById(model.projectId);
       if (!project) {
-        throw new ApiError("Project does not exist", BAD_REQUEST);
+        return this.badRequest(res, ["Project does not exist"]);
       }
 
       const suite = await this.testSuiteRepository.addTestSuite(project, model.title);
 
       if (!suite) {
-        throw new ApiError("Failed to add suite", INTERNAL_SERVER_ERROR);
+        return this.serviceUnavailable(res, ["Error adding suite"]);
       }
 
       this.OK<ISuiteResponse>(res, {
@@ -54,11 +54,7 @@ export class TestSuiteController extends BaseController {
       });
 
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-      } else {
-        this.serverError(res, error);
-      }
+      this.serverError(res, error);
     }
   }
 
@@ -74,7 +70,7 @@ export class TestSuiteController extends BaseController {
         ({
           title: suite.title,
           id: suite.id.toString()
-        })))
+        })));
     } catch (error) {
       this.serverError(res, error);
     }

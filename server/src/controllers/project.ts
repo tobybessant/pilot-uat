@@ -43,7 +43,7 @@ export class ProjectController extends BaseController {
     try {
       const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
       if (!user) {
-        throw new ApiError("Error finding user", BAD_REQUEST);
+        return this.badRequest(res, ["Error finding user"]);
       }
 
       const project = await this.projectRepository.addProject(user, model.title);
@@ -58,10 +58,6 @@ export class ProjectController extends BaseController {
       });
 
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
       this.serverError(res, error);
     }
   }
@@ -77,7 +73,7 @@ export class ProjectController extends BaseController {
       const project = await this.projectRepository.getProjectById(model.id);
 
       if (!project) {
-        throw new ApiError("That project does not exist", BAD_REQUEST);
+        return this.badRequest(res, ["Error finding project"]);
       }
 
       this.OK<IProjectResponse>(res, {
@@ -89,11 +85,6 @@ export class ProjectController extends BaseController {
         }))
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
-
       this.serverError(res, error);
     }
   }

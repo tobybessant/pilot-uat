@@ -19,22 +19,20 @@ import { IUserResponse } from "../dto/response/common/user";
 import { ApiError } from "../services/apiError";
 import { Validator } from "joiful";
 import { OrganisationRepository } from "../repositories/organisationRepository";
+import { UserRepository } from "../repositories/userRepository";
+import { UserTypeRepository } from "../repositories/userTypeRepository";
 
 @injectable()
 @Controller("auth")
 export class AuthController extends BaseController {
 
-  private userRepository: Repository<UserDbo>
-  private userTypeRepository: Repository<UserTypeDbo>
-
   constructor(
-    private repositoryService: RepositoryService,
+    private userRepository: UserRepository,
+    private userTypeRepository: UserTypeRepository,
     private organisationRepository: OrganisationRepository,
     private bcrypt: Bcrypt
   ) {
     super();
-    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
-    this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
   }
 
   @Post("createaccount")
@@ -47,9 +45,9 @@ export class AuthController extends BaseController {
     // save user details to database
     try {
       // query for existing user
-      const exists: number = await this.userRepository.count({ email: model.email });
+      const exists: number = await this.userRepository.baseRepo.count({ email: model.email });
       if (exists) {
-        throw new ApiError("Account already exists with that email", BAD_REQUEST);
+        return this.badRequest(res, ["Account already exists with that email"]);
       }
 
       // add organisation if set
@@ -60,11 +58,11 @@ export class AuthController extends BaseController {
       }
 
       // add user credentials
-      const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type: model.type });
+      const userType: UserTypeDbo | undefined = await this.userTypeRepository.baseRepo.findOne({ type: model.type });
 
       // hash password
       const passwordHash = this.bcrypt.hash(model.password);
-      const user: UserDbo = await this.userRepository.save({
+      const user: UserDbo = await this.userRepository.baseRepo.save({
         email: model.email,
         passwordHash,
         firstName: model.firstName,
@@ -93,11 +91,7 @@ export class AuthController extends BaseController {
       });
 
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-      } else {
-        this.serverError(res, error);
-      }
+      this.serverError(res, error);
     }
   }
 
@@ -113,7 +107,7 @@ export class AuthController extends BaseController {
   @Middleware(checkAuthentication)
   public logout(req: Request, res: Response) {
     req.logOut();
-    res.status(OK)
+    res.status(OK);
     res.json({
       message: "Logged out"
     });

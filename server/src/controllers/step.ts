@@ -75,7 +75,7 @@ export class StepController extends BaseController {
     try {
       const stepDbo = await this.stepRepository.getStepById(model.id);
       if (!stepDbo) {
-        throw new ApiError("Error finding step", BAD_REQUEST);
+        return this.badRequest(res, ["Error finding step"]);
       }
 
       // map model properties to step dbo
@@ -96,10 +96,6 @@ export class StepController extends BaseController {
         }
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
       this.serverError(res, error);
     }
   }
