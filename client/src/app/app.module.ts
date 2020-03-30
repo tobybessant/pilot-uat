@@ -54,6 +54,7 @@ import { EditCaseDialogComponent } from "./components/supplier/edit-case-dialog/
 import { UsersComponent } from "./components/supplier/users/users.component";
 import { InviteUserDialogComponent } from "./components/supplier/invite-user-dialog/invite-user-dialog.component";
 import { UserTypeChipComponent } from './components/common/user-type-chip/user-type-chip.component';
+import { ErrorComponent } from './components/common/error/error.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { UserTypeChipComponent } from './components/common/user-type-chip/user-t
     ClientTestSuiteComponent,
     ClientTestCaseComponent,
     ClientTestStepListComponent,
-    UserTypeChipComponent
+    UserTypeChipComponent,
+    ErrorComponent
   ],
   imports: [
     /* Angular */

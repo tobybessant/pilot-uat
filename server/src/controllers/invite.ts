@@ -21,8 +21,6 @@ import { Logger } from "@overnightjs/logger";
 @Controller("invite")
 export class InviteController extends BaseController {
 
-  private clientUrl = process.env.CLIENT_URL || "http://localhost:4200";
-
   constructor(
     private inviteService: InviteService,
     private projectInviteRepository: ProjectInviteRepository,
@@ -84,7 +82,7 @@ export class InviteController extends BaseController {
       res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
     } catch (error) {
       if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
+        this.errorResponse(res, error.statusCode, [error.message], error.shouldRedirect);
         return;
       }
       this.serverError(res);
@@ -100,7 +98,7 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.baseRepo.findOne({ id: Number(decodedInvite.id) });
 
       if (!invite) {
-        throw new ApiError("Invite not found", BAD_REQUEST);
+        throw new ApiError("Invite no longer exists", BAD_REQUEST, true);
       }
 
       const passwordHash = this.bcrypt.hash(model.password);
@@ -136,10 +134,10 @@ export class InviteController extends BaseController {
       this.OK(res);
     } catch (error) {
       if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
+        this.errorResponse(res, error.statusCode, [error.message], error.shouldRedirect);
         return;
       }
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 

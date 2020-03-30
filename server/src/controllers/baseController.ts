@@ -6,6 +6,7 @@ import { Logger } from "@overnightjs/logger";
 export abstract class BaseController {
 
   public static readonly INTERNAL_SERVER_ERROR_MESSAGE: string = "Something went wrong...";
+  protected clientUrl = process.env.CLIENT_URL || "http://localhost:4200";
 
   protected OK<T>(res: Response, payload?: T): void {
     const response: Partial<IApiResponse<T>> = {
@@ -53,7 +54,7 @@ export abstract class BaseController {
 
   protected serverError(res: Response, error?: Error): void {
     if (error) {
-      Logger.Err(error);
+      Logger.Err(error.message);
     }
 
     const response: Partial<IApiResponse<void>> = {
@@ -64,12 +65,17 @@ export abstract class BaseController {
     res.json(response);
   }
 
-  protected errorResponse(res: Response, statusCode: number, errors: string[]): void {
+  protected errorResponse(res: Response, statusCode: number, errors: string[], shouldRedirect?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
       errors,
     };
 
     res.status(statusCode);
+    if (shouldRedirect) {
+      res.redirect(`${this.clientUrl}/error?m=${JSON.stringify(errors)}`);
+      return;
+    }
+
     res.json(response);
   }
 }
