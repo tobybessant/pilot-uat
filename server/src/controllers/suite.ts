@@ -3,12 +3,10 @@ import { Controller, ClassMiddleware, Post, Middleware, Delete } from "@overnigh
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
 import { TestSuiteRepository } from "../repositories/suiteRepository";
-import { INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { ProjectRepository } from "../repositories/projectRepository";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { ISuiteResponse } from "../dto/response/supplier/suite";
 import { BaseController } from "./baseController";
-import { ApiError } from "../services/apiError";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { ICreateSuiteRequest } from "../dto/request/supplier/createSuite";
 import { CreateSuite } from "../services/middleware/joi/schemas/createSuite";

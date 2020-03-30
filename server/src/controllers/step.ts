@@ -13,8 +13,6 @@ import { GetAllSteps } from "../services/middleware/joi/schemas/getAllSteps";
 import { IGetAllStepsRequest } from "../dto/request/supplier/getAllSteps";
 import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
-import { ApiError } from "../services/apiError";
-import { BAD_REQUEST } from "http-status-codes";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 
 @injectable()

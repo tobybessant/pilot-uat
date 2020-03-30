@@ -14,8 +14,6 @@ import { ICreateProjectRequest } from "../dto/request/supplier/createProject";
 import { GetProject } from "../services/middleware/joi/schemas/getProject";
 import { IGetProjectRequest } from "../dto/request/supplier/getProject";
 import { Validator } from "joiful";
-import { BAD_REQUEST } from "http-status-codes";
-import { ApiError } from "../services/apiError";
 import { IUserResponse } from "../dto/response/common/user";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 

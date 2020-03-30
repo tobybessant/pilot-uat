@@ -1,15 +1,10 @@
-import { OK, BAD_REQUEST } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, ClassMiddleware, Get } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { injectable } from "tsyringe";
-import { Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryService";
-import { IApiResponse } from "../dto/response/common/apiResponse";
 import { IUserResponse } from "../dto/response/common/user";
 import { BaseController } from "./baseController";
-import { ApiError } from "../services/apiError";
 import { UserRepository } from "../repositories/userRepository";
 
 @injectable()
