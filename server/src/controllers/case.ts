@@ -9,8 +9,6 @@ import { BaseController } from "./baseController";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { Validator } from "joiful";
 import { CreateCase } from "../services/middleware/joi/schemas/createCase";
-import { GetAllCases } from "../services/middleware/joi/schemas/getAllCases";
-import { IGetAllCasesRequest } from "../dto/request/supplier/getAllCases";
 import { UpdateCase } from "../services/middleware/joi/schemas/updateCase";
 import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
 import { ICreateCaseRequest } from "../dto/request/supplier/createCase";

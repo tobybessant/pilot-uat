@@ -9,8 +9,6 @@ import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { Validator } from "joiful";
 import { CreateStep } from "../services/middleware/joi/schemas/createStep";
 import { ICreateStepRequest } from "../dto/request/supplier/createStep";
-import { GetAllSteps } from "../services/middleware/joi/schemas/getAllSteps";
-import { IGetAllStepsRequest } from "../dto/request/supplier/getAllSteps";
 import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
