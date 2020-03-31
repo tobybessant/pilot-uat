@@ -91,8 +91,6 @@ export class ProjectRepository {
     const user = await this.userRepository.getUserById(userId);
     const project = await this.baseProjectRepository.findOne({ id: Number(projectId) });
 
-    console.log(user,project);
-
     return this.userProjectRoleRepository.delete({ user, project });
   }
 
