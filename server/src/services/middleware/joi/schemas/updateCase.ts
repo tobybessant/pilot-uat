@@ -11,4 +11,9 @@ export class UpdateCase implements IUpdateCaseRequest {
     .optional()
   title?: string;
 
+  @jf.string()
+    .label("Case ID")
+    .optional()
+  id?: string;
+
 }

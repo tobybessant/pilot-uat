@@ -68,7 +68,7 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.patch<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
+      response = await this.httpClient.patch<IApiResponse<T>>(this.root + endpoint, payload, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);

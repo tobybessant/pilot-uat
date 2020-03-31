@@ -7,6 +7,10 @@ export class UpdateStep implements IUpdateStepRequest {
 
   @jf.string()
     .optional()
+  id?: string | undefined;
+
+  @jf.string()
+    .optional()
   description?: string | undefined;
 
   @jf.object()

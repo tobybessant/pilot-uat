@@ -73,16 +73,16 @@ export class CaseController extends BaseController {
   ])
   public async updateCase(req: Request, res: Response) {
     const model: IUpdateCaseRequest = req.body;
-
+    console.log(model);
     try {
       const savedTest = await this.caseRepository.updateCase(req.params.id, model);
 
-      this.OK<ICaseResponse>(res, {
+      return this.OK<ICaseResponse>(res, {
         id: savedTest.id.toString(),
         title: savedTest.title
       });
     } catch (error) {
-      this.serverError(res, error);
+      return this.serverError(res, error);
     }
   }
 
