@@ -71,7 +71,6 @@ export class CaseController extends BaseController {
   ])
   public async updateCase(req: Request, res: Response) {
     const model: IUpdateCaseRequest = req.body;
-    console.log(model);
     try {
       const savedTest = await this.caseRepository.updateCase(req.params.id, model);
 

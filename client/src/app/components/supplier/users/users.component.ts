@@ -71,8 +71,6 @@ export class UsersComponent implements OnInit {
   }
 
   public isNotLoggedInUser(user: IUserResponse): boolean {
-    console.log(user.email, this.sessionService.getCurrentUser().email, user.email !== this.sessionService.getCurrentUser().email);
     return user.email !== this.sessionService.getCurrentUser().email;
   }
-
 }
