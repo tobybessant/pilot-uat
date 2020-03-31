@@ -45,7 +45,7 @@ export class ProjectApiService {
   }
 
   public async removeUserFromProject(userId: string, projectId: string) {
-    const response = await this.apiService.delete<any>(`${this.baseUrl}/${projectId}/users/${userId}`);
+    const response = await this.apiService.delete<any>(`${this.baseUrl}/${projectId}/${userId}`);
     return response;
   }
 }

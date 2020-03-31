@@ -143,7 +143,7 @@ export class ProjectController extends BaseController {
     }
   }
 
-  @Delete(":id/user/:userId")
+  @Delete(":id/:userId")
   public async removeUser(req: Request, res: Response) {
     try {
       const removedJoin = await this.projectRepository.removeUserFromProject(req.params.userId, req.params.id);
