@@ -14,9 +14,10 @@ import { UserTypeRepository } from "../repositories/userTypeRepository";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 import { ISetupAccountRequest } from "../dto/request/common/setupAccount";
 import { Logger } from "@overnightjs/logger";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("invite")
+@Controller(`${BASE_ENDPOINT}/invite`)
 export class InviteController extends BaseController {
 
   constructor(

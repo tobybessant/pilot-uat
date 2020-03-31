@@ -1,0 +1,1 @@
+export const BASE_ENDPOINT: string = "api/v1";

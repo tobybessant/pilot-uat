@@ -1,4 +1,4 @@
-import { Controller, ClassMiddleware, Post, Delete, Middleware } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Delete, Middleware, Get, Patch } from "@overnightjs/core";
 import { injectable } from "tsyringe";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { CaseRepository } from "../repositories/caseRepository";
@@ -14,9 +14,10 @@ import { IGetAllCasesRequest } from "../dto/request/supplier/getAllCases";
 import { UpdateCase } from "../services/middleware/joi/schemas/updateCase";
 import { IUpdateCaseRequest } from "../dto/request/supplier/updateCase";
 import { ICreateCaseRequest } from "../dto/request/supplier/createCase";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("case")
+@Controller(`${BASE_ENDPOINT}/cases`)
 @ClassMiddleware(checkAuthentication)
 export class CaseController extends BaseController {
   constructor(
@@ -26,7 +27,7 @@ export class CaseController extends BaseController {
     super();
   }
 
-  @Post("create")
+  @Post()
   @Middleware([
     new BodyMatches(new Validator()).schema(CreateCase)
   ])
@@ -50,15 +51,10 @@ export class CaseController extends BaseController {
     }
   }
 
-  @Post()
-  @Middleware([
-    new BodyMatches(new Validator()).schema(GetAllCases)
-  ])
+  @Get()
   public async getCasesForSuite(req: Request, res: Response) {
-    const model: IGetAllCasesRequest = req.body;
-
     try {
-      const tests = await this.caseRepository.getCasesForTestSuite(model.suiteId);
+      const tests = await this.caseRepository.getCasesForTestSuite(req.query.suiteId);
 
       this.OK<ICaseResponse[]>(res, tests.map(t =>
         ({
@@ -71,7 +67,7 @@ export class CaseController extends BaseController {
     }
   }
 
-  @Post("update")
+  @Patch(":id")
   @Middleware([
     new BodyMatches(new Validator()).schema(UpdateCase)
   ])
@@ -79,7 +75,7 @@ export class CaseController extends BaseController {
     const model: IUpdateCaseRequest = req.body;
 
     try {
-      const savedTest = await this.caseRepository.updateCase(model);
+      const savedTest = await this.caseRepository.updateCase(req.params.id, model);
 
       this.OK<ICaseResponse>(res, {
         id: savedTest.id.toString(),

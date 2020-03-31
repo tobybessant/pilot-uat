@@ -17,9 +17,10 @@ import { Validator } from "joiful";
 import { OrganisationRepository } from "../repositories/organisationRepository";
 import { UserRepository } from "../repositories/userRepository";
 import { UserTypeRepository } from "../repositories/userTypeRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("auth")
+@Controller(`${BASE_ENDPOINT}/auth`)
 export class AuthController extends BaseController {
 
   constructor(
@@ -76,7 +77,7 @@ export class AuthController extends BaseController {
       },
         function (err) {
           if (err) {
-            console.log(err);
+            // console.log(err);
           }
         }
       );

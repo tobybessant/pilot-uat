@@ -6,9 +6,10 @@ import { UserDbo } from "../database/entities/userDbo";
 import { IUserResponse } from "../dto/response/common/user";
 import { BaseController } from "./baseController";
 import { UserRepository } from "../repositories/userRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("user")
+@Controller(`${BASE_ENDPOINT}/user`)
 @ClassMiddleware(checkAuthentication)
 export class UserController extends BaseController {
 

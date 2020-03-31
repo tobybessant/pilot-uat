@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Middleware, Get, Delete, ChildControllers } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
@@ -11,14 +11,13 @@ import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
 import { BaseController } from "./baseController";
 import { ICreateProjectRequest } from "../dto/request/supplier/createProject";
-import { GetProject } from "../services/middleware/joi/schemas/getProject";
-import { IGetProjectRequest } from "../dto/request/supplier/getProject";
 import { Validator } from "joiful";
 import { IUserResponse } from "../dto/response/common/user";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("projects")
+@Controller(`${BASE_ENDPOINT}/projects`)
 @ClassMiddleware(checkAuthentication)
 export class ProjectController extends BaseController {
 
@@ -50,6 +49,7 @@ export class ProjectController extends BaseController {
         title: project.title,
         id: project.id.toString(),
         suites: project.suites.map(suite => ({
+          projectId: project.id.toString(),
           id: suite.id.toString(),
           title: suite.title
         }))
@@ -73,6 +73,7 @@ export class ProjectController extends BaseController {
         id: project.id.toString(),
         title: project.title,
         suites: project.suites.map(s => ({
+          projectId: project.id.toString(),
           id: s.id.toString(),
           title: s.title
         }))
