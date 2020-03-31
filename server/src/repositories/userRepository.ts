@@ -18,6 +18,14 @@ export class UserRepository extends TypeORMRepository<UserDbo> {
     return recordCount === 1;
   }
 
+  public async getUserById(id: string): Promise<UserDbo | undefined> {
+    return this.getBaseRepo().createQueryBuilder("user")
+      .leftJoinAndSelect("user.userType", "type")
+      .leftJoinAndSelect("user.organisations", "organisations")
+      .where("user.id = :id", { id })
+      .getOne();
+  }
+
   public async getUserByEmail(email: string): Promise<UserDbo | undefined> {
     return this.getBaseRepo().createQueryBuilder("user")
       .leftJoinAndSelect("user.userType", "type")

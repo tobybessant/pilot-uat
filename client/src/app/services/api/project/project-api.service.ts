@@ -10,27 +10,27 @@ import { IUserResponse } from "src/app/models/api/response/common/user.interface
 })
 export class ProjectApiService {
 
-  protected readonly baseUrl: string = "/project";
+  protected readonly baseUrl: string = "/projects";
 
   constructor(protected apiService: ApiService) { }
 
   public async getProjects() {
-    const response = await this.apiService.get<IProjectResponse[]>(this.baseUrl + "/all");
+    const response = await this.apiService.get<IProjectResponse[]>(this.baseUrl);
     return response;
   }
 
   public async getProjectById(id: string) {
-    const response = await this.apiService.post<IProjectResponse>(this.baseUrl, { id });
+    const response = await this.apiService.get<IProjectResponse>(`${this.baseUrl}/${id}`);
     return response;
   }
 
   public async addProject(projectDetails: ICreateProjectRequest) {
-    const response = await this.apiService.post<ICreateProjectResponse>(this.baseUrl + "/create", projectDetails);
+    const response = await this.apiService.post<ICreateProjectResponse>(this.baseUrl, projectDetails);
     return response;
   }
 
   public async deleteProject(projectId: string) {
-    const response = await this.apiService.delete<void>(this.baseUrl + "/" + projectId);
+    const response = await this.apiService.delete<void>(`${this.baseUrl}/${projectId}`);
     return response;
   }
 
@@ -44,8 +44,8 @@ export class ProjectApiService {
     return response;
   }
 
-  public async removeUserFromProject(email: string, projectId: string) {
-    const response = await this.apiService.post<any>(this.baseUrl + "/removeuser", { email, projectId });
+  public async removeUserFromProject(userId: string, projectId: string) {
+    const response = await this.apiService.delete<any>(`${this.baseUrl}/${projectId}/users/${userId}`);
     return response;
   }
 }

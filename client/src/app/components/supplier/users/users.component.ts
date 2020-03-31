@@ -56,7 +56,7 @@ export class UsersComponent implements OnInit {
   }
 
   public async removeUserFromProject(user: IUserResponse) {
-    await this.projectApiService.removeUserFromProject(user.email, this.projectId);
+    await this.projectApiService.removeUserFromProject(user.id, this.projectId);
     this.fetchProjectUsers();
   }
 

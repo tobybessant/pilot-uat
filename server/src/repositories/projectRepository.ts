@@ -24,6 +24,7 @@ export class ProjectRepository {
     const project = new ProjectDbo();
     project.organisation = user.organisations[0];
     project.title = projectName;
+    project.suites = [];
     const savedProject = await this.baseProjectRepository.save(project);
 
     // save new relationship to user
@@ -86,8 +87,8 @@ export class ProjectRepository {
     });
   }
 
-  public async removeUserFromProject(email: string, projectId: string) {
-    const user = await this.userRepository.getUserByEmail(email);
+  public async removeUserFromProject(userId: string, projectId: string) {
+    const user = await this.userRepository.getUserById(userId);
     const project = await this.baseProjectRepository.findOne({ id: Number(projectId) });
 
     return this.userProjectRoleRepository.delete({ user, project });

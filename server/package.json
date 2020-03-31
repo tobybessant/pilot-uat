@@ -8,6 +8,7 @@
     "dev": "ts-node src/app.ts",
     "prod": "tsc && node ./dist/src/app.js",
     "build": "tsc",
+    "lint-fix": "tslint --fix src/**/*.ts -t verbose",
     "test": "./node_modules/mocha/bin/mocha --require ts-node/register 'tests/**/*.test.ts' --ui tdd",
     "generate-migration": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -n Migration",
     "update-database": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run"

@@ -82,6 +82,7 @@ export class AuthController extends BaseController {
       );
 
       this.created<IUserResponse>(res, {
+        id: user.id,
         createdDate: user.createdDate,
         email: user.email,
         firstName: user.firstName,

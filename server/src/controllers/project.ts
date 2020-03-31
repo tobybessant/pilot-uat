@@ -18,7 +18,7 @@ import { IUserResponse } from "../dto/response/common/user";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 
 @injectable()
-@Controller("project")
+@Controller("projects")
 @ClassMiddleware(checkAuthentication)
 export class ProjectController extends BaseController {
 
@@ -30,7 +30,7 @@ export class ProjectController extends BaseController {
     super();
   }
 
-  @Post("create")
+  @Post()
   @Middleware([
     new BodyMatches(new Validator()).schema(CreateProject),
     PermittedAccountTypes.are(["Supplier"])
@@ -60,15 +60,10 @@ export class ProjectController extends BaseController {
     }
   }
 
-  @Post()
-  @Middleware(
-    new BodyMatches(new Validator()).schema(GetProject)
-  )
+  @Get(":id")
   public async getProjectById(req: Request, res: Response) {
-    const model: IGetProjectRequest = req.body;
-
     try {
-      const project = await this.projectRepository.getProjectById(model.id);
+      const project = await this.projectRepository.getProjectById(req.params.id);
 
       if (!project) {
         return this.badRequest(res, ["Error finding project"]);
@@ -87,7 +82,7 @@ export class ProjectController extends BaseController {
     }
   }
 
-  @Get("all")
+  @Get()
   public async getProjects(req: Request, res: Response) {
     try {
       let projects = await this.projectRepository.getProjectsForUser((req.user as IUserToken).email);
@@ -121,6 +116,7 @@ export class ProjectController extends BaseController {
     const userRoles = await this.projectRepository.getUsersForProject(req.params.id);
 
     this.OK<IUserResponse[]>(res, userRoles.map(role => ({
+      id: role.user.id,
       email: role.user.email,
       firstName: role.user.firstName,
       lastName: role.user.lastName,
@@ -146,12 +142,10 @@ export class ProjectController extends BaseController {
     }
   }
 
-  @Post("removeuser")
+  @Delete(":id/user/:userId")
   public async removeUser(req: Request, res: Response) {
-    const model = req.body;
-
     try {
-      const removedJoin = await this.projectRepository.removeUserFromProject(model.email, model.projectId);
+      const removedJoin = await this.projectRepository.removeUserFromProject(req.params.userId, req.params.id);
       this.OK(res);
     } catch (error) {
       this.serverError(res, error);
