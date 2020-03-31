@@ -8,23 +8,23 @@ import { IApiResponse } from "src/app/models/api/response/api-response.interface
 })
 export class StepApiService {
 
-  private readonly baseUrl: string = "/step";
+  private readonly baseUrl: string = "/steps";
 
   constructor(private apiService: ApiService) { }
 
   public async addStepToCase(description: string, caseId: string): Promise<IApiResponse<IStepResponse>> {
-    return this.apiService.post<IStepResponse>(this.baseUrl + "/create", {
+    return this.apiService.post<IStepResponse>(this.baseUrl, {
       description,
       caseId
     });
   }
 
   public async getStepsforCase(caseId: string): Promise<IApiResponse<IStepResponse[]>> {
-    return this.apiService.post<IStepResponse[]>(this.baseUrl + "/all", { caseId });
+    return this.apiService.get<IStepResponse[]>(`${this.baseUrl}?caseId=${caseId}`);
   }
 
   public async updateStep(step: IStepResponse): Promise<IApiResponse<IStepResponse>> {
-    return this.apiService.post<IStepResponse>(this.baseUrl + "/update", step);
+    return this.apiService.patch<IStepResponse>(`${this.baseUrl}/${step.id}`, step);
   }
 
   public async deleteStepById(id: string): Promise<IApiResponse<void>> {

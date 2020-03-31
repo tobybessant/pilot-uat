@@ -1,4 +1,5 @@
 export interface ISuiteResponse {
-  title: string;
   id: string;
+  projectId: string;
+  title: string;
 }

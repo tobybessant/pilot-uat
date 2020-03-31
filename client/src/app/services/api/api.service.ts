@@ -6,7 +6,7 @@ import { IApiResponse } from "src/app/models/api/response/api-response.interface
   providedIn: "root"
 })
 export class ApiService {
-  private readonly root: string = "http://localhost:8080";
+  private readonly root: string = "http://localhost:8080/api/v1";
 
   constructor(private httpClient: HttpClient) { }
 
@@ -52,6 +52,23 @@ export class ApiService {
 
     try {
       response = await this.httpClient.delete<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
+    } catch (ex) {
+      if (ex.error?.errors) {
+        response.errors.push(ex.error?.errors);
+        return response;
+      }
+      response.errors.push("Something went wrong...");
+    }
+    return response;
+  }
+
+  public async patch<T>(endpoint: string, payload: any): Promise<IApiResponse<T>> {
+    let response = {
+      errors: []
+    } as IApiResponse<T>;
+
+    try {
+      response = await this.httpClient.patch<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
