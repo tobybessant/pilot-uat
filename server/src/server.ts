@@ -6,7 +6,7 @@ import * as cors from "cors";
 
 import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
-import { DependencyContainer } from "tsyringe"
+import { DependencyContainer } from "tsyringe";
 
 import { Passport } from "./services/passport/passport";
 import { catchMalformedJson } from "./services/middleware/catchMalformedJson";
