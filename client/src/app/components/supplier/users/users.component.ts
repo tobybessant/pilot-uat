@@ -4,6 +4,7 @@ import { ProjectApiService } from "src/app/services/api/project/project-api.serv
 import { NbDialogService } from "@nebular/theme";
 import { InviteUserDialogComponent } from "../invite-user-dialog/invite-user-dialog.component";
 import { InviteApiService } from "src/app/services/api/invite/invite-api.service";
+import { SessionService } from "src/app/services/session/session.service";
 
 @Component({
   selector: "app-users",
@@ -22,6 +23,7 @@ export class UsersComponent implements OnInit {
   constructor(
     private projectApiService: ProjectApiService,
     private inviteApiService: InviteApiService,
+    private sessionService: SessionService,
     private dialogService: NbDialogService
   ) { }
 
@@ -47,7 +49,6 @@ export class UsersComponent implements OnInit {
   private async fetchOpenInvites() {
     const invites = await this.projectApiService.getProjectOpenInvites(this.projectId);
     this.openInvites = invites.payload;
-    console.log(this.openInvites);
   }
 
   private async fetchProjectUsers() {
@@ -67,6 +68,11 @@ export class UsersComponent implements OnInit {
 
   public async resendInvite(invite) {
     await this.inviteApiService.resendInvite(invite.id);
+  }
+
+  public isNotLoggedInUser(user: IUserResponse): boolean {
+    console.log(user.email, this.sessionService.getCurrentUser().email, user.email !== this.sessionService.getCurrentUser().email);
+    return user.email !== this.sessionService.getCurrentUser().email;
   }
 
 }

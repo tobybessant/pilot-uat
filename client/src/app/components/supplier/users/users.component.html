@@ -57,6 +57,7 @@
     </div>
     <div class="right">
       <button
+        *ngIf="isNotLoggedInUser(user)"
         nbButton
         ghost
         size="medium"
