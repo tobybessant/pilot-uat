@@ -39,7 +39,7 @@ export class InvitedAccountSetupComponent implements OnInit {
     });
 
     if (response.errors.length === 0) {
-      this.router.navigate(["/"]);
+      setTimeout(() => this.router.navigate(["/"]), 2000);
     }
   }
 }

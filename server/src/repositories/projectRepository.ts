@@ -109,4 +109,16 @@ export class ProjectRepository {
 
     return projectWithUsers.users;
   }
+
+  public async userHasAccessToProject(email: string, projectId: string): Promise<boolean> {
+    const user = await this.userRepository.getUserByEmail(email);
+    const project = await this.baseProjectRepository.findOne({ id: Number(projectId) });
+
+    const userRole = await this.userProjectRoleRepository.findOne({
+      user,
+      project
+    });
+
+    return userRole !== undefined;
+  }
 }

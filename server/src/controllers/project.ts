@@ -15,6 +15,8 @@ import { Validator } from "joiful";
 import { IUserResponse } from "../dto/response/common/user";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { ApiError } from "../services/apiError";
+import { FORBIDDEN } from "http-status-codes";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/projects`)
@@ -63,6 +65,11 @@ export class ProjectController extends BaseController {
   @Get(":id")
   public async getProjectById(req: Request, res: Response) {
     try {
+      const authorised = await this.projectRepository.userHasAccessToProject(req.user!.email, req.params.id);
+      if(!authorised) {
+        return this.badRequest(res, ["Error finding project"]);
+      }
+
       const project = await this.projectRepository.getProjectById(req.params.id);
 
       if (!project) {
