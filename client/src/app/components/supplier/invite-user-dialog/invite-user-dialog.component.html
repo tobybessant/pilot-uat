@@ -11,14 +11,13 @@
           {{ email }}
           <nb-icon matChipRemove icon="close-outline"></nb-icon>
         </mat-chip>
-        
       </mat-chip-list>
       <input
           nbInput
           fullWidth
           placeholder="Enter email and press tab"
           [matChipInputFor]="emailChipList"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
           (matChipInputTokenEnd)="add($event)"
         />
     </mat-form-field>

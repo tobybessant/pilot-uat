@@ -6,6 +6,10 @@ mat-form-field {
   width: 100%;
 }
 
+mat-form-field input {
+  margin-top: 20px;
+}
+
 nb-card-footer {
   display: flex;
   flex-direction: row;

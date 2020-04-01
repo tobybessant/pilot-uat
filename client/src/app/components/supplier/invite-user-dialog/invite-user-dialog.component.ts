@@ -15,7 +15,9 @@ export class InviteUserDialogComponent implements OnInit {
 
   public emailList: string[] = [];
 
-  public readonly separatorKeysCodes: number[] = [9, 32];
+  public readonly separatorKeyCodes: number[] = [9, 32];
+
+  private readonly EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   constructor(
     private inviteApiService: InviteApiService,
@@ -35,11 +37,10 @@ export class InviteUserDialogComponent implements OnInit {
     const value = event.value;
 
     if ((value || "").trim()) {
-      this.emailList.push(value);
-    }
-
-    if (input) {
-      input.value = "";
+      if (this.EMAIL_REGEX.test(value)) {
+        this.emailList.push(value);
+        input.value = "";
+      }
     }
   }
 
@@ -55,5 +56,4 @@ export class InviteUserDialogComponent implements OnInit {
     await this.inviteApiService.inviteClients(this.emailList, this.projectId);
     this.close();
   }
-
 }
