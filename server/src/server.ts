@@ -32,7 +32,7 @@ class UATPlatformServer extends Server {
     }));
 
     this.app.use(session({
-      secret: "keyboard cat",
+      secret: process.env.SESSION_SECRET || "i am secret",
       resave: false,
       saveUninitialized: true,
       cookie: {

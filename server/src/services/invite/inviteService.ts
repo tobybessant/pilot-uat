@@ -6,7 +6,8 @@ import { IProjectInviteToken } from "../../dto/request/common/inviteToken";
 @injectable()
 export class InviteService {
   private readonly serverUrl = process.env.SERVER_URL || "http://localhost:8080";
-  private readonly inviteUrl = this.serverUrl + "/invite/";
+  private readonly apiRoot = process.env.API_ROOT || "api/v1";
+  private readonly inviteUrl = `${this.serverUrl}/${this.apiRoot}/invite/`;
 
   constructor(
     private emailService: EmailService,

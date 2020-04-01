@@ -1,1 +1,1 @@
-export const BASE_ENDPOINT: string = "api/v1";
+export const BASE_ENDPOINT: string = process.env.API_ROOT || "api/v1";
