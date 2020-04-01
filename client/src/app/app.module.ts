@@ -6,10 +6,12 @@ import { AppComponent } from "./app.component";
 
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { NbLayoutModule, NbButtonModule, NbThemeModule,
-          NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
-          NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-          NbActionsModule, NbTreeGridModule, NbSelectModule } from "@nebular/theme";
+import {
+  NbLayoutModule, NbButtonModule, NbThemeModule,
+  NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
+  NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
+  NbActionsModule, NbTreeGridModule, NbSelectModule
+} from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
 import { NgxSpinnerModule } from "ngx-spinner";
@@ -17,7 +19,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatChipsModule } from "@angular/material/chips";
 
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { initApp } from "./app-initialiser";
 
@@ -53,8 +55,8 @@ import { StepStatusChipComponent } from "./components/common/step-status-chip/st
 import { EditCaseDialogComponent } from "./components/supplier/edit-case-dialog/edit-case-dialog.component";
 import { UsersComponent } from "./components/supplier/users/users.component";
 import { InviteUserDialogComponent } from "./components/supplier/invite-user-dialog/invite-user-dialog.component";
-import { UserTypeChipComponent } from './components/common/user-type-chip/user-type-chip.component';
-import { ErrorComponent } from './components/common/error/error.component';
+import { UserTypeChipComponent } from "./components/common/user-type-chip/user-type-chip.component";
+import { ErrorComponent } from "./components/common/error/error.component";
 
 @NgModule({
   declarations: [
@@ -132,7 +134,7 @@ import { ErrorComponent } from './components/common/error/error.component';
       multi: true
     }
   ],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
