@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND, SERVICE_UNAVAILABLE } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND, SERVICE_UNAVAILABLE, FORBIDDEN } from "http-status-codes";
 import { IApiResponse } from "../dto/response/common/apiResponse";
 import { Logger } from "@overnightjs/logger";
 import { ApiError } from "../services/apiError";
@@ -11,6 +11,7 @@ export abstract class BaseController {
 
   protected OK<T>(res: Response, payload?: T): void {
     const response: Partial<IApiResponse<T>> = {
+      statusCode: OK,
       errors: []
     };
 
@@ -18,12 +19,13 @@ export abstract class BaseController {
       response.payload = payload;
     }
 
-    res.status(OK);
+    res.status(response.statusCode!);
     res.json(response);
   }
 
   protected created<T>(res: Response, payload?: T): void {
     const response: Partial<IApiResponse<T>> = {
+      statusCode: CREATED,
       errors: []
     };
 
@@ -31,12 +33,13 @@ export abstract class BaseController {
       response.payload = payload;
     }
 
-    res.status(CREATED);
+    res.status(response.statusCode!);
     res.json(response);
   }
 
   protected badRequest(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
+      statusCode: BAD_REQUEST,
       errors
     };
 
@@ -45,14 +48,25 @@ export abstract class BaseController {
 
   protected serviceUnavailable(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
+      statusCode: SERVICE_UNAVAILABLE,
       errors
     };
 
     this.errorResponse(res, SERVICE_UNAVAILABLE, response, redirectToErrorPage);
   }
 
+  protected forbidden(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
+    const response: Partial<IApiResponse<void>> = {
+      statusCode: FORBIDDEN,
+      errors
+    };
+
+    this.errorResponse(res, FORBIDDEN, response, redirectToErrorPage);
+  }
+
   protected notFound(res: Response, errors: string[], redirectToErrorPage?: boolean): void {
     const response: Partial<IApiResponse<void>> = {
+      statusCode: NOT_FOUND,
       errors
     };
 
@@ -67,15 +81,16 @@ export abstract class BaseController {
     }
 
     const response: Partial<IApiResponse<void>> = {
+      statusCode: INTERNAL_SERVER_ERROR,
       errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]
     };
 
     this.errorResponse(res, INTERNAL_SERVER_ERROR, response, redirectToErrorPage);
   }
 
-  protected errorResponse(res: Response, statusCode: number, response?: any, redirectToErrorPage?: boolean): void {
+  protected errorResponse<T>(res: Response, statusCode: number, response: Partial<IApiResponse<T>>, redirectToErrorPage?: boolean): void {
 
-    res.status(statusCode);
+    res.status(response.statusCode || 500);
 
     if (redirectToErrorPage) {
       let url = this.clientUrl;
