@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
+import { NavbarService } from "src/app/services/navbar/navbar.service";
 
 @Component({
   selector: "app-projects-grid",
@@ -16,9 +17,11 @@ export class ProjectsGridComponent implements OnInit {
   @ViewChild("projectNameInput")
   projectNameInputRef: ElementRef<HTMLInputElement>;
 
-  constructor(private projectsApiService: ProjectApiService) { }
+  constructor(private projectsApiService: ProjectApiService, private navbarService: NavbarService) { }
 
   async ngOnInit(): Promise<void> {
+    this.navbarService.clearHeader();
+    this.navbarService.setIsViewingProject(false);
     await this.getUserProjects();
   }
 

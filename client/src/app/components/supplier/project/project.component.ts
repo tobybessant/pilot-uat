@@ -43,8 +43,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.dialogService = null;
     this.projectSettings = null;
-    this.navbarService.clearHeader();
-    this.navbarService.setIsViewingProject(false);
   }
 
   private async fetchProjectById(id: string) {
@@ -52,8 +50,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
     if (response.errors.length === 0) {
       this.project = response.payload;
       this.setActiveSuite(response.payload.suites[0]);
+      this.navbarService.setHeader(response.payload.title);
     }
-    this.navbarService.setHeader(response.payload.title);
     this.fetchAttemptComplete = true;
   }
 
