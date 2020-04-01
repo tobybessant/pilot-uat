@@ -15,8 +15,6 @@ import { Validator } from "joiful";
 import { IUserResponse } from "../dto/response/common/user";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
-import { ApiError } from "../services/apiError";
-import { FORBIDDEN } from "http-status-codes";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/projects`)
