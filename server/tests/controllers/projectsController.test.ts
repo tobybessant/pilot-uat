@@ -15,6 +15,7 @@ import { IUserToken } from "../../src/dto/response/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectInviteRepository } from "../../src/repositories/projectInviteRepository";
+import { deepStrictEqual } from "../utils/deepStrictEqual";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -85,10 +86,7 @@ suite("Project Controller", () => {
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: [],
-          payload: createProjectResponse
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, createProjectResponse))), Times.once());
       });
 
       test("It should have statusCode 201", async () => {
@@ -117,9 +115,7 @@ suite("Project Controller", () => {
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: ["Error finding user"],
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Error finding user"]))), Times.once());
       });
 
       test("It should have statusCode 400", async () => {
@@ -146,7 +142,7 @@ suite("Project Controller", () => {
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -177,7 +173,7 @@ suite("Project Controller", () => {
 
         await subject.createProject(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -226,19 +222,18 @@ suite("Project Controller", () => {
       });
 
       test("Should return project in response body", async () => {
+        given_projectRepository_userHasAccessToProject_returns(true);
         given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
         given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.suites, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: [],
-          payload: projectResponse
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, projectResponse))), Times.once());
       });
 
       test("Should have statusCode 200", async () => {
+        given_projectRepository_userHasAccessToProject_returns(true);
         given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
         given_Request_body_is(getProjectBody);
 
@@ -255,15 +250,13 @@ suite("Project Controller", () => {
         };
       });
 
-      test("Should return 'That project does not exist' in response errors", async () => {
+      test("Should return 'Error finding project' in response errors", async () => {
         given_projectRepository_getProjectById_returns_whenGiven(undefined, It.isAny());
         given_Request_body_is(getProjectBody);
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: ["Error finding project"],
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Error finding project"]))), Times.once());
       });
 
       test("Should have statusCode 400", async () => {
@@ -283,13 +276,13 @@ suite("Project Controller", () => {
         };
       });
 
-      test(`Generic error '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' returned in response errors`, async () => {
+      test(`Error 'Error finding project' returned in response errors`, async () => {
         given_Request_body_is(getProjectBody);
         given_projectRepository_getProjectById_throws();
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Error finding project"]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -298,7 +291,7 @@ suite("Project Controller", () => {
 
         await subject.getProjectById(req.object, res.object);
 
-        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
 
     });
@@ -338,10 +331,7 @@ suite("Project Controller", () => {
 
         await subject.getProjects(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: [],
-          payload: projectsResponse
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, projectsResponse))), Times.once());
       });
 
       test("Should return statusCode of 200", async () => {
@@ -369,7 +359,7 @@ suite("Project Controller", () => {
 
         await subject.getProjects(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -394,15 +384,13 @@ suite("Project Controller", () => {
         };
       });
 
-      test("No errors are returned in the body", async () => {
+      test("Nothing is returned in the response payload", async () => {
         given_projectRepository_deleteProject_returns_whenGiven(undefined, requestParams.id);
         given_Request_params_are(requestParams);
 
         await subject.deleteProject(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: []
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => body.payload === undefined)), Times.once());
       });
 
       test("Status code is 200", async () => {
@@ -429,7 +417,7 @@ suite("Project Controller", () => {
 
         await subject.deleteProject(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -519,5 +507,11 @@ suite("Project Controller", () => {
     projectRepository
       .setup(pr => pr.deleteProjectById(It.isAny()))
       .throws(new Error("Sensitive database information!"));
+  }
+
+  function given_projectRepository_userHasAccessToProject_returns(returns: boolean) {
+    projectRepository
+      .setup(p => p.userHasAccessToProject(It.isAny(), It.isAny()))
+      .returns(async () => returns);
   }
 });

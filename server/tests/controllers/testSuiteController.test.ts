@@ -9,6 +9,7 @@ import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, SERVICE_UNAVAILABLE } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
+import { deepStrictEqual } from "../utils/deepStrictEqual";
 
 suite("TestSuiteController", () => {
   let repositoryService: IMock<RepositoryService>;
@@ -74,7 +75,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: createTestSuiteResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, createTestSuiteResponse))), Times.once());
       });
 
       test("Should return statusCode 200", async () => {
@@ -103,7 +104,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Project does not exist"] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Project does not exist"]))), Times.once());
       });
 
       test("Response returns statusCode 400", async () => {
@@ -136,7 +137,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Error adding suite"] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Error adding suite"]))), Times.once());
       });
 
       test("Response returns statusCode 503", async () => {
@@ -166,7 +167,7 @@ suite("TestSuiteController", () => {
 
         subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Reponse returns statusCode 500", async () => {
@@ -199,7 +200,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -247,7 +248,7 @@ suite("TestSuiteController", () => {
 
         await subject.getTestSuites(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: getAllTestSuitesResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, getAllTestSuitesResponse))), Times.once());
       });
 
       test("Should return statusCode 200", async () => {
@@ -275,7 +276,7 @@ suite("TestSuiteController", () => {
 
         await subject.getTestSuites(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -299,12 +300,12 @@ suite("TestSuiteController", () => {
         };
       });
 
-      test("Should return nothing in response body", async () => {
+      test("Should return nothing in response payload", async () => {
         given_Request_params_are(deleteTestSuiteParams);
 
         await subject.deleteSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [] }), Times.once());
+        res.verify(r => r.json(It.is(body => body.payload === undefined)), Times.once());
       });
 
       test("Should return statusCode 200", async () => {
@@ -330,7 +331,7 @@ suite("TestSuiteController", () => {
 
         await subject.deleteSuite(req.object, res.object);
 
-        res.verify(r => r.json({errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]}), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {

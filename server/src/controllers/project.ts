@@ -49,7 +49,6 @@ export class ProjectController extends BaseController {
         title: project.title,
         id: project.id.toString(),
         suites: project.suites.map(suite => ({
-          projectId: project.id.toString(),
           id: suite.id.toString(),
           title: suite.title
         }))
@@ -78,7 +77,6 @@ export class ProjectController extends BaseController {
         id: project.id.toString(),
         title: project.title,
         suites: project.suites.map(s => ({
-          projectId: project.id.toString(),
           id: s.id.toString(),
           title: s.title
         }))

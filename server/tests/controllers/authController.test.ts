@@ -1,6 +1,7 @@
 import { IMock, Mock, It, Times } from "typemoq";
 import { AuthController } from "../../src/controllers/auth";
 
+import { assert } from "chai";
 import { Request, Response } from "express";
 import { CREATED, BAD_REQUEST } from "http-status-codes";
 import { UserDbo } from "../../src/database/entities/userDbo";
@@ -10,6 +11,7 @@ import { IUserResponse } from "../../src/dto/response/common/user";
 import { UserRepository } from "../../src/repositories/userRepository";
 import { UserTypeRepository } from "../../src/repositories/userTypeRepository";
 import { OrganisationRepository } from "../../src/repositories/organisationRepository";
+import { deepStrictEqual } from "../utils/deepStrictEqual";
 
 suite("Auth Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -74,6 +76,7 @@ suite("Auth Controller", () => {
         };
 
         createUserResponse = {
+          id: saveUserResponse.id,
           email: createUserBody.email,
           firstName: createUserBody.firstName,
           type: userType.type,
@@ -90,10 +93,7 @@ suite("Auth Controller", () => {
 
         await subject.createAccount(req.object, res.object);
 
-        res.verify(r => r.json({
-          errors: [],
-          payload: createUserResponse
-        }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, createUserResponse))), Times.once());
       });
 
       test("Status code 201", async () => {
@@ -140,6 +140,7 @@ suite("Auth Controller", () => {
         };
 
         createUserResponse = {
+          id: saveUserResponse.id,
           email: createUserBody.email,
           firstName: createUserBody.firstName,
           type: userType.type,
@@ -157,7 +158,8 @@ suite("Auth Controller", () => {
 
         await subject.createAccount(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Account already exists with that email"] }), Times.once());
+        res.verify(r => r.json(It.is(body =>
+          deepStrictEqual(body.errors, ["Account already exists with that email"]))), Times.once());
       });
 
       test("Status code 400", async () => {
