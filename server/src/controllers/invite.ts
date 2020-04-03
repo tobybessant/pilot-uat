@@ -151,7 +151,7 @@ export class InviteController extends BaseController {
       await this.projectRepository.addUserToProject(invite.userEmail, invite.projectId.toString());
       await this.projectInviteRepository.inviteAccepted(invite);
 
-      res.redirect(`${this.clientUrl}/projects/${invite.projectId}`);
+      res.redirect(`${this.clientUrl}/project/${invite.projectId}`);
     } catch (error) {
       return this.serverError(res, error);
     }

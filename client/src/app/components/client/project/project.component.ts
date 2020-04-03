@@ -27,8 +27,9 @@ export class ClientProjectComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    console.log("ngoninit");
     this.navbarService.setIsViewingProject(true);
-    this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
+    this.activeRoute.params.subscribe(async (urlParameters) => await this.fetchProjectById(urlParameters.id));
   }
 
   ngOnDestroy(): void {
