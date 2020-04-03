@@ -15,7 +15,7 @@ import { IUserToken } from "../../src/dto/response/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectInviteRepository } from "../../src/repositories/projectInviteRepository";
-import { deepStrictEqual } from "../utils/deepStrictEqual";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;

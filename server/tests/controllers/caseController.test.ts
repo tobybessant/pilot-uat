@@ -12,7 +12,7 @@ import { IGetAllCasesRequest } from "../../src/dto/request/supplier/getAllCases"
 import { IUpdateCaseRequest } from "../../src/dto/request/supplier/updateCase";
 import { DeleteResult } from "typeorm";
 import { BaseController } from "../../src/controllers/baseController";
-import { deepStrictEqual } from "../utils/deepStrictEqual";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("Case Controller", () => {
 

@@ -12,7 +12,7 @@ import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
 import { IGetAllStepsRequest } from "../../src/dto/request/supplier/getAllSteps";
 import { IUpdateStepRequest } from "../../src/dto/request/supplier/updateStep";
-import { deepStrictEqual } from "../utils/deepStrictEqual";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("Step Controller", () => {
   let stepRepository: IMock<StepRepository>;

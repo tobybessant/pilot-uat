@@ -11,7 +11,7 @@ import { IUserResponse } from "../../src/dto/response/common/user";
 import { UserRepository } from "../../src/repositories/userRepository";
 import { UserTypeRepository } from "../../src/repositories/userTypeRepository";
 import { OrganisationRepository } from "../../src/repositories/organisationRepository";
-import { deepStrictEqual } from "../utils/deepStrictEqual";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("Auth Controller", () => {
   let userRepository: IMock<UserRepository>;

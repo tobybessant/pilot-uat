@@ -9,7 +9,7 @@ import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, SERVICE_UNAVAILABLE } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
-import { deepStrictEqual } from "../utils/deepStrictEqual";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("TestSuiteController", () => {
   let repositoryService: IMock<RepositoryService>;
