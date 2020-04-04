@@ -39,7 +39,7 @@ export class InviteController extends BaseController {
     const model: IClientInviteRequest = req.body;
     try {
       for (const email of model.emails) {
-        const invite = await this.projectInviteRepository.getBaseRepo().save({
+        const invite = await this.projectInviteRepository.createInvite({
           userEmail: email,
           userType: "Client",
           projectId: Number(model.projectId)
@@ -52,7 +52,6 @@ export class InviteController extends BaseController {
     } catch (error) {
       return this.serverError(res, error);
     }
-
   }
 
   @Get(":token")
@@ -62,7 +61,7 @@ export class InviteController extends BaseController {
     // TODO: check token validity
     try {
       const decodedInvite = this.inviteService.decodeInviteToken(token);
-      const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(decodedInvite.id) });
+      const invite = await this.projectInviteRepository.getInviteById(decodedInvite.id);
 
       if (!invite) {
         return this.badRequest(res, ["Invite does not exist"], true);
@@ -90,7 +89,7 @@ export class InviteController extends BaseController {
 
     try {
       const decodedInvite = this.inviteService.decodeInviteToken(model.token);
-      const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(decodedInvite.id) });
+      const invite = await this.projectInviteRepository.getInviteById(decodedInvite.id);
 
       if (!invite) {
         return this.badRequest(res, ["Invite does not exist"], true);
@@ -103,7 +102,7 @@ export class InviteController extends BaseController {
         return this.badRequest(res, ["Invalid user type"], true);
       }
 
-      const user = await this.userRepository.getBaseRepo().save({
+      const user = await this.userRepository.addUser({
         userType,
         firstName: model.firstName,
         lastName: model.lastName,
@@ -142,7 +141,7 @@ export class InviteController extends BaseController {
 
     try {
       const inviteDecoded = this.inviteService.decodeInviteToken(req.params.token);
-      const invite = await this.projectInviteRepository.getBaseRepo().findOne({ id: Number(inviteDecoded.id) });
+      const invite = await this.projectInviteRepository.getInviteById(inviteDecoded.id);
 
       if (!invite) {
         return this.badRequest(res, ["Invite does not exist"], true);
@@ -181,7 +180,7 @@ export class InviteController extends BaseController {
   @Delete(":id")
   public async deleteInvite(req: Request, res: Response): Promise<void> {
     try {
-      const deletedInvite = await this.projectInviteRepository.getBaseRepo().delete({ id: Number(req.params.id) });
+      const deletedInvite = await this.projectInviteRepository.deleteInvite(req.params.id);
       this.OK(res);
     } catch (error) {
       this.serverError(res, error);
