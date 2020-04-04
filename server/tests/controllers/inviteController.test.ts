@@ -345,6 +345,99 @@ suite("InviteController", () => {
         })), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by inviteService", () => {
+      setup(() => {
+        token = "hello-token";
+      });
+
+      test(`Response returns generic ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} 'Error' in response errors array`, async () => {
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_throws_Error();
+
+        await subject.inviteResponse(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test(`Response returns statusCode 500`, async () => {
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_throws_Error();
+
+        await subject.inviteResponse(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectInviteRepository", () => {
+      setup(() => {
+        token = "hello-token";
+
+        decodedToken = {
+          id: "1330"
+        };
+      });
+
+      test(`Response returns generic ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} 'Error' in response errors array`, async () => {
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.inviteResponse(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test(`Response returns statusCode 500`, async () => {
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.inviteResponse(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by userRepository", () => {
+      setup(() => {
+        token = "hello-token";
+
+        decodedToken = {
+          id: "1330"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 1330;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+      });
+
+      test(`Response returns generic ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} 'Error' in response errors array`, async () => {
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_userRepository_accountDoesExist_throws();
+
+        await subject.inviteResponse(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test(`Response returns statusCode 500`, async () => {
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_userRepository_accountDoesExist_throws();
+
+        await subject.inviteResponse(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
   });
 
   suite("setupAndAccept", () => {
@@ -547,8 +640,6 @@ suite("InviteController", () => {
         })), Times.once());
       });
     });
-
-
   });
 
   suite("acceptInvite", () => {
@@ -938,5 +1029,23 @@ suite("InviteController", () => {
     projectInviteRepository
       .setup(p => p.deleteInvite(It.isAny()))
       .throws(new Error("Database info!"));
+  }
+
+  function given_inviteService_decodeInviteToken_throws_Error() {
+    inviteService
+      .setup(i => i.decodeInviteToken(It.isAny()))
+      .throws(new Error("InviteService info!"));
+  }
+
+  function given_projectInviteRepository_getInviteById_throws() {
+    projectInviteRepository
+      .setup(p => p.getInviteById(It.isAny()))
+      .throws(new Error("Database info!"));
+  }
+
+  function given_userRepository_accountDoesExist_throws() {
+    userRepository
+      .setup(u => u.accountDoesExist(It.isAny()))
+      .throws(new Error("Database information"));
   }
 });
