@@ -20,8 +20,8 @@ export class Passport {
   }
 
   public initialise(app: Application) {
-    app.use(passport.initialize())
-    app.use(passport.session())
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     this.setupAuthStrategies();
   }

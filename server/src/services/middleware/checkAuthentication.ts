@@ -8,4 +8,4 @@ export const checkAuthentication = function(req: Request, res: Response, next: N
 
   res.status(UNAUTHORIZED);
   res.redirect("/login");
-}
+};

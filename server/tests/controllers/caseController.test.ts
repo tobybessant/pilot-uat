@@ -390,7 +390,7 @@ suite("Case Controller", () => {
         deleteCaseId = 1;
       });
 
-      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
+      test(`Response errors contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
         given_Request_params_contain({ id: deleteCaseId });
         given_caseRepository_deleteCaseById_throws();
 
