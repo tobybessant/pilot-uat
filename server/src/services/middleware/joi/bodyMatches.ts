@@ -32,6 +32,6 @@ export class BodyMatches {
             errors: [ "Malformed JSON request body" ]
           } as IApiResponse<void>);
       }
-    }
+    };
   }
 }

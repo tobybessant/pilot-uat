@@ -40,7 +40,7 @@ export class Local {
           const u: IUserToken = {
             email: user.email,
             type: user.userType.type
-          }
+          };
           return done(null, u);
         }
 
