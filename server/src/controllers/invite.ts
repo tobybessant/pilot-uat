@@ -98,7 +98,7 @@ export class InviteController extends BaseController {
       // if user is authenticated at this point
       // then a user other than the invitee has clicked the accept link
       if (req.isAuthenticated()) {
-        res.redirect(`${this.clientUrl}/`);
+        return res.redirect(`${this.clientUrl}/`);
       }
 
       res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
@@ -167,6 +167,10 @@ export class InviteController extends BaseController {
     try {
       const inviteDecoded = this.inviteService.decodeInviteToken(req.params.token);
       const invite = await this.projectInviteRepository.getInviteById(inviteDecoded.id);
+
+      if(req.user?.email !== invite?.userEmail) {
+        return this.forbidden(res, ["Invite credentials do not match"], true);
+      }
 
       if (!invite) {
         return this.badRequest(res, ["Invite does not exist"], true);
