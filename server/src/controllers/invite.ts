@@ -15,6 +15,7 @@ import { ProjectInviteRepository } from "../repositories/projectInviteRepository
 import { ISetupAccountRequest } from "../dto/request/common/setupAccount";
 import { Logger } from "@overnightjs/logger";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { SetupAccount } from "../services/middleware/joi/schemas/setupAccount";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/invite`)
@@ -32,9 +33,7 @@ export class InviteController extends BaseController {
   }
 
   @Post("client")
-  @Middleware([
-    new BodyMatches(new Validator()).schema(ClientInvite)
-  ])
+  @Middleware([new BodyMatches(new Validator()).schema(ClientInvite)])
   public async inviteClient(req: Request, res: Response): Promise<void> {
     const model: IClientInviteRequest = req.body;
     try {
@@ -84,6 +83,7 @@ export class InviteController extends BaseController {
   }
 
   @Post("setup")
+  @Middleware([new BodyMatches(new Validator()).schema(SetupAccount)])
   public async setupAndAccept(req: Request, res: Response): Promise<void> {
     const model: ISetupAccountRequest = req.body;
 

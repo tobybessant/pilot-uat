@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Controller, ClassMiddleware, Post, Middleware, Get, Delete, ChildControllers } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Middleware, Get, Delete } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";

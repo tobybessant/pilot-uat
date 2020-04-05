@@ -16,7 +16,6 @@ import { ApiError } from "../../src/services/apiError";
 import { ISetupAccountRequest } from "../../src/dto/request/common/setupAccount";
 import { UserTypeDbo } from "../../src/database/entities/userTypeDbo";
 import { UserDbo } from "../../src/database/entities/userDbo";
-import { IUserToken } from "../../src/dto/response/common/userToken";
 
 suite("InviteController", () => {
   let inviteService: IMock<InviteService>;
@@ -640,6 +639,361 @@ suite("InviteController", () => {
         })), Times.once());
       });
     });
+
+    suite("Unexpected 'Error' thrown by inviteService decodeInviteToken", () => {
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_throws_Error();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_throws_Error();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectInviteRepository getInviteById", () => {
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by bcrypt hash", () => {
+
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_hash_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_hash_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by userTypeRepository getTypeByType", () => {
+
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+
+        userTypeDbo = new UserTypeDbo();
+        userTypeDbo.id = 4;
+        userTypeDbo.type = projectInviteDbo.userType;
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by userRepository addUser", () => {
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+
+        userTypeDbo = new UserTypeDbo();
+        userTypeDbo.id = 4;
+        userTypeDbo.type = projectInviteDbo.userType;
+
+        userDbo = new UserDbo();
+        userDbo.id = "30";
+        userDbo.firstName = setupAccountBody.firstName;
+        userDbo.lastName = setupAccountBody.lastName;
+        userDbo.email = projectInviteDbo.userEmail;
+        userDbo.passwordHash = "aaaaaabbc!";
+        userDbo.userType = userTypeDbo;
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_returns_whenGiven(userTypeDbo, projectInviteDbo.userType);
+        given_userRepository_addUser_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_returns_whenGiven(userTypeDbo, projectInviteDbo.userType);
+        given_userRepository_addUser_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository addUserToProject", () => {
+
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+
+        userTypeDbo = new UserTypeDbo();
+        userTypeDbo.id = 4;
+        userTypeDbo.type = projectInviteDbo.userType;
+
+        userDbo = new UserDbo();
+        userDbo.id = "30";
+        userDbo.firstName = setupAccountBody.firstName;
+        userDbo.lastName = setupAccountBody.lastName;
+        userDbo.email = projectInviteDbo.userEmail;
+        userDbo.passwordHash = "aaaaaabbc!";
+        userDbo.userType = userTypeDbo;
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_returns_whenGiven(userTypeDbo, projectInviteDbo.userType);
+        given_userRepository_addUser_returns_whenGiven(userDbo, It.isAny());
+        given_projectRepository_addUserToProject_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_returns_whenGiven(userTypeDbo, projectInviteDbo.userType);
+        given_userRepository_addUser_returns_whenGiven(userDbo, It.isAny());
+        given_projectRepository_addUserToProject_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectInviteRepository inviteAccepted", () => {
+
+      setup(() => {
+        setupAccountBody = {
+          firstName: "Jon",
+          lastName: "Reed",
+          password: "password123",
+          token: "hello-token"
+        };
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+
+        userTypeDbo = new UserTypeDbo();
+        userTypeDbo.id = 4;
+        userTypeDbo.type = projectInviteDbo.userType;
+
+        userDbo = new UserDbo();
+        userDbo.id = "30";
+        userDbo.firstName = setupAccountBody.firstName;
+        userDbo.lastName = setupAccountBody.lastName;
+        userDbo.email = projectInviteDbo.userEmail;
+        userDbo.passwordHash = "aaaaaabbc!";
+        userDbo.userType = userTypeDbo;
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_returns_whenGiven(userTypeDbo, projectInviteDbo.userType);
+        given_userRepository_addUser_returns_whenGiven(userDbo, It.isAny());
+        given_projectInviteRepository_inviteAccepted_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_body_is(setupAccountBody);
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, setupAccountBody.token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_bcrypt_returns_whenGiven("aaaaaabbc!", setupAccountBody.password);
+        given_userTypeRepository_getTypeByType_returns_whenGiven(userTypeDbo, projectInviteDbo.userType);
+        given_userRepository_addUser_returns_whenGiven(userDbo, It.isAny());
+        given_projectInviteRepository_inviteAccepted_throws();
+
+        await subject.setupAndAccept(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+
+    });
+
   });
 
   suite("acceptInvite", () => {
@@ -783,6 +1137,173 @@ suite("InviteController", () => {
       });
     });
 
+    suite("Unexpected 'Error' thrown by inviteService decodeInviteToken", () => {
+
+      setup(() => {
+        urlSegs = [
+          "http",
+          "www.test.com",
+          "/accept"
+        ];
+
+        token = "hello-token";
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_throws_Error();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_throws_Error();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectInviteRepository getInviteById", () => {
+
+      setup(() => {
+        urlSegs = [
+          "http",
+          "www.test.com",
+          "/accept"
+        ];
+
+        token = "hello-token";
+
+        decodedToken = {
+          id: "10"
+        };
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectRepository addUserToProject", () => {
+
+      setup(() => {
+        urlSegs = [
+          "http",
+          "www.test.com",
+          "/accept"
+        ];
+
+        token = "hello-token";
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_projectRepository_addUserToProject_throws();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_projectRepository_addUserToProject_throws();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectInviteRepository inviteAccepted", () => {
+
+      setup(() => {
+        urlSegs = [
+          "http",
+          "www.test.com",
+          "/accept"
+        ];
+
+        token = "hello-token";
+
+        decodedToken = {
+          id: "10"
+        };
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 10;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+      });
+
+      test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_projectInviteRepository_inviteAccepted_throws();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_user_isAuthenticated_returns(true);
+        given_Request_params_are({ token });
+        given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, decodedToken.id);
+        given_projectInviteRepository_inviteAccepted_throws();
+
+        await subject.acceptInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
   });
 
   suite("resendInvite", () => {
@@ -886,6 +1407,65 @@ suite("InviteController", () => {
           const urlObj = new URL(u);
           return Boolean(urlObj.searchParams.get("m")?.includes("Invite has already been accepted"));
         })), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by projectInviteRepository getInviteById", () => {
+
+      setup(() => {
+        inviteId = "10";
+      });
+
+      test(`Response errors contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
+        given_Request_params_are({ id: inviteId });
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.resendInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are({ id: inviteId });
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.resendInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected 'Error' thrown by inviteService inviteClient", () => {
+
+      setup(() => {
+        inviteId = "10";
+
+        projectInviteDbo = new ProjectInviteDbo();
+        projectInviteDbo.id = 1330;
+        projectInviteDbo.projectId = 3021;
+        projectInviteDbo.status = "Pending";
+        projectInviteDbo.userType = "Client";
+        projectInviteDbo.userEmail = "user1@me.com";
+      });
+
+      test(`Response errors contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
+        given_Request_params_are({ id: inviteId });
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, inviteId);
+        given_inviteService_inviteClient_throws();
+
+        await subject.resendInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are({ id: inviteId });
+        given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, inviteId);
+        given_inviteService_inviteClient_throws();
+
+        await subject.resendInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
       });
     });
 
@@ -1047,5 +1627,35 @@ suite("InviteController", () => {
     userRepository
       .setup(u => u.accountDoesExist(It.isAny()))
       .throws(new Error("Database information"));
+  }
+
+  function given_bcrypt_hash_throws() {
+    bcrypt
+      .setup(b => b.hash(It.isAny()))
+      .throws(new Error("bcrypt service information!"));
+  }
+
+  function given_userTypeRepository_getTypeByType_throws() {
+    userTypeRepository
+      .setup(u => u.getTypeByType(It.isAny()))
+      .throws(new Error("database information!"));
+  }
+
+  function given_userRepository_addUser_throws() {
+    userRepository
+      .setup(u => u.addUser(It.isAny()))
+      .throws(new Error("User repository data!"));
+  }
+
+  function given_projectRepository_addUserToProject_throws() {
+    projectRepository
+      .setup(p => p.addUserToProject(It.isAny(), It.isAny()))
+      .throws(new Error("Database Info!"));
+  }
+
+  function given_projectInviteRepository_inviteAccepted_throws() {
+    projectInviteRepository
+      .setup(p => p.inviteAccepted(It.isAny()))
+      .throws(new Error("Database info!"));
   }
 });
