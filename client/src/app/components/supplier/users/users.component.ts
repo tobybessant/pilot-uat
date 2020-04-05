@@ -64,6 +64,7 @@ export class UsersComponent implements OnInit {
   public async revokeInvite(invite) {
     await this.inviteApiService.revokeInvite(invite.id);
     this.fetchOpenInvites();
+    this.fetchProjectUsers();
   }
 
   public async resendInvite(invite) {

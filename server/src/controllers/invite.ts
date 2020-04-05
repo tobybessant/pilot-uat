@@ -16,7 +16,7 @@ import { ISetupAccountRequest } from "../dto/request/common/setupAccount";
 import { Logger } from "@overnightjs/logger";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 import { SetupAccount } from "../services/middleware/joi/schemas/setupAccount";
-import { BAD_REQUEST } from "http-status-codes";
+import { BAD_REQUEST, RESET_CONTENT, GONE } from "http-status-codes";
 import { ApiError } from "../services/apiError";
 
 @injectable()
@@ -40,19 +40,19 @@ export class InviteController extends BaseController {
     const model: IClientInviteRequest = req.body;
 
     try {
-    if (model.emails.includes(req.user!.email)) {
-      throw new ApiError("You cannot invite yourself to this project", BAD_REQUEST);
-    }
+      if (model.emails.includes(req.user!.email)) {
+        throw new ApiError("You cannot invite yourself to this project", BAD_REQUEST);
+      }
 
-    const openInviteRecipients = await (await this.projectInviteRepository.getOpenInvitesForProject(model.projectId)).map(i => i.userEmail);
-    const projectUsers = await (await this.projectRepository.getUsersForProject(model.projectId)).map(p => p.user.email);
+      const openInviteRecipients = await (await this.projectInviteRepository.getOpenInvitesForProject(model.projectId)).map(i => i.userEmail);
+      const projectUsers = await (await this.projectRepository.getUsersForProject(model.projectId)).map(p => p.user.email);
 
-    let intersection = openInviteRecipients.filter(email => model.emails.includes(email));
-    intersection = [...intersection, ...projectUsers.filter(email => model.emails.includes(email))];
+      let intersection = openInviteRecipients.filter(email => model.emails.includes(email));
+      intersection = [...intersection, ...projectUsers.filter(email => model.emails.includes(email))];
 
-    if(intersection.length > 0) {
-      throw new ApiError("One or more emails has an existing invite or is already in this project", BAD_REQUEST);
-    }
+      if (intersection.length > 0) {
+        throw new ApiError("One or more emails has an existing invite or is already in this project", BAD_REQUEST);
+      }
 
       for (const email of model.emails) {
         if (!openInviteRecipients.includes(email)) {
@@ -93,6 +93,12 @@ export class InviteController extends BaseController {
       if (existingAccount) {
         res.redirect("accept/" + token);
         return;
+      }
+
+      // if user is authenticated at this point
+      // then a user other than the invitee has clicked the accept link
+      if (req.isAuthenticated()) {
+        res.redirect(`${this.clientUrl}/`);
       }
 
       res.redirect(`${this.clientUrl}/setup?t=${encodeURIComponent(token)}`);
@@ -199,7 +205,13 @@ export class InviteController extends BaseController {
   @Delete(":id")
   public async deleteInvite(req: Request, res: Response): Promise<void> {
     try {
+      const invite = await this.projectInviteRepository.getInviteById(req.params.id);
+      if (invite && invite.status === "Accepted") {
+        throw new ApiError("This invite has alredy been accepted by the client user. They will still be able to access this project until you remove them.", GONE);
+      }
+
       const deletedInvite = await this.projectInviteRepository.deleteInvite(req.params.id);
+
       this.OK(res);
     } catch (error) {
       this.serverError(res, error);
