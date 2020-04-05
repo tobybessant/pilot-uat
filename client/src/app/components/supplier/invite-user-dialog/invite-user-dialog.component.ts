@@ -13,6 +13,8 @@ export class InviteUserDialogComponent implements OnInit {
   @Input()
   public projectId: string;
 
+  public ready: boolean = false;
+
   public emailList: string[] = [];
 
   public readonly separatorKeyCodes: number[] = [9, 32];
@@ -26,6 +28,7 @@ export class InviteUserDialogComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.ready = true;
   }
 
   public close() {

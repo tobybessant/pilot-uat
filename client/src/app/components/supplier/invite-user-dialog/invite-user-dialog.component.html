@@ -1,9 +1,10 @@
 <nb-card>
   <nb-card-header>Enter Client Emails</nb-card-header>
   <nb-card-body>
-    <mat-form-field>
+    <mat-form-field *ngIf="ready">
       <mat-chip-list #emailChipList>
         <mat-chip
+          #chips
           *ngFor="let email of emailList"
           [removable]="true"
           (removed)="remove(email)"

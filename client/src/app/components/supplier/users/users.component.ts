@@ -40,7 +40,7 @@ export class UsersComponent implements OnInit {
         projectId: this.projectId
       }
     }).onClose.subscribe(async emailList => {
-      if (emailList.length > 0) {
+      if (emailList && emailList.length > 0) {
         await this.fetchOpenInvites();
       }
     });
