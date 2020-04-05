@@ -25,7 +25,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe(params => {
-      console.log(params);
       this.redirectUrl = params.get("r");
     });
   }
