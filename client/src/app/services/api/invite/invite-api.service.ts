@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { ApiService } from "../api.service";
 import { SessionService } from "../../session/session.service";
 import { ISetupAccountRequest } from "src/app/models/api/request/common/setup-account";
+import { IApiResponse } from "src/app/models/api/response/api-response.interface";
 
 @Injectable({
   providedIn: "root"
@@ -25,8 +26,8 @@ export class InviteApiService {
     return response;
   }
 
-  public async inviteClients(emails: string[], projectId: string) {
-    const response = await this.apiService.post<void>(this.baseUrl + "/client", {
+  public async inviteClients(emails: string[], projectId: string): Promise<IApiResponse<void>> {
+    return await this.apiService.post<void>(this.baseUrl + "/client", {
       emails,
       projectId
     });

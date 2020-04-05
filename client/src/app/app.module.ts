@@ -10,7 +10,7 @@ import {
   NbLayoutModule, NbButtonModule, NbThemeModule,
   NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
   NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-  NbActionsModule, NbTreeGridModule, NbSelectModule
+  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
@@ -118,6 +118,7 @@ import { ErrorComponent } from "./components/common/error/error.component";
     NbSelectModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
+    NbToastrModule.forRoot(),
     NbThemeModule.forRoot({ name: "default" }),
     NbButtonModule,
 

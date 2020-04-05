@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
-import { NbDialogService } from "@nebular/theme";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { InviteUserDialogComponent } from "../invite-user-dialog/invite-user-dialog.component";
 import { InviteApiService } from "src/app/services/api/invite/invite-api.service";
 import { SessionService } from "src/app/services/session/session.service";

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { NbDialogRef } from "@nebular/theme";
+import { NbDialogRef, NbToastrService } from "@nebular/theme";
 import { MatChipInputEvent } from "@angular/material/chips";
 import { InviteApiService } from "src/app/services/api/invite/invite-api.service";
 
@@ -23,7 +23,8 @@ export class InviteUserDialogComponent implements OnInit {
 
   constructor(
     private inviteApiService: InviteApiService,
-    private dialogRef: NbDialogRef<any>
+    private dialogRef: NbDialogRef<any>,
+    private toastrService: NbToastrService
   ) { }
 
 
@@ -56,7 +57,13 @@ export class InviteUserDialogComponent implements OnInit {
   }
 
   public async sendInvites() {
-    await this.inviteApiService.inviteClients(this.emailList, this.projectId);
+    const response = await this.inviteApiService.inviteClients(this.emailList, this.projectId);
+    if (this.emailList.length > 0 && response.statusCode === 200) {
+      this.toastrService.success("Email invites sent successfully", "Client Invites", {
+        duration: 5000,
+        icon: "checkmark-square-2-outline"
+      });
+    }
     this.close();
   }
 }

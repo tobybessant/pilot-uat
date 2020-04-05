@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { IApiResponse } from "src/app/models/api/response/api-response.interface";
+import { NbToastrService } from "@nebular/theme";
 
 @Injectable({
   providedIn: "root"
@@ -8,7 +9,7 @@ import { IApiResponse } from "src/app/models/api/response/api-response.interface
 export class ApiService {
   private readonly root: string = "http://localhost:8080/api/v1";
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private toastrService: NbToastrService) { }
 
   public async get<T>(endpoint: string): Promise<IApiResponse<T>> {
     let response = {
@@ -24,7 +25,11 @@ export class ApiService {
       }
       response.errors.push("Something went wrong...");
     }
-
+    if (response.statusCode >= 400) {
+      response.errors.forEach(error => {
+        this.toastrService.danger(error, "ERROR");
+      });
+    }
     return response;
   }
 
@@ -38,10 +43,17 @@ export class ApiService {
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "close-square-outline",
+          });
+        });
         return response;
       }
       response.errors.push("Something went wrong...");
     }
+
     return response;
   }
 
@@ -59,6 +71,11 @@ export class ApiService {
       }
       response.errors.push("Something went wrong...");
     }
+    if (response.statusCode >= 400) {
+      response.errors.forEach(error => {
+        this.toastrService.danger(error, "ERROR");
+      });
+    }
     return response;
   }
 
@@ -75,6 +92,11 @@ export class ApiService {
         return response;
       }
       response.errors.push("Something went wrong...");
+    }
+    if (response.statusCode >= 400) {
+      response.errors.forEach(error => {
+        this.toastrService.danger(error, "ERROR");
+      });
     }
     return response;
   }
