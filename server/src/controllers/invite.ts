@@ -16,6 +16,8 @@ import { ISetupAccountRequest } from "../dto/request/common/setupAccount";
 import { Logger } from "@overnightjs/logger";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 import { SetupAccount } from "../services/middleware/joi/schemas/setupAccount";
+import { BAD_REQUEST } from "http-status-codes";
+import { ApiError } from "../services/apiError";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/invite`)
@@ -36,15 +38,32 @@ export class InviteController extends BaseController {
   @Middleware([new BodyMatches(new Validator()).schema(ClientInvite)])
   public async inviteClient(req: Request, res: Response): Promise<void> {
     const model: IClientInviteRequest = req.body;
-    try {
-      for (const email of model.emails) {
-        const invite = await this.projectInviteRepository.createInvite({
-          userEmail: email,
-          userType: "Client",
-          projectId: Number(model.projectId)
-        });
 
-        await this.inviteService.inviteClient(email, invite.id.toString());
+    try {
+    if (model.emails.includes(req.user!.email)) {
+      throw new ApiError("You cannot invite yourself to this project", BAD_REQUEST);
+    }
+
+    const openInviteRecipients = await (await this.projectInviteRepository.getOpenInvitesForProject(model.projectId)).map(i => i.userEmail);
+    const projectUsers = await (await this.projectRepository.getUsersForProject(model.projectId)).map(p => p.user.email);
+
+    let intersection = openInviteRecipients.filter(email => model.emails.includes(email));
+    intersection = [...intersection, ...projectUsers.filter(email => model.emails.includes(email))];
+
+    if(intersection.length > 0) {
+      throw new ApiError("One or more emails has an existing invite or is already in this project", BAD_REQUEST);
+    }
+
+      for (const email of model.emails) {
+        if (!openInviteRecipients.includes(email)) {
+          const invite = await this.projectInviteRepository.createInvite({
+            userEmail: email,
+            userType: "Client",
+            projectId: Number(model.projectId)
+          });
+
+          await this.inviteService.inviteClient(email, invite.id.toString());
+        }
       }
 
       this.OK(res);
