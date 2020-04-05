@@ -13,7 +13,7 @@ export class JwtService {
   public encode(inviteData: IProjectInviteToken): string {
     return jwt.encode({
       ...inviteData,
-      exp: Date.now() + (this.EXPIRY_HOURS * 60 * 1000)
+      exp: Date.now() + (this.EXPIRY_HOURS * 60 * 60 * 1000)
     }, this.secret);
   }
 
