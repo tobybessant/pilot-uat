@@ -162,11 +162,11 @@ export class InviteController extends BaseController {
       const invite = await this.projectInviteRepository.getInviteById(req.params.id);
 
       if (!invite) {
-        return this.badRequest(res, ["Invite does not exist"], true);
+        return this.badRequest(res, ["Invite does not exist"]);
       }
 
       if (invite.status === "Accepted") {
-        return this.badRequest(res, ["Invite has already been accepted"], true);
+        return this.badRequest(res, ["Invite has already been accepted"]);
       }
 
       await this.inviteService.inviteClient(invite.userEmail, invite.id.toString());
