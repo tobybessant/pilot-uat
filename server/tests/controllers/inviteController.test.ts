@@ -9,13 +9,15 @@ import { ProjectInviteRepository } from "../../src/repositories/projectInviteRep
 import { Bcrypt } from "../../src/services/utils/bcryptHash";
 import { UserTypeRepository } from "../../src/repositories/userTypeRepository";
 import { ProjectInviteDbo } from "../../src/database/entities/projectInviteDbo";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, GONE } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
 import { IProjectInviteToken } from "../../src/dto/request/common/inviteToken";
 import { ApiError } from "../../src/services/apiError";
 import { ISetupAccountRequest } from "../../src/dto/request/common/setupAccount";
 import { UserTypeDbo } from "../../src/database/entities/userTypeDbo";
 import { UserDbo } from "../../src/database/entities/userDbo";
+import { UserProjectRoleDbo } from "../../src/database/entities/userProjectRoleDbo";
+import { IUserToken } from "../../src/dto/response/common/userToken";
 
 suite("InviteController", () => {
   let inviteService: IMock<InviteService>;
@@ -52,6 +54,9 @@ suite("InviteController", () => {
 
   suite("inviteClient", async () => {
     let inviteRequestBody: any;
+    let inviteDbo: ProjectInviteDbo;
+    let userProjectRole: UserProjectRoleDbo;
+    let requestUser: IUserToken;
 
     suite("Valid request conditions", () => {
       setup(() => {
@@ -68,6 +73,8 @@ suite("InviteController", () => {
         given_Request_body_is(inviteRequestBody);
         given_projectInviteRepository_createInvite_returns_new_invite();
         given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
 
         await subject.inviteClient(req.object, res.object);
 
@@ -78,6 +85,8 @@ suite("InviteController", () => {
         given_Request_body_is(inviteRequestBody);
         given_projectInviteRepository_createInvite_returns_new_invite();
         given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
 
         await subject.inviteClient(req.object, res.object);
 
@@ -88,6 +97,8 @@ suite("InviteController", () => {
         given_Request_body_is(inviteRequestBody);
         given_projectInviteRepository_createInvite_returns_new_invite();
         given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
 
         await subject.inviteClient(req.object, res.object);
 
@@ -98,10 +109,142 @@ suite("InviteController", () => {
         given_Request_body_is(inviteRequestBody);
         given_projectInviteRepository_createInvite_returns_new_invite();
         given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
 
         await subject.inviteClient(req.object, res.object);
 
         inviteService.verify(i => i.inviteClient(It.isAny(), It.isAny()), Times.exactly(inviteRequestBody.emails.length));
+      });
+    });
+
+    suite("One of the emails invited has an existing invite", () => {
+      setup(() => {
+        inviteRequestBody = {
+          projectId: 10,
+          emails: [
+            "hello@me.com",
+            "email2@mailer.com"
+          ]
+        };
+
+        inviteDbo = new ProjectInviteDbo();
+        inviteDbo.userEmail = inviteRequestBody.emails[0];
+      });
+
+      test("Response returns 'One or more emails has an existing invite or is already in this project' in response errors array", async () => {
+        given_Request_body_is(inviteRequestBody);
+        given_projectInviteRepository_createInvite_returns_new_invite();
+        given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([inviteDbo], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
+
+        await subject.inviteClient(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes("One or more emails has an existing invite or is already in this project"))), Times.once());
+      });
+
+      test("Response returns statusCode 400", async () => {
+        given_Request_body_is(inviteRequestBody);
+        given_projectInviteRepository_createInvite_returns_new_invite();
+        given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([inviteDbo], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
+
+        await subject.inviteClient(req.object, res.object);
+
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
+      });
+
+
+    });
+
+    suite("One of the emails invited is already in this project", () => {
+
+      setup(() => {
+        inviteRequestBody = {
+          projectId: 10,
+          emails: [
+            "hello@me.com",
+            "email2@mailer.com"
+          ]
+        };
+
+        userProjectRole = new UserProjectRoleDbo();
+        userProjectRole.user = {
+          email: inviteRequestBody.emails[0]
+        } as unknown as UserDbo;
+      });
+      test("Response returns 'One or more emails has an existing invite or is already in this project' in response errors array", async () => {
+        given_Request_body_is(inviteRequestBody);
+        given_projectInviteRepository_createInvite_returns_new_invite();
+        given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([userProjectRole], inviteRequestBody.projectId);
+
+        await subject.inviteClient(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes("One or more emails has an existing invite or is already in this project"))), Times.once());
+      });
+
+      test("Response returns statusCode 400", async () => {
+        given_Request_body_is(inviteRequestBody);
+        given_projectInviteRepository_createInvite_returns_new_invite();
+        given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([userProjectRole], inviteRequestBody.projectId);
+
+        await subject.inviteClient(req.object, res.object);
+
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
+      });
+    });
+
+    suite("User is trying to invite themself to the project", () => {
+      setup(() => {
+        requestUser = {
+          email: "hello@me.com",
+          type: "Supplier"
+        };
+
+        inviteRequestBody = {
+          projectId: 10,
+          emails: [
+            requestUser.email,
+            "email2@mailer.com"
+          ]
+        };
+
+        userProjectRole = new UserProjectRoleDbo();
+        userProjectRole.user = {
+          email: inviteRequestBody.emails[0]
+        } as unknown as UserDbo;
+      });
+
+      test("Response returns 'You cannot invite yourself to this project' in errors array", async () => {
+        given_Request_user_is(requestUser);
+        given_Request_body_is(inviteRequestBody);
+        given_projectInviteRepository_createInvite_returns_new_invite();
+        given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
+
+        await subject.inviteClient(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes("You cannot invite yourself to this project"))), Times.once());
+      });
+
+      test("Response returns statusCode 400", async () => {
+        given_Request_user_is(requestUser);
+        given_Request_body_is(inviteRequestBody);
+        given_projectInviteRepository_createInvite_returns_new_invite();
+        given_inviteService_inviteClient_does_not_throw();
+        given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven([], inviteRequestBody.projectId);
+        given_projectRepository_getUsersForProject_returns_whenGiven([], inviteRequestBody.projectId);
+
+        await subject.inviteClient(req.object, res.object);
+
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
 
@@ -1067,6 +1210,7 @@ suite("InviteController", () => {
       });
 
       test("User is added to project", async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1078,6 +1222,7 @@ suite("InviteController", () => {
       });
 
       test("Invite is marked as accepted", async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1089,6 +1234,7 @@ suite("InviteController", () => {
       });
 
       test("Response is redirected to the project", async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1233,6 +1379,7 @@ suite("InviteController", () => {
       });
 
       test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1245,6 +1392,7 @@ suite("InviteController", () => {
       });
 
       test("Response returns statusCode 500", async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1281,6 +1429,7 @@ suite("InviteController", () => {
       });
 
       test(`Response returns ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in response errors array`, async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1293,6 +1442,7 @@ suite("InviteController", () => {
       });
 
       test("Response returns statusCode 500", async () => {
+        given_Request_user_is({ email: projectInviteDbo.userEmail, type: projectInviteDbo.userType });
         given_Request_user_isAuthenticated_returns(true);
         given_Request_params_are({ token });
         given_inviteService_decodeInviteToken_returns_whenGiven(decodedToken, token);
@@ -1349,27 +1499,24 @@ suite("InviteController", () => {
         inviteId = "10";
       });
 
-      test("User is redirected to error page", async () => {
+      test("Response returns 'Invite does not exist' in errors array", async () => {
         given_Request_params_are({ id: inviteId });
         given_projectInviteRepository_getInviteById_returns_whenGiven(undefined, inviteId);
         given_inviteService_inviteClient_does_not_throw();
 
         await subject.resendInvite(req.object, res.object);
 
-        res.verify(r => r.redirect(It.is(u => u.includes("/error"))), Times.once());
+        res.verify(r => r.json(It.is(body => body.errors.includes("Invite does not exist"))), Times.once());
       });
 
-      test("Redirect error message 'm' url parameter list contains ApiError 'Invite does not exist'", async () => {
+      test("Response returns statusCode 400", async () => {
         given_Request_params_are({ id: inviteId });
         given_projectInviteRepository_getInviteById_returns_whenGiven(undefined, inviteId);
         given_inviteService_inviteClient_does_not_throw();
 
         await subject.resendInvite(req.object, res.object);
 
-        res.verify(r => r.redirect(It.is(u => {
-          const urlObj = new URL(u);
-          return Boolean(urlObj.searchParams.get("m")?.includes("Invite does not exist"));
-        })), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
 
@@ -1386,27 +1533,24 @@ suite("InviteController", () => {
         projectInviteDbo.userEmail = "user1@me.com";
       });
 
-      test("User is redirected to error page", async () => {
+      test("Response returns 'Invite has already been accepted' in errors array", async () => {
         given_Request_params_are({ id: inviteId });
         given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, inviteId);
         given_inviteService_inviteClient_does_not_throw();
 
         await subject.resendInvite(req.object, res.object);
 
-        res.verify(r => r.redirect(It.is(u => u.includes("/error"))), Times.once());
+        res.verify(r => r.json(It.is(body => body.errors.includes("Invite has already been accepted"))), Times.once());
       });
 
-      test("Redirect error message 'm' url parameter list contains ApiError 'Invite does not exist'", async () => {
+      test("Response returns statusCode 400", async () => {
         given_Request_params_are({ id: inviteId });
         given_projectInviteRepository_getInviteById_returns_whenGiven(projectInviteDbo, inviteId);
         given_inviteService_inviteClient_does_not_throw();
 
         await subject.resendInvite(req.object, res.object);
 
-        res.verify(r => r.redirect(It.is(u => {
-          const urlObj = new URL(u);
-          return Boolean(urlObj.searchParams.get("m")?.includes("Invite has already been accepted"));
-        })), Times.once());
+        res.verify(r => r.status(BAD_REQUEST), Times.once());
       });
     });
 
@@ -1472,9 +1616,23 @@ suite("InviteController", () => {
   });
 
   suite("deleteInvite", () => {
+    let params: any;
+    let inviteDbo: ProjectInviteDbo;
+
     suite("Valid request conditions", () => {
+
+      setup(() => {
+        params = {
+          id: "4"
+        };
+
+        inviteDbo = new ProjectInviteDbo();
+        inviteDbo.status = "Pending";
+      });
+
       test("Request payload is undefined", async () => {
-        given_Request_params_are({ id: "4" });
+        given_Request_params_are(params);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(inviteDbo, params.id);
 
         await subject.deleteInvite(req.object, res.object);
 
@@ -1482,7 +1640,70 @@ suite("InviteController", () => {
       });
     });
 
-    suite("Unexpected error thrown by projectInviteRepository", () => {
+    suite("User is trying to revoke an invitation which has already been accepted", () => {
+
+      setup(() => {
+        params = {
+          id: "9"
+        };
+
+        inviteDbo = new ProjectInviteDbo();
+        inviteDbo.status = "Accepted";
+      });
+      test(
+        "Response returns 'This invite has alredy been accepted by the client user. They will still be able to access this project until you remove them.' in errors array"
+        , async () => {
+          given_Request_params_are(params);
+          given_projectInviteRepository_getInviteById_returns_whenGiven(inviteDbo, params.id);
+
+          await subject.deleteInvite(req.object, res.object);
+
+          res.verify(r => r.json(It.is(body =>
+            body.errors.includes(
+              "This invite has alredy been accepted by the client user. They will still be able to access this project until you remove them."
+            ))), Times.once());
+        });
+
+      test("Response returns statusCode 410", async () => {
+        given_Request_params_are(params);
+        given_projectInviteRepository_getInviteById_returns_whenGiven(inviteDbo, params.id);
+
+        await subject.deleteInvite(req.object, res.object);
+
+        res.verify(r => r.status(GONE), Times.once());
+      });
+    });
+
+    suite("Unexpected error thrown by projectInviteRepository getInviteById", () => {
+
+      setup(() => {
+        setup(() => {
+          params = {
+            id: "4"
+          };
+        });
+      });
+
+      test(`Response returns generic ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in errors array`, async () => {
+        given_Request_params_are(params);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.deleteInvite(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+      });
+
+      test("Response returns statusCode 500", async () => {
+        given_Request_params_are(params);
+        given_projectInviteRepository_getInviteById_throws();
+
+        await subject.deleteInvite(req.object, res.object);
+
+        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+      });
+    });
+
+    suite("Unexpected error thrown by projectInviteRepository deleteInvite", () => {
       test(`Request returns generic ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} in errors array`, async () => {
         given_Request_params_are({ id: "4" });
         given_projectRepository_deleteInvite_throws();
@@ -1529,6 +1750,12 @@ suite("InviteController", () => {
       .returns(() => path);
   }
 
+  function given_Request_user_is(user: IUserToken) {
+    req
+      .setup(r => r.user)
+      .returns(() => user);
+  }
+
   function given_Request_user_isAuthenticated_returns(returns: boolean) {
     req
       .setup(r => r.isAuthenticated())
@@ -1543,6 +1770,12 @@ suite("InviteController", () => {
         invite.id = Math.random();
         return invite;
       });
+  }
+
+  function given_projectInviteRepository_getOpenInvitesForProject_returns_whenGiven(returns: ProjectInviteDbo[], whenGiven: any) {
+    projectInviteRepository
+      .setup(p => p.getOpenInvitesForProject(whenGiven))
+      .returns(async () => returns);
   }
 
   function given_inviteService_inviteClient_does_not_throw() {
@@ -1609,6 +1842,12 @@ suite("InviteController", () => {
     projectInviteRepository
       .setup(p => p.deleteInvite(It.isAny()))
       .throws(new Error("Database info!"));
+  }
+
+  function given_projectRepository_getUsersForProject_returns_whenGiven(returns: UserProjectRoleDbo[], whenGiven: any) {
+    projectRepository
+      .setup(p => p.getUsersForProject(whenGiven))
+      .returns(async () => returns);
   }
 
   function given_inviteService_decodeInviteToken_throws_Error() {
