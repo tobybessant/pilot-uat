@@ -19,11 +19,11 @@ export class StepStatusChipComponent implements OnInit {
   public getBackground(): string {
     switch (this.status.label) {
       case "Passed":
-        return "var(--color-success-300)";
+        return "var(--color-success-400)";
       case "Failed":
-        return "var(--color-danger-300)";
+        return "var(--color-danger-400)";
       default:
-        return "var(--color-primary-transparent-100)";
+        return "var(--color-primary-transparent-200)";
     }
   }
 

@@ -4,7 +4,7 @@ export enum StepStatus {
   NOT_STARTED = "Not Started",
   PASSED = "Passed",
   FAILED = "Failed"
-};
+}
 
 export const TABLE_NAME: string = "StepStatus";
 @Entity({

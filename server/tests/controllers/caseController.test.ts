@@ -12,6 +12,7 @@ import { IGetAllCasesRequest } from "../../src/dto/request/supplier/getAllCases"
 import { IUpdateCaseRequest } from "../../src/dto/request/supplier/updateCase";
 import { DeleteResult } from "typeorm";
 import { BaseController } from "../../src/controllers/baseController";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("Case Controller", () => {
 
@@ -71,7 +72,7 @@ suite("Case Controller", () => {
 
         await subject.addCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: createCaseResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, createCaseResponse))), Times.once());
       });
 
       test("Should return statusCode 201", async () => {
@@ -105,15 +106,15 @@ suite("Case Controller", () => {
         };
       });
 
-      test("Error contains 'Suite could not be found'", async () => {
+      test("Error contains 'Suite could not found'", async () => {
         given_suiteRepository_getTestSuiteById_returns_whenGiven(undefined, It.isAny());
         given_caseRepository_save_returns(savedCase);
         given_Request_body_is(createCaseBody);
 
         await subject.addCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Suite not found"] }), Times.once());
-      })
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Suite not found"]))), Times.once());
+      });
 
       test("Returns a statusCode of 400", async () => {
         given_suiteRepository_getTestSuiteById_returns_whenGiven(undefined, It.isAny());
@@ -123,7 +124,7 @@ suite("Case Controller", () => {
         await subject.addCase(req.object, res.object);
 
         res.verify(r => r.status(BAD_REQUEST), Times.once());
-      })
+      });
     });
 
     suite("Unexpected 'Error' is thrown inside suiteRepository", () => {
@@ -152,7 +153,7 @@ suite("Case Controller", () => {
 
         await subject.addCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Returns statusCode 500", async () => {
@@ -192,7 +193,7 @@ suite("Case Controller", () => {
 
         await subject.addCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Returns statusCode 500", async () => {
@@ -240,7 +241,7 @@ suite("Case Controller", () => {
 
         await subject.getCasesForSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: getAllCasesResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, getAllCasesResponse))), Times.once());
       });
 
       test("Response returns statusCode 200", async () => {
@@ -267,7 +268,7 @@ suite("Case Controller", () => {
 
         await subject.getCasesForSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns status code 500", async () => {
@@ -290,12 +291,11 @@ suite("Case Controller", () => {
 
       setup(() => {
         updateCaseBody = {
-          id: "4",
           title: "Hello"
         };
 
         updatedCaseDbo = new CaseDbo();
-        updatedCaseDbo.id = Number(updateCaseBody.id);
+        updatedCaseDbo.id = 3;
         updatedCaseDbo.title = updateCaseBody.title!;
 
         updateCaseResponse = {
@@ -311,7 +311,7 @@ suite("Case Controller", () => {
 
         await subject.updateCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: updateCaseResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload,updateCaseResponse))), Times.once());
 
       });
 
@@ -329,7 +329,6 @@ suite("Case Controller", () => {
 
       setup(() => {
         updateCaseBody = {
-          id: "4",
           title: "Hello"
         };
       });
@@ -340,7 +339,8 @@ suite("Case Controller", () => {
 
         await subject.updateCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
+
       });
 
       test("Response returns statusCode 500", async () => {
@@ -372,7 +372,7 @@ suite("Case Controller", () => {
 
         await subject.deleteCaseById(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [] }), Times.once());
+        res.verify(r => r.json(It.is(body => body.payload === undefined)), Times.once());
       });
 
       test("Response returns statusCode 200", async () => {
@@ -390,13 +390,13 @@ suite("Case Controller", () => {
         deleteCaseId = 1;
       });
 
-      test(`Response payload contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
+      test(`Response errors contains generic '${BaseController.INTERNAL_SERVER_ERROR_MESSAGE}' error message`, async () => {
         given_Request_params_contain({ id: deleteCaseId });
         given_caseRepository_deleteCaseById_throws();
 
         await subject.deleteCaseById(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -454,13 +454,13 @@ suite("Case Controller", () => {
 
   function given_caseRepository_updateCase_returns_whenGiven(returns: CaseDbo, whenGiven: any) {
     caseRepository
-      .setup(cr => cr.updateCase(whenGiven))
+      .setup(cr => cr.updateCase(It.isAny(), whenGiven))
       .returns(async () => returns);
   }
 
   function given_caseRepository_updateCase_throws() {
     caseRepository
-      .setup(cr => cr.updateCase(It.isAny()))
+      .setup(cr => cr.updateCase(It.isAny(), It.isAny()))
       .throws(new Error("DATABASE Table Failure, sensitive table information here..."));
   }
 

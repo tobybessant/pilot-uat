@@ -8,7 +8,8 @@
     "dev": "ts-node src/app.ts",
     "prod": "tsc && node ./dist/src/app.js",
     "build": "tsc",
-    "test": "./node_modules/mocha/bin/mocha --require ts-node/register 'tests/**/*.test.ts' --ui tdd",
+    "lint-fix": "tslint --fix src/**/*.ts",
+    "test": "NODE_ENV=test && ./node_modules/mocha/bin/mocha --require ts-node/register 'tests/**/*.test.ts' --ui tdd",
     "generate-migration": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:generate -n Migration",
     "update-database": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm migration:run"
   },
@@ -17,6 +18,8 @@
   "license": "ISC",
   "dependencies": {
     "@types/cors": "^2.8.6",
+    "@types/jwt-simple": "^0.5.33",
+    "@types/nodemailer": "^6.4.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
@@ -26,7 +29,9 @@
     "http-status-codes": "^1.4.0",
     "joi": "^14.3.1",
     "joiful": "^2.0.0",
+    "jwt-simple": "^0.5.6",
     "mssql": "^6.1.0",
+    "nodemailer": "^6.4.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",

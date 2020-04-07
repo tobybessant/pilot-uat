@@ -5,13 +5,13 @@ import { MSSQLDatabase } from "..";
 import { getConnection } from "typeorm";
 import { Logger } from "@overnightjs/logger";
 
-import { TABLE_NAME, StepStatus } from "../entities/stepStatusDbo";
+import { TABLE_NAME, StepStatus, StepStatusDbo } from "../entities/stepStatusDbo";
 let database: MSSQLDatabase;
 
 const records = [
-  { status: StepStatus.NOT_STARTED },
-  { status: StepStatus.PASSED },
-  { status: StepStatus.FAILED }
+  { label: StepStatus.NOT_STARTED },
+  { label: StepStatus.PASSED },
+  { label: StepStatus.FAILED }
 ];
 
 async function seed() {
@@ -31,21 +31,23 @@ async function seed() {
       .execute();
 
   } catch (ex) {
-    Logger.Err(`Error seeding ${TABLE_NAME}: `, ex.message);
+    Logger.Err(`Error seeding ${TABLE_NAME}: `);
+    console.log(ex);
   }
 }
 
 async function main() {
-  Logger.Info(`Seeding ${TABLE_NAME}...`);
-  database = container.resolve<MSSQLDatabase>(MSSQLDatabase);
-  await database.openConnection();
-  await seed();
-
-  Logger.Info(`Sucessfully seeded ${TABLE_NAME} with: \n`);
-  // tslint:disable-next-line: no-console
-  console.log(records);
-
-  process.exit(0);
+  try {
+    Logger.Info(`Seeding ${TABLE_NAME}...`);
+    database = container.resolve<MSSQLDatabase>(MSSQLDatabase);
+    await database.openConnection();
+    await seed();
+    Logger.Info(`Sucessfully seeded ${TABLE_NAME} with: \n`);
+    // tslint:disable-next-line: no-console
+    console.log(records);
+  } finally {
+    process.exit(0);
+  }
 }
 
 main();

@@ -12,6 +12,7 @@ import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
 import { IGetAllStepsRequest } from "../../src/dto/request/supplier/getAllSteps";
 import { IUpdateStepRequest } from "../../src/dto/request/supplier/updateStep";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("Step Controller", () => {
   let stepRepository: IMock<StepRepository>;
@@ -52,7 +53,7 @@ suite("Step Controller", () => {
 
         createdStep = new StepDbo();
         createdStep.description = addStepBody.description;
-        createdStep.id = 3
+        createdStep.id = 3;
         createdStep.status = stepStatus;
 
         createdStepResponse = {
@@ -62,7 +63,7 @@ suite("Step Controller", () => {
             id: createdStep.status.id.toString(),
             label: createdStep.status.label
           }
-        }
+        };
       });
 
       test("Saved step is returned in response body", async () => {
@@ -71,7 +72,7 @@ suite("Step Controller", () => {
 
         await subject.addStepToCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: createdStepResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, createdStepResponse))), Times.once());
       });
 
       test("Response returns statusCode 200", async () => {
@@ -90,7 +91,7 @@ suite("Step Controller", () => {
         addStepBody = {
           caseId: "4",
           description: " I am also a new test step!"
-        }
+        };
       });
 
       test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in errors array`, async () => {
@@ -99,7 +100,7 @@ suite("Step Controller", () => {
 
         await subject.addStepToCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -157,7 +158,7 @@ suite("Step Controller", () => {
 
         await subject.getStepsForCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: getAllStepsResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, getAllStepsResponse))), Times.once());
       });
 
       test("Response returns statusCode 200", async () => {
@@ -184,7 +185,7 @@ suite("Step Controller", () => {
 
         await subject.getStepsForCase(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors,[BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -210,7 +211,6 @@ suite("Step Controller", () => {
 
       setup(() => {
         updateStepBody = {
-          id: "4",
           description: "New Description"
         };
 
@@ -220,12 +220,12 @@ suite("Step Controller", () => {
 
         originalStep = new StepDbo();
         originalStep.description = "Original description...";
-        originalStep.id = Number(updateStepBody.id);
+        originalStep.id = 4;
         originalStep.status = stepStatus;
 
         updatedStep = new StepDbo();
         updatedStep.description = updateStepBody.description!;
-        updatedStep.id = Number(updateStepBody.id);
+        updatedStep.id = 4;
         updatedStep.status = stepStatus;
 
         updatedStepResponse = {
@@ -235,7 +235,7 @@ suite("Step Controller", () => {
             id: updatedStep.status.id.toString(),
             label: updatedStep.status.label
           }
-        }
+        };
       });
 
       test("Returns updated case in response payload", async () => {
@@ -246,7 +246,7 @@ suite("Step Controller", () => {
 
           await subject.addStepToCase(req.object, res.object);
 
-          res.verify(r => r.json({ errors: [], payload: updatedStepResponse }), Times.once());
+          res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, updatedStepResponse))), Times.once());
         });
       });
 
@@ -268,7 +268,6 @@ suite("Step Controller", () => {
 
       setup(() => {
         updateStepBody = {
-          id: "4",
           description: "New Description"
         };
       });
@@ -279,7 +278,7 @@ suite("Step Controller", () => {
 
         await subject.updateStep(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Error finding step"] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors,["Error finding step"]))), Times.once());
       });
 
       test("Response returns statusCode 400", async () => {
@@ -297,7 +296,6 @@ suite("Step Controller", () => {
 
       setup(() => {
         updateStepBody = {
-          id: "4",
           description: "New Description"
         };
       });
@@ -308,7 +306,7 @@ suite("Step Controller", () => {
 
         await subject.updateStep(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -325,7 +323,6 @@ suite("Step Controller", () => {
 
       setup(() => {
         updateStepBody = {
-          id: "4",
           description: "New Description"
         };
 
@@ -335,7 +332,7 @@ suite("Step Controller", () => {
 
         originalStep = new StepDbo();
         originalStep.description = "Original description...";
-        originalStep.id = Number(updateStepBody.id);
+        originalStep.id = 3;
         originalStep.status = stepStatus;
       });
 
@@ -346,7 +343,7 @@ suite("Step Controller", () => {
 
         await subject.updateStep(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -373,13 +370,13 @@ suite("Step Controller", () => {
         };
       });
 
-      test("Response returns only empty errors array", async () => {
+      test("Response returns no payload", async () => {
         given_Request_params_are(deleteStepParams);
         given_stepRepository_deleteStepById_returns(undefined);
 
         await subject.deleteStep(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [] }), Times.once());
+        res.verify(r => r.json(It.is(body => body.payload === undefined)), Times.once());
       });
 
       test("Response returns statusCode 200", async () => {
@@ -406,7 +403,7 @@ suite("Step Controller", () => {
 
         await subject.deleteStep(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {

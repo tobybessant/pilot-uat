@@ -33,7 +33,12 @@ export class NavComponent implements OnInit {
 
   ngOnInit(): void {
     this.userContextMenuActions.set("Logout", async () => {
-      this.authService.logout().then(() => this.router.navigate(["/login"]));
+      this.authService.logout().then(() => {
+        this.navbarService.setIsViewingProject(false);
+        this.navbarService.clearHeader();
+
+        this.router.navigate(["/login"]);
+      });
     });
 
     // subscribe to logged in user changes

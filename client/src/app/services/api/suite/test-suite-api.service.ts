@@ -9,21 +9,21 @@ import { IApiResponse } from "src/app/models/api/response/api-response.interface
 })
 export class TestSuiteApiService {
 
-  protected readonly baseUrl: string = "/suite";
+  protected readonly baseUrl: string = "/suites";
 
   constructor(private apiService: ApiService) { }
 
   public async addTestSuite(testSuiteData: ICreateSuiteRequest): Promise<IApiResponse<ISuiteResponse>> {
-    const response = await this.apiService.post<ISuiteResponse>(this.baseUrl + "/create", testSuiteData);
+    const response = await this.apiService.post<ISuiteResponse>(this.baseUrl, testSuiteData);
     return response;
   }
 
-  public async getTestSuitesForProject(projectId: number): Promise<IApiResponse<ISuiteResponse[]>> {
-    const response = await this.apiService.post<ISuiteResponse[]>(this.baseUrl + "/all", { projectId });
+  public async getTestSuitesForProject(projectId: string): Promise<IApiResponse<ISuiteResponse[]>> {
+    const response = await this.apiService.get<ISuiteResponse[]>(`${this.baseUrl}?projectId=${projectId}`);
     return response;
   }
 
-  public async deleteTestSuiteById(suiteId: string) {
+  public async deleteTestSuiteById(projectId: string, suiteId: string) {
     const response = await this.apiService.delete<void>(this.baseUrl + "/" + suiteId);
     return response;
   }

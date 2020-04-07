@@ -1,0 +1,21 @@
+.setup-form-container {
+  max-width: 500px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.setup-form {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.name-fields {
+  display: flex;
+  justify-content: space-between;
+}
+
+.name-fields > input {
+  max-width: 48%;
+}

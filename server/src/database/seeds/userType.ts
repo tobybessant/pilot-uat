@@ -11,7 +11,7 @@ let database: MSSQLDatabase;
 const records = [
   { type: "Supplier" },
   { type: "Client" }
-]
+];
 
 async function seed() {
   try {
@@ -20,7 +20,7 @@ async function seed() {
       .delete()
       .from(TABLE_NAME)
       .where("id IS NOT NULL")
-      .execute()
+      .execute();
 
     // seed records
     await getConnection().createQueryBuilder()

@@ -11,25 +11,25 @@ import { ProjectRepository } from "../repositories/projectRepository";
 import { UserRepository } from "../repositories/userRepository";
 import { BaseController } from "./baseController";
 import { ICreateProjectRequest } from "../dto/request/supplier/createProject";
-import { GetProject } from "../services/middleware/joi/schemas/getProject";
-import { IGetProjectRequest } from "../dto/request/supplier/getProject";
 import { Validator } from "joiful";
-import { BAD_REQUEST } from "http-status-codes";
-import { ApiError } from "../services/apiError";
+import { IUserResponse } from "../dto/response/common/user";
+import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("project")
+@Controller(`${BASE_ENDPOINT}/projects`)
 @ClassMiddleware(checkAuthentication)
 export class ProjectController extends BaseController {
 
   constructor(
     private projectRepository: ProjectRepository,
-    private userRepository: UserRepository
+    private userRepository: UserRepository,
+    private projectInviteRepository: ProjectInviteRepository
   ) {
     super();
   }
 
-  @Post("create")
+  @Post()
   @Middleware([
     new BodyMatches(new Validator()).schema(CreateProject),
     PermittedAccountTypes.are(["Supplier"])
@@ -40,7 +40,7 @@ export class ProjectController extends BaseController {
     try {
       const user = await this.userRepository.getUserByEmail((req.user as IUserToken).email);
       if (!user) {
-        throw new ApiError("Error finding user", BAD_REQUEST);
+        return this.badRequest(res, ["Error finding user"]);
       }
 
       const project = await this.projectRepository.addProject(user, model.title);
@@ -55,26 +55,22 @@ export class ProjectController extends BaseController {
       });
 
     } catch (error) {
-      if(error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [ error.message ]);
-        return;
-      }
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
-  @Post()
-  @Middleware(
-    new BodyMatches(new Validator()).schema(GetProject)
-  )
+  @Get(":id")
   public async getProjectById(req: Request, res: Response) {
-    const model: IGetProjectRequest = req.body;
-
     try {
-      const project = await this.projectRepository.getProjectById(model.id);
+      const authorised = await this.projectRepository.userHasAccessToProject(req.user!.email, req.params.id);
+      if(!authorised) {
+        return this.badRequest(res, ["Error finding project"]);
+      }
+
+      const project = await this.projectRepository.getProjectById(req.params.id);
 
       if (!project) {
-        throw new ApiError("That project does not exist", BAD_REQUEST);
+        return this.badRequest(res, ["Error finding project"]);
       }
 
       this.OK<IProjectResponse>(res, {
@@ -86,16 +82,11 @@ export class ProjectController extends BaseController {
         }))
       });
     } catch (error) {
-      if(error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
-
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
-  @Get("all")
+  @Get()
   public async getProjects(req: Request, res: Response) {
     try {
       let projects = await this.projectRepository.getProjectsForUser((req.user as IUserToken).email);
@@ -108,7 +99,7 @@ export class ProjectController extends BaseController {
         }))
       );
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -120,7 +111,48 @@ export class ProjectController extends BaseController {
       const deletedProject = await this.projectRepository.deleteProjectById(projectId);
       this.OK(res);
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
+    }
+  }
+
+  @Get(":id/users")
+  public async getUsersForProject(req: Request, res: Response) {
+    const userRoles = await this.projectRepository.getUsersForProject(req.params.id);
+
+    this.OK<IUserResponse[]>(res, userRoles.map(role => ({
+      id: role.user.id,
+      email: role.user.email,
+      firstName: role.user.firstName,
+      lastName: role.user.lastName,
+      type: role.user.userType.type,
+      organisations: role.user.organisations,
+      createdDate: role.user.createdDate
+    })));
+  }
+
+  @Get(":id/invites")
+  public async getOpenInvites(req: Request, res: Response) {
+    try {
+      const invites = await this.projectInviteRepository.getOpenInvitesForProject(req.params.id);
+
+      this.OK<any>(res, invites.map(invite => ({
+        id: invite.id.toString(),
+        userEmail: invite.userEmail,
+        userType: invite.userType,
+        status: invite.status
+      })));
+    } catch (error) {
+      this.serverError(res, error);
+    }
+  }
+
+  @Delete(":id/:userId")
+  public async removeUser(req: Request, res: Response) {
+    try {
+      const removedJoin = await this.projectRepository.removeUserFromProject(req.params.userId, req.params.id);
+      this.OK(res);
+    } catch (error) {
+      this.serverError(res, error);
     }
   }
 }

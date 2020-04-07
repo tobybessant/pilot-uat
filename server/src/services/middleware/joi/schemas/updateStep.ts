@@ -6,8 +6,8 @@ import { IStepStatusResponse } from "../../../../dto/response/supplier/stepStatu
 export class UpdateStep implements IUpdateStepRequest {
 
   @jf.string()
-    .required()
-  id!: string;
+    .optional()
+  id?: string | undefined;
 
   @jf.string()
     .optional()

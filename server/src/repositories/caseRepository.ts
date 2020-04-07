@@ -36,9 +36,9 @@ export class CaseRepository {
     return this.baseCaseRepository.delete({ id: Number(id) });
   }
 
-  public async updateCase(testCase: IUpdateCaseRequest): Promise<CaseDbo> {
+  public async updateCase(id: string, testCase: IUpdateCaseRequest): Promise<CaseDbo> {
     // convert the id key into a number
-    return this.baseCaseRepository.save({ ...testCase, id: Number(testCase.id) });
+    return this.baseCaseRepository.save({ ...testCase, id: Number(id) });
   }
 
   public async getCaseById(id: string): Promise<CaseDbo | undefined> {

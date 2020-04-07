@@ -10,7 +10,7 @@ export class RepositoryService {
   ) { }
 
   public getRepositoryFor<T>(dbo: any): Repository<T> {
-    return this.database.getConnection().getRepository<T>(dbo)
+    return this.database.getConnection().getRepository<T>(dbo);
   }
 
   public getCustomRepositoryFor<T>(customRepository: ObjectType<T>): T {

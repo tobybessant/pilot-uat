@@ -4,3 +4,4 @@ export * from "./project";
 export * from "./suite";
 export * from "./case";
 export * from "./step";
+export * from "./invite";

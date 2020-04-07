@@ -1,0 +1,13 @@
+<div class="test-case">
+  <ng-container *ngIf="case">
+    <div class="details">
+      <div>
+        <div class="heading"></div>
+      </div>
+      <app-test-step-list-client
+        [steps]="steps"
+        (stepUpdated)="fetchStepsForCase()"
+      ></app-test-step-list-client>
+    </div>
+  </ng-container>
+</div>

@@ -1,41 +1,35 @@
-import { OK, BAD_REQUEST, CREATED } from "http-status-codes";
+import { OK } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import * as passport from "passport";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { injectable } from "tsyringe";
-import { Repository } from "typeorm";
 import { Bcrypt } from "../services/utils/bcryptHash";
 import { CreateUser } from "../services/middleware/joi/schemas/createUser";
-import { IApiResponse } from "../dto/response/common/apiResponse";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryService";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
 import { IUserToken } from "../dto/response/common/userToken";
-import { OrganisationDbo } from "../database/entities/organisationDbo";
 import { ICreateUserRequest } from "../dto/request/common/createUser";
 import { BaseController } from "./baseController";
 import { IUserResponse } from "../dto/response/common/user";
-import { ApiError } from "../services/apiError";
 import { Validator } from "joiful";
+import { OrganisationRepository } from "../repositories/organisationRepository";
+import { UserRepository } from "../repositories/userRepository";
+import { UserTypeRepository } from "../repositories/userTypeRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("auth")
+@Controller(`${BASE_ENDPOINT}/auth`)
 export class AuthController extends BaseController {
 
-  private userRepository: Repository<UserDbo>
-  private userTypeRepository: Repository<UserTypeDbo>
-  private organisationRepository: Repository<OrganisationDbo>;
-
   constructor(
-    private repositoryService: RepositoryService,
+    private userRepository: UserRepository,
+    private userTypeRepository: UserTypeRepository,
+    private organisationRepository: OrganisationRepository,
     private bcrypt: Bcrypt
   ) {
     super();
-    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
-    this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
-    this.organisationRepository = repositoryService.getRepositoryFor<OrganisationDbo>(OrganisationDbo);
   }
 
   @Post("createaccount")
@@ -48,27 +42,27 @@ export class AuthController extends BaseController {
     // save user details to database
     try {
       // query for existing user
-      const exists: number = await this.userRepository.count({ email: model.email });
+      const exists: boolean = await this.userRepository.accountDoesExist(model.email);
       if (exists) {
-        throw new ApiError("Account already exists with that email", BAD_REQUEST);
+        return this.badRequest(res, ["Account already exists with that email"]);
       }
 
-      // add organisation if added
+      // add organisation if set
       const organisations = [];
-      if(model.organisationName) {
-        const newOrganisation = await this.organisationRepository.save({
-          organisationName: model.organisationName
-        });
-
+      if (model.organisationName) {
+        const newOrganisation = await this.organisationRepository.createOrganisation(model.organisationName);
         organisations.push(newOrganisation);
       }
 
       // add user credentials
-      const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type: model.type });
+      const userType: UserTypeDbo | undefined = await this.userTypeRepository.getTypeByType(model.type);
+      if (!userType) {
+        return this.badRequest(res, ["Invalid user type"]);
+      }
 
       // hash password
       const passwordHash = this.bcrypt.hash(model.password);
-      const user: UserDbo = await this.userRepository.save({
+      const user: UserDbo = await this.userRepository.addUser({
         email: model.email,
         passwordHash,
         firstName: model.firstName,
@@ -77,33 +71,28 @@ export class AuthController extends BaseController {
         organisations
       });
 
-      req.login(
-        {
-          email: model.email,
-          type: user.userType.type
-        } as IUserToken,
+      req.login({
+        email: model.email,
+        type: user.userType.type
+      },
         function (err) {
           if (err) {
-            console.log(err);
+            // console.log(err);
           }
         }
       );
 
       this.created<IUserResponse>(res, {
+        id: user.id,
         createdDate: user.createdDate,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        organisations: user.organisations,
         type: user.userType.type
       });
 
     } catch (error) {
-      if(error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-      } else {
-        this.serverError(res);
-      }
+      this.serverError(res, error);
     }
   }
 
@@ -119,7 +108,7 @@ export class AuthController extends BaseController {
   @Middleware(checkAuthentication)
   public logout(req: Request, res: Response) {
     req.logOut();
-    res.status(OK)
+    res.status(OK);
     res.json({
       message: "Logged out"
     });

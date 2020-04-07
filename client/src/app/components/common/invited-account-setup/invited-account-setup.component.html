@@ -1,0 +1,32 @@
+<div class="setup-form-container">
+  <p>
+    You don't appear to have an account, enter a password and we will set one up
+    for you!
+  </p>
+  <div class="setup-form">
+    <div class="name-fields">
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="First name"
+        [(ngModel)]="firstName"
+      />
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Last name"
+        [(ngModel)]="lastName"
+      />
+    </div>
+    <input
+      nbInput
+      fullWidth
+      type="password"
+      placeholder="Enter password"
+      [(ngModel)]="password"
+    />
+    <button nbButton status="primary" (click)="setup()">Continue</button>
+  </div>
+</div>

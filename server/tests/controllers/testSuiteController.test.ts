@@ -1,4 +1,4 @@
-import { IMock, Mock, It, Times } from "typemoq"
+import { IMock, Mock, It, Times } from "typemoq";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { RepositoryService } from "../../src/services/repositoryService";
 import { Request, Response } from "express";
@@ -7,8 +7,9 @@ import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { ISuiteResponse } from "../../src/dto/response/supplier/suite";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, SERVICE_UNAVAILABLE } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
+import { deepStrictEqual } from "../testUtils/deepStrictEqual";
 
 suite("TestSuiteController", () => {
   let repositoryService: IMock<RepositoryService>;
@@ -74,7 +75,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: createTestSuiteResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, createTestSuiteResponse))), Times.once());
       });
 
       test("Should return statusCode 200", async () => {
@@ -103,7 +104,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Project does not exist"] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Project does not exist"]))), Times.once());
       });
 
       test("Response returns statusCode 400", async () => {
@@ -117,7 +118,7 @@ suite("TestSuiteController", () => {
 
     });
 
-    suite("suiteRepository silently fails to add suite and returns undefined", () => {
+    suite("suiteRepository throws error when adding suite", () => {
 
       setup(() => {
         createTestSuiteBody = {
@@ -136,17 +137,17 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: ["Failed to add suite"] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Error adding suite"]))), Times.once());
       });
 
-      test("Response returns statusCode 500", async () => {
+      test("Response returns statusCode 503", async () => {
         given_Request_body_is(createTestSuiteBody);
         given_projectRepository_getProjectById_returns(projectDbo);
         given_testSuiteRepository_addTestSuite_returns(undefined);
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        res.verify(r => r.status(SERVICE_UNAVAILABLE), Times.once());
       });
 
     });
@@ -166,7 +167,7 @@ suite("TestSuiteController", () => {
 
         subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Reponse returns statusCode 500", async () => {
@@ -199,7 +200,7 @@ suite("TestSuiteController", () => {
 
         await subject.createTestSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -247,7 +248,7 @@ suite("TestSuiteController", () => {
 
         await subject.getTestSuites(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [], payload: getAllTestSuitesResponse }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, getAllTestSuitesResponse))), Times.once());
       });
 
       test("Should return statusCode 200", async () => {
@@ -275,7 +276,7 @@ suite("TestSuiteController", () => {
 
         await subject.getTestSuites(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE] }), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -299,12 +300,12 @@ suite("TestSuiteController", () => {
         };
       });
 
-      test("Should return nothing in response body", async () => {
+      test("Should return nothing in response payload", async () => {
         given_Request_params_are(deleteTestSuiteParams);
 
         await subject.deleteSuite(req.object, res.object);
 
-        res.verify(r => r.json({ errors: [] }), Times.once());
+        res.verify(r => r.json(It.is(body => body.payload === undefined)), Times.once());
       });
 
       test("Should return statusCode 200", async () => {
@@ -330,7 +331,7 @@ suite("TestSuiteController", () => {
 
         await subject.deleteSuite(req.object, res.object);
 
-        res.verify(r => r.json({errors: [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]}), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, [BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
       });
 
       test("Response returns statusCode 500", async () => {
@@ -349,19 +350,19 @@ suite("TestSuiteController", () => {
     req
       .setup(r => r.body)
       .returns(() => body);
-  };
+  }
 
   function given_Request_params_are(params: any): void {
     req
       .setup(r => r.params)
       .returns(() => params);
-  };
+  }
 
   function given_testSuiteRepository_addTestSuite_returns(returns: SuiteDbo | undefined) {
     testSuiteRepository
       .setup(tsr => tsr.addTestSuite(It.isAny(), It.isAny()))
       .returns(async () => returns);
-  };
+  }
 
   function given_testSuiteRepository_addTestSuite_throws() {
     testSuiteRepository
@@ -373,25 +374,25 @@ suite("TestSuiteController", () => {
     projectRepository
       .setup(pr => pr.getProjectById(It.isAny()))
       .returns(async () => returns);
-  };
+  }
 
   function given_projectRepository_getTestSuitesForProject_returns(returns: SuiteDbo[]) {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(It.isAny()))
       .returns(async () => returns);
-  };
+  }
 
   function given_projectRepository_getProjectById_throws() {
     projectRepository
       .setup(pr => pr.getProjectById(It.isAny()))
       .throws(new Error("Sensitive database information!"));
-  };
+  }
 
   function given_projectRepository_getTestSuitesForProject_throws() {
     projectRepository
       .setup(pr => pr.getTestSuitesForProject(It.isAny()))
       .throws(new Error("Sensitive database information!"));
-  };
+  }
 
   function given_suiteRepository_deleteTestSuiteById_throws() {
     testSuiteRepository

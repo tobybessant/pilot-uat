@@ -12,6 +12,7 @@ $mat-app-components-accent:  mat-palette($mat-pink, A200, A100, A400);
 $mat-app-components-theme:   mat-light-theme($mat-app-components-primary, $mat-app-components-accent);
 
 @include mat-expansion-panel-theme($mat-app-components-theme);
+@include mat-chips-theme($mat-app-components-theme);
 
 // NOTE: this removes browser outline on nb tabs for project component,
 // placing this elsewhere in the app had no effect.

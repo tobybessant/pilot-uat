@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Controller, ClassMiddleware, Post, Middleware, Delete } from "@overnightjs/core";
+import { Controller, ClassMiddleware, Post, Middleware, Delete, Get, Patch } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { Request, Response } from "express";
 import StepRepository from "../repositories/stepRepository";
@@ -9,16 +9,13 @@ import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { Validator } from "joiful";
 import { CreateStep } from "../services/middleware/joi/schemas/createStep";
 import { ICreateStepRequest } from "../dto/request/supplier/createStep";
-import { GetAllSteps } from "../services/middleware/joi/schemas/getAllSteps";
-import { IGetAllStepsRequest } from "../dto/request/supplier/getAllSteps";
 import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
-import { ApiError } from "../services/apiError";
-import { BAD_REQUEST } from "http-status-codes";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("step")
+@Controller(`${BASE_ENDPOINT}/steps`)
 @ClassMiddleware(checkAuthentication)
 export class StepController extends BaseController {
 
@@ -26,7 +23,7 @@ export class StepController extends BaseController {
     super();
   }
 
-  @Post("create")
+  @Post()
   @Middleware(new BodyMatches(new Validator()).schema(CreateStep))
   public async addStepToCase(req: Request, res: Response) {
     const model: ICreateStepRequest = req.body;
@@ -43,17 +40,14 @@ export class StepController extends BaseController {
         }
       });
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
-  @Post("all")
-  @Middleware(new BodyMatches(new Validator()).schema(GetAllSteps))
+  @Get()
   public async getStepsForCase(req: Request, res: Response) {
-    const model: IGetAllStepsRequest = req.body;
-
     try {
-      const steps = await this.stepRepository.getStepsForCase(model.caseId);
+      const steps = await this.stepRepository.getStepsForCase(req.query.caseId);
       this.OK<IStepResponse[]>(res, steps.map(step => ({
         description: step.description,
         id: step.id.toString(),
@@ -63,19 +57,19 @@ export class StepController extends BaseController {
         }
       })));
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
-  @Post("update")
+  @Patch(":id")
   @Middleware(new BodyMatches(new Validator()).schema(UpdateStep))
   public async updateStep(req: Request, res: Response) {
     const model: IUpdateStepRequest = req.body;
 
     try {
-      const stepDbo = await this.stepRepository.getStepById(model.id);
+      const stepDbo = await this.stepRepository.getStepById(req.params.id);
       if (!stepDbo) {
-        throw new ApiError("Error finding step", BAD_REQUEST);
+        return this.badRequest(res, ["Error finding step"]);
       }
 
       // map model properties to step dbo
@@ -96,11 +90,7 @@ export class StepController extends BaseController {
         }
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [error.message]);
-        return;
-      }
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 
@@ -113,7 +103,7 @@ export class StepController extends BaseController {
       const deletedStep = await this.stepRepository.deleteStepById(stepId);
       this.OK(res);
     } catch (error) {
-      this.serverError(res);
+      this.serverError(res, error);
     }
   }
 }

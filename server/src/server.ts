@@ -6,7 +6,7 @@ import * as cors from "cors";
 
 import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
-import { DependencyContainer } from "tsyringe"
+import { DependencyContainer } from "tsyringe";
 
 import { Passport } from "./services/passport/passport";
 import { catchMalformedJson } from "./services/middleware/catchMalformedJson";
@@ -28,11 +28,11 @@ class UATPlatformServer extends Server {
 
     this.app.use(cors({
       credentials: true,
-      origin: "http://localhost:4200"
+      origin: process.env.CLIENT_URL || "http://localhost:4200"
     }));
 
     this.app.use(session({
-      secret: "keyboard cat",
+      secret: process.env.SESSION_SECRET || "i am secret",
       resave: false,
       saveUninitialized: true,
       cookie: {

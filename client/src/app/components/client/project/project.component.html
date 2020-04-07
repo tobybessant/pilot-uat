@@ -1,0 +1,22 @@
+<div class="project-container">
+  <ng-container *ngIf="project">
+    <nb-tabset class="tabs-view">
+      <nb-tab tabTitle="Tests" class="no-h-padding">
+        <div class="tab-content">
+          <app-test-suite-list-client
+            [suitesData]="project.suites"
+            (suiteSelected)="updateActiveSuite($event)"
+          >
+          </app-test-suite-list-client>
+          <app-test-suite-client
+            class="test-suite"
+            [activeSuite]="activeSuite"
+          ></app-test-suite-client>
+        </div>
+      </nb-tab>
+    </nb-tabset>
+  </ng-container>
+  <div class="project-not-found" *ngIf="!project && fetchAttemptComplete">
+    <h2>Project not found :(</h2>
+  </div>
+</div>

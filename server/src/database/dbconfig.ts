@@ -13,4 +13,4 @@ export const DBConfig: ConnectionOptions = {
   ],
   synchronize: false,
   logging: process.env.db_logging ? true : false
-}
+};

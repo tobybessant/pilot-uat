@@ -1,0 +1,72 @@
+<div class="action-buttons">
+  <button nbButton status="primary" (click)="showInviteClientsDialog()">
+    Invite Client
+  </button>
+</div>
+
+<div *ngIf="openInvites.length > 0">
+  <h3>Pending Invites</h3>
+  <nb-card *ngFor="let invite of openInvites">
+    <nb-card-body>
+      <div class="left">
+          {{ invite.userEmail }}
+      </div>
+      <div class="right">
+        <button
+          nbButton
+          ghost
+          size="medium"
+          status="primary"
+          (click)="resendInvite(invite)"
+        >
+          <nb-icon icon="paper-plane-outline"></nb-icon>
+          Resend
+        </button>
+        <button
+          nbButton
+          ghost
+          size="medium"
+          status="danger"
+          (click)="revokeInvite(invite)"
+        >
+          <nb-icon icon="slash-outline"></nb-icon>
+          Revoke
+        </button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>
+
+<h3>Project Users</h3>
+<nb-card *ngFor="let user of projectUsers">
+  <nb-card-body>
+    <div class="left">
+      <app-user-type-chip
+        [type]="user.type"
+      >
+      </app-user-type-chip>
+      
+      <span class="user-names">
+        {{ user.firstName }}
+        {{ user.lastName }}
+      </span>
+      
+      <span class="email">
+        {{ user.email }}
+      </span>
+    </div>
+    <div class="right">
+      <button
+        *ngIf="isNotLoggedInUser(user)"
+        nbButton
+        ghost
+        size="medium"
+        status="danger"
+        (click)="removeUserFromProject(user)"
+      >
+        <nb-icon icon="person-remove-outline"></nb-icon>
+        Remove
+      </button>
+    </div>
+  </nb-card-body>
+</nb-card>

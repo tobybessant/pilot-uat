@@ -1,60 +1,49 @@
-import { OK, BAD_REQUEST } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, ClassMiddleware, Get } from "@overnightjs/core";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
 import { injectable } from "tsyringe";
-import { Repository } from "typeorm";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryService";
-import { IApiResponse } from "../dto/response/common/apiResponse";
 import { IUserResponse } from "../dto/response/common/user";
 import { BaseController } from "./baseController";
-import { ApiError } from "../services/apiError";
+import { UserRepository } from "../repositories/userRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 
 @injectable()
-@Controller("user")
+@Controller(`${BASE_ENDPOINT}/user`)
 @ClassMiddleware(checkAuthentication)
 export class UserController extends BaseController {
 
-  private userRepository: Repository<UserDbo>;
 
-  constructor(
-    private repositoryService: RepositoryService,
-  ) {
+  constructor(private userRepository: UserRepository) {
     super();
-    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
   @Get("account")
   public async getAccountDetails(req: Request, res: Response) {
     try {
       const { email } = req.user as any;
-      const user: UserDbo | undefined = await this.userRepository
-          .createQueryBuilder("user")
-          .leftJoinAndSelect("user.userType", "type")
-          .leftJoinAndSelect("user.organisations", "organisations")
-          .where("user.email = :email", { email })
-          .getOne();
+      const user: UserDbo | undefined = await this.userRepository.getBaseRepo()
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.userType", "type")
+        .leftJoinAndSelect("user.organisations", "organisations")
+        .where("user.email = :email", { email })
+        .getOne();
 
-      if(!user) {
-        throw new ApiError("User could not be found", BAD_REQUEST);
+      if (!user) {
+        return this.badRequest(res, ["User could not be found"]);
       }
 
       this.OK<IUserResponse>(res, {
+        id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         createdDate: user.createdDate,
-        organisations: user.organisations,
         type: user.userType.type
       });
 
     } catch (error) {
-      if(error instanceof ApiError) {
-        this.errorResponse(res, error.statusCode, [ error.message ]);
-      } else {
-        this.serverError(res);
-      }
+      this.serverError(res, error);
     }
   }
 }
