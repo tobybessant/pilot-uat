@@ -23,3 +23,10 @@ steps:
     command: 'custom'
     workingDir: 'server'
     customCommand: 'run test'
+
+- task: Npm@1
+  displayName: 'Server Code Coverage'
+  inputs:
+    command: 'custom'
+    workingDir: 'server'
+    customCommand: 'run coverage'
