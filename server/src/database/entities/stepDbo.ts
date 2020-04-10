@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { CaseDbo } from "./caseDbo";
 import { StepStatusDbo } from "./stepStatusDbo";
+import { StepFeedbackDbo } from "./stepFeedbackDbo";
 
 export const TABLE_NAME: string = "Step";
 @Entity({
@@ -19,4 +20,7 @@ export class StepDbo {
 
   @ManyToOne(type => CaseDbo, test => test.steps, { onDelete: "CASCADE" })
   case!: CaseDbo;
+
+  @OneToMany(type => StepFeedbackDbo, feedback => feedback.step, { onDelete: "CASCADE" })
+  feedback!: StepFeedbackDbo[];
 }
