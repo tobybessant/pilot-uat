@@ -16,7 +16,11 @@ export class StepFeedbackRepository extends TypeORMRepository<StepFeedbackDbo> {
   }
 
   public async addStepFeedback(user: UserDbo, step: StepDbo, notes: string, statusLabel: string) {
-    const status = await this.baseStepStatusRepository.findOne({ label: StepStatus.PASSED });
+    const status = await this.baseStepStatusRepository
+      .createQueryBuilder("status")
+      .where("status.label = :label", { label: statusLabel })
+      .getOne();
+
     return this.getBaseRepo().save({ notes, user, step, status });
   }
 
