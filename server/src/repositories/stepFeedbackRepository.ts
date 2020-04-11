@@ -20,16 +20,28 @@ export class StepFeedbackRepository extends TypeORMRepository<StepFeedbackDbo> {
     return this.getBaseRepo().save({ notes, user, step, status });
   }
 
-  public async getMostRecentStepFeedbackPerUser(stepId: string): Promise<UserDbo[] | undefined> {
-    const feedbackPerUser = await this.userRepository.getBaseRepo()
+  public async getAllUserFeedbackForStep(stepId: string): Promise<UserDbo[]> {
+    const feedbackQuery = await this.userRepository.getBaseRepo()
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.stepFeedback", "feedback")
       .leftJoinAndSelect("feedback.status", "status")
-      .leftJoin("feedback.step", "Step")
-      .where("step.id = :id", { id: stepId })
-      .orderBy("feedback.createdDate", "DESC")
-      .getMany();
+      .leftJoin("feedback.step", "step")
+      .where("step.id = :sid", { sid: stepId })
+      .orderBy("feedback.createdDate", "DESC");
 
-    return feedbackPerUser;
+    return feedbackQuery.getMany();
+  }
+
+  public async getUserFeedbackForStep(stepId: string, userEmail: string): Promise<StepFeedbackDbo[]> {
+    const feedbackQuery = await this.getBaseRepo()
+      .createQueryBuilder("feedback")
+      .leftJoinAndSelect("feedback.user", "user")
+      .leftJoinAndSelect("feedback.status", "status")
+      .leftJoin("feedback.step", "step")
+      .where("step.id = :id", { id: stepId })
+      .andWhere("user.email = :email", { email: userEmail })
+      .orderBy("feedback.createdDate", "DESC");
+
+    return feedbackQuery.getMany();
   }
 }

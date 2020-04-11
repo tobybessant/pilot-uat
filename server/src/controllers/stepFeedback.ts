@@ -23,17 +23,17 @@ export class StepFeedbackController extends BaseController {
 
   @Post()
   public async addStepFeedback(req: Request, res: Response) {
-
     try {
       const user = await this.userRepository.getUserByEmail(req.user?.email || "");
       if (!user) throw new ApiError("no user", BAD_REQUEST);
 
       const step = await this.stepRepository.getStepById(req.body.stepId);
-      if (!step) throw new ApiError("no user", BAD_REQUEST);
+      if (!step) throw new ApiError("no step", BAD_REQUEST);
 
       const addFeedback = await this.stepFeedbackRepository.addStepFeedback(user, step, req.body.notes, req.body.status);
-      if(!addFeedback)
-        throw new ApiError("feedback not found!", BAD_REQUEST);
+      if (!addFeedback) {
+        throw new ApiError("Feedback not found!", BAD_REQUEST);
+      }
 
       return this.created<any>(res, addFeedback);
     } catch (error) {
@@ -42,11 +42,20 @@ export class StepFeedbackController extends BaseController {
   }
 
   @Get()
-  public async getStepFeedback(req: Request, res: Response) {
+  public async getLatestUserFeedbackForStep(req: Request, res: Response) {
+    console.log(req.query);
     try {
-      console.log(req.query);
-      const feedback = await this.stepFeedbackRepository.getMostRecentStepFeedbackPerUser(req.query.stepId);
-      console.log(feedback);
+      let feedback: any[] = [];
+
+      if (!req.query.userEmail) {
+        feedback = await this.stepFeedbackRepository.getAllUserFeedbackForStep(req.query.stepId);
+      } else {
+        feedback = await this.stepFeedbackRepository.getUserFeedbackForStep(req.query.stepId, req.query.userEmail);
+      }
+
+      if(req.query.onlyLatest) {
+        feedback = feedback[0] || {};
+      }
 
       return this.OK(res, feedback);
     } catch (error) {
