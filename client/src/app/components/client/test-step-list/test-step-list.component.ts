@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { IStepResponse } from "src/app/models/api/response/client/step.interface";
+import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 
 @Component({
   selector: "app-test-step-list-client",
@@ -11,9 +12,12 @@ export class ClientTestStepListComponent implements OnInit {
   @Input()
   public steps: IStepResponse[] = [];
 
-  constructor() { }
+  constructor(private activeStepService: ActiveStepService) { }
 
   ngOnInit(): void {
   }
 
+  public setSelectedStep(step: any) {
+    this.activeStepService.setSelectedStep(step);
+  }
 }

@@ -67,13 +67,4 @@ export class ClientTestSuiteComponent implements OnInit {
       this.cases = response.payload;
     }
   }
-
-  public updateSelectedTestCase(id: number) {
-    this.fetchTestsForActiveSuite();
-    this.activeTestCaseService.setTestCase(null);
-  }
-
-  public newCaseSelected({ selected }) {
-    this.activeTestCaseService.setTestCase(selected[0]);
-  }
 }
