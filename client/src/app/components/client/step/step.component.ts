@@ -14,6 +14,8 @@ export class StepComponent implements OnInit {
   private step: any;
   private user: IUserResponse;
   private latestFeedback: any;
+  public notes: string = "";
+  public status: string = "Not Started";
 
   constructor(
     private activeStepService: ActiveStepService,
@@ -23,7 +25,7 @@ export class StepComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.sessionService.getCurrentUser();
-    this.activeStepService.getSubject().subscribe(step => {
+    this.activeStepService.getStepSubject().subscribe(step => {
       this.setSelectedStep(step);
     });
 
@@ -34,16 +36,35 @@ export class StepComponent implements OnInit {
 
   private async setSelectedStep(step: any) {
     this.step = step;
-    const feedback = await this.stepFeedbackApiService.getLatestStepFeedbackFromUser(this.step.id, this.user.email);
-    this.latestFeedback = feedback.payload;
-    console.log(this.latestFeedback);
+    if (step) {
+      const feedback = await this.stepFeedbackApiService.getLatestStepFeedbackFromUser(this.step.id, this.user.email);
+      this.latestFeedback = feedback.payload;
+      this.notes = this.latestFeedback.notes;
+      this.status = this.step.currentStatus.label;
+    }
   }
 
-  public getStepName() {
+  public getStepDescription() {
     return this.step ? this.step.description : "No step selected";
   }
 
   public getLatestFeedbackStatus() {
-    return this.latestFeedback ? this.latestFeedback.notes : "Not Started";
+    if (this.latestFeedback && JSON.stringify(this.latestFeedback) !== JSON.stringify({})) {
+      return this.latestFeedback.notes;
+    }
+    return "Not Started";
+  }
+
+  public stepSelected(): boolean {
+    return this.step !== null && this.step !== undefined;
+  }
+
+  public closeStepPanel() {
+    this.activeStepService.setSelectedStep(null);
+  }
+
+  public async addFeedback() {
+    await this.stepFeedbackApiService.addFeedbackForStep(this.step.id, this.notes, this.status);
+    this.activeStepService.stepDetailsUpdated();
   }
 }

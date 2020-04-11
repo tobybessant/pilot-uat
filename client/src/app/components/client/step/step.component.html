@@ -1,3 +1,23 @@
-<div class="step">
-  {{ getLatestFeedbackStatus() }}
+<div *ngIf="stepSelected()" class="step">
+  <div class="header">
+    <h6>Step Details</h6>
+    <button nbButton ghost size="large" status="basic" (click)="closeStepPanel()">
+      <nb-icon icon="close-outline"></nb-icon>
+    </button>
+  </div>
+  <div class="content">
+    {{ getStepDescription() }}
+    <input nbInput type="text" placeholder="Add notes" [(ngModel)]="notes" />
+    <div>
+      <label>Update Status</label>
+      <nb-select status="primary" [(ngModel)]="status">
+        <nb-option value="Not Started">Not Started</nb-option>
+        <nb-option value="Failed">Failed</nb-option>
+        <nb-option value="Passed">Passed</nb-option>
+      </nb-select>
+    </div>
+  </div>
+  <div class="footer">
+    <button nbButton fullWidth (click)="addFeedback()">Save</button>
+  </div>
 </div>

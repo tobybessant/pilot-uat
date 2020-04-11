@@ -5,6 +5,7 @@ import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { StepApiService } from "src/app/services/api/step/step-api.service";
 import { NbDialogService } from "@nebular/theme";
 import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
+import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 
 @Component({
   selector: "app-test-case-client",
@@ -19,10 +20,15 @@ export class ClientTestCaseComponent implements OnInit {
   public steps: IStepResponse[] = [];
 
   constructor(
-    private stepApiService: StepApiService
+    private stepApiService: StepApiService,
+    private activeStepService: ActiveStepService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.activeStepService.getStepUpdatedSubject().subscribe(async () => {
+      await this.fetchStepsForCase();
+    });
+
     await this.fetchStepsForCase();
   }
 
@@ -30,6 +36,4 @@ export class ClientTestCaseComponent implements OnInit {
     const response = await this.stepApiService.getStepsforCase<IStepResponse[]>(this.case.id);
     this.steps = response.payload;
   }
-
-
 }

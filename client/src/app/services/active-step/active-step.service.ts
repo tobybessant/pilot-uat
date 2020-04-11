@@ -6,21 +6,30 @@ import { Subject, Observable } from "rxjs";
 })
 export class ActiveStepService {
 
-  private subject = new Subject<any>();
+  private stepSubject = new Subject<any>();
+  private stepUpdatedSubject = new Subject<void>();
   private selectedStep: any;
 
   constructor() { }
 
   async setSelectedStep(step: any) {
     this.selectedStep = step;
-    this.subject.next(step);
+    this.stepSubject.next(step);
   }
 
-  public getSubject(): Observable<any> {
-    return this.subject.asObservable();
+  public getStepSubject(): Observable<any> {
+    return this.stepSubject.asObservable();
   }
 
   public getSelectedStep() {
     return this.selectedStep;
+  }
+
+  public stepDetailsUpdated() {
+    this.stepUpdatedSubject.next();
+  }
+
+  public getStepUpdatedSubject() {
+    return this.stepUpdatedSubject;
   }
 }

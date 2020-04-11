@@ -14,4 +14,8 @@ export class StepFeedbackApiService {
   public getLatestStepFeedbackFromUser(stepId: string, userEmail): Promise<IApiResponse<any>> {
     return this.apiService.get(`${this.baseUrl}?stepId=${stepId}&userEmail=${userEmail}&onlyLatest=true`);
   }
+
+  public addFeedbackForStep(stepId: string, notes: string, status: string) {
+    return this.apiService.post(`${this.baseUrl}`, { stepId, notes, status });
+  }
 }
