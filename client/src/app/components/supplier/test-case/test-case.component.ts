@@ -58,7 +58,7 @@ export class TestCaseComponent implements OnInit {
   }
 
   public async fetchStepsForCase() {
-    const response = await this.stepApiService.getStepsforCase(this.case.id);
+    const response = await this.stepApiService.getStepsforCase<IStepResponse[]>(this.case.id);
     this.steps = response.payload;
   }
 

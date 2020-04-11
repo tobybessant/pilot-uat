@@ -19,8 +19,8 @@ export class StepApiService {
     });
   }
 
-  public async getStepsforCase(caseId: string): Promise<IApiResponse<IStepResponse[]>> {
-    return this.apiService.get<IStepResponse[]>(`${this.baseUrl}?caseId=${caseId}`);
+  public async getStepsforCase<T>(caseId: string): Promise<IApiResponse<T>> {
+    return this.apiService.get<T>(`${this.baseUrl}?caseId=${caseId}`);
   }
 
   public async updateStep(step: IStepResponse): Promise<IApiResponse<IStepResponse>> {
