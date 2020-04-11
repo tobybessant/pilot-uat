@@ -43,7 +43,6 @@ export class StepFeedbackController extends BaseController {
 
   @Get()
   public async getLatestUserFeedbackForStep(req: Request, res: Response) {
-    console.log(req.query);
     try {
       let feedback: any[] = [];
 

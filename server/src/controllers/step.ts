@@ -13,13 +13,16 @@ import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { StepFeedbackRepository } from "../repositories/stepFeedbackRepository";
+import { StepStatus } from "../database/entities/stepStatusDbo";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/steps`)
 @ClassMiddleware(checkAuthentication)
 export class StepController extends BaseController {
 
-  constructor(private stepRepository: StepRepository) {
+  constructor(private stepRepository: StepRepository,
+    private stepFeedbackRepository: StepFeedbackRepository) {
     super();
   }
 
@@ -33,11 +36,7 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse>(res, {
         id: step.id.toString(),
-        description: step.description,
-        status: {
-          id: step.status.id.toString(),
-          label: step.status.label
-        }
+        description: step.description
       });
     } catch (error) {
       this.serverError(res, error);
@@ -47,15 +46,27 @@ export class StepController extends BaseController {
   @Get()
   public async getStepsForCase(req: Request, res: Response) {
     try {
-      const steps = await this.stepRepository.getStepsForCase(req.query.caseId);
-      this.OK<IStepResponse[]>(res, steps.map(step => ({
-        description: step.description,
-        id: step.id.toString(),
-        status: {
-          id: step.status.id.toString(),
-          label: step.status.label
-        }
-      })));
+      let steps = [];
+      if (req.user?.type === "Supplier") {
+        steps = await this.stepRepository.getStepsForCase(req.query.caseId);
+        return this.OK<IStepResponse[]>(res, steps.map(step => ({
+          description: step.description,
+          id: step.id.toString()
+        })));
+      }
+
+      steps = await this.stepRepository.getStepsForCase(req.query.caseId);
+      const mappedSteps = [];
+
+      for (const step of steps) {
+        const latestStepFeedback = await this.stepFeedbackRepository.getUserFeedbackForStep(step.id.toString(), req.user?.email || "");
+        mappedSteps.push({
+          id: step.id,
+          description: step.description,
+          currentStatus: latestStepFeedback[0]?.status || { label: StepStatus.NOT_STARTED }
+        });
+      }
+      return this.OK<any>(res, mappedSteps);
     } catch (error) {
       this.serverError(res, error);
     }
@@ -83,11 +94,7 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse>(res, {
         id: updateStep.id.toString(),
-        description: updateStep.description,
-        status: {
-          id: updateStep.status.id.toString(),
-          label: updateStep.status.label
-        }
+        description: updateStep.description
       });
     } catch (error) {
       this.serverError(res, error);
