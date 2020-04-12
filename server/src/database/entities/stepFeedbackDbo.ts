@@ -20,7 +20,7 @@ export class StepFeedbackDbo {
   @JoinColumn()
   status!: StepStatusDbo;
 
-  @Column({ type: "nvarchar", length: "800" })
+  @Column({ type: "nvarchar", length: "800", nullable: true })
   notes!: string;
 
   @CreateDateColumn()

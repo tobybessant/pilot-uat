@@ -6,16 +6,17 @@
     </button>
   </div>
   <div class="content">
-    {{ getStepDescription() }}
-    <input nbInput type="text" placeholder="Add notes" [(ngModel)]="notes" />
+    <div class="description">
+      {{ getStepDescription() }}
+    </div>
     <div>
-      <label>Update Status</label>
       <nb-select status="primary" [(ngModel)]="status">
         <nb-option value="Not Started">Not Started</nb-option>
         <nb-option value="Failed">Failed</nb-option>
         <nb-option value="Passed">Passed</nb-option>
       </nb-select>
     </div>
+    <textarea nbInput fullWidth placeholder="Add notes..." [(ngModel)]="notes"></textarea>
   </div>
   <div class="footer">
     <button nbButton fullWidth (click)="addFeedback()">Save</button>
