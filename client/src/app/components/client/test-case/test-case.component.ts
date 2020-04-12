@@ -1,10 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { ICaseResponse } from "src/app/models/api/response/client/case.interface";
 import { IStepResponse } from "src/app/models/api/response/client/step.interface";
-import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { StepApiService } from "src/app/services/api/step/step-api.service";
-import { NbDialogService } from "@nebular/theme";
-import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
 import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 
 @Component({

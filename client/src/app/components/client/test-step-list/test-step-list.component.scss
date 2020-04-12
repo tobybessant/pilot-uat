@@ -36,7 +36,7 @@ p {
 
 /* The actual content */
 .content {
-  padding: 3px 50px;
+  padding: 0px 50px;
   position: relative;
 }
 
@@ -126,4 +126,6 @@ p {
 
 .step-description {
   flex-grow: 1;
+  height: 100%;
+  padding: 8px 0;
 }

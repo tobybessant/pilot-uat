@@ -1,7 +1,13 @@
-<div *ngIf="stepSelected()" class="step">
+<div *ngIf="stepSelected()" [@inOutAnimation] class="step" [class]="[ getStatusGradientBackgroundClass() ]">
   <div class="header">
     <h6>Step Feedback</h6>
-    <button nbButton ghost size="large" status="basic" (click)="closeStepPanel()">
+    <button
+      nbButton
+      ghost
+      size="large"
+      status="basic"
+      (click)="closeStepPanel()"
+    >
       <nb-icon icon="close-outline"></nb-icon>
     </button>
   </div>
@@ -10,15 +16,27 @@
       {{ getStepDescription() }}
     </div>
     <div>
-      <nb-select status="primary" [(ngModel)]="status">
+      <nb-select fullWidth [(ngModel)]="status">
         <nb-option value="Not Started">Not Started</nb-option>
         <nb-option value="Failed">Failed</nb-option>
         <nb-option value="Passed">Passed</nb-option>
       </nb-select>
     </div>
-    <textarea nbInput fullWidth placeholder="Add notes..." [(ngModel)]="notes"></textarea>
+    <textarea
+      nbInput
+      fullWidth
+      placeholder="Add notes..."
+      [(ngModel)]="notes"
+    ></textarea>
   </div>
   <div class="footer">
-    <button nbButton fullWidth (click)="addFeedback()">Save</button>
+    <button
+      nbButton
+      fullWidth
+      status="primary"
+      (click)="addFeedbackAndCloseStepPanel()"
+    >
+      Save & Close
+    </button>
   </div>
 </div>
