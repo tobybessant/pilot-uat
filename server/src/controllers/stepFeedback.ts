@@ -77,23 +77,27 @@ export class StepFeedbackController extends BaseController {
 
       const feedback = await this.stepFeedbackRepository.getUserFeedbackForStep(req.query.stepId, req.query.userEmail);
       if (req.query.onlyLatest) {
-        const latestFeedback: StepFeedbackDbo = feedback[0] || {};
-        return this.OK<IStepFeedbackResponse>(res, {
-          createdDate: latestFeedback.createdDate,
-          id: latestFeedback.id.toString(),
-          notes: latestFeedback.notes,
-          status: {
-            id: latestFeedback.status.id.toString(),
-            label: latestFeedback.status.label
-          },
-          user: {
-            createdDate: latestFeedback.user.createdDate,
-            email: latestFeedback.user.email,
-            firstName: latestFeedback.user.firstName,
-            lastName: latestFeedback.user.lastName,
-            id: latestFeedback.user.id
-          }
-        });
+        const latestFeedback: StepFeedbackDbo | undefined = feedback[0];
+
+        if(latestFeedback){
+          return this.OK<IStepFeedbackResponse>(res, {
+            createdDate: latestFeedback.createdDate,
+            id: latestFeedback.id.toString(),
+            notes: latestFeedback.notes,
+            status: {
+              id: latestFeedback.status.id.toString(),
+              label: latestFeedback.status.label
+            },
+            user: {
+              createdDate: latestFeedback.user.createdDate,
+              email: latestFeedback.user.email,
+              firstName: latestFeedback.user.firstName,
+              lastName: latestFeedback.user.lastName,
+              id: latestFeedback.user.id
+            }
+          });
+        }
+        return this.OK(res);
       }
 
       return this.OK<IStepFeedbackResponse[]>(res, feedback.map(f => ({

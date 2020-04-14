@@ -83,7 +83,7 @@ export class StepComponent implements OnInit, OnDestroy {
       const feedback = await this.stepFeedbackApiService.getLatestStepFeedbackFromUser(this.step.id, this.user.email);
       console.log(feedback);
       this.latestFeedback = feedback.payload;
-      this.notes = this.latestFeedback.notes;
+      this.notes = this.latestFeedback?.notes || "";
       this.status = this.step.currentStatus.label;
     }
   }

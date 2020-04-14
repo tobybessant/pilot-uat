@@ -64,9 +64,11 @@ export class StepController extends BaseController {
       if(!defaultStatus) {
         throw new ApiError("Broken!!", BAD_REQUEST);
       }
+
       const mappedSteps: IStepReponse[] = [];
       for (const step of steps) {
         const latestStepFeedback = await this.stepFeedbackRepository.getUserFeedbackForStep(step.id.toString(), req.user?.email || "");
+
         mappedSteps.push({
           id: step.id.toString(),
           description: step.description,
