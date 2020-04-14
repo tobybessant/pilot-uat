@@ -3,7 +3,6 @@
   *ngIf="stepSelected()"
   [@inOutAnimation]
   class="step"
-  [style.top]="900"
 >
   <div class="header">
     <h6>Step Feedback</h6>
@@ -31,6 +30,7 @@
     <textarea
       nbInput
       fullWidth
+      fieldSize="small"
       placeholder="Add notes... (optional)"
       [(ngModel)]="notes"
     ></textarea>

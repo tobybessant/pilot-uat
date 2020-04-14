@@ -38,8 +38,6 @@ export class StepComponent implements OnInit, OnDestroy {
   @ViewChild("stepPanel")
   public stepPanel: ElementRef;
 
-  public top: number;
-
   private step: any;
   private user: IUserResponse;
   private latestFeedback: any;
@@ -54,7 +52,6 @@ export class StepComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.randomValue();
     this.user = this.sessionService.getCurrentUser();
     this.activeStepService.getStepSubject().subscribe(step => {
       this.setSelectedStep(step);
@@ -83,6 +80,7 @@ export class StepComponent implements OnInit, OnDestroy {
     this.step = step;
     if (step) {
       const feedback = await this.stepFeedbackApiService.getLatestStepFeedbackFromUser(this.step.id, this.user.email);
+      console.log(feedback);
       this.latestFeedback = feedback.payload;
       this.notes = this.latestFeedback.notes;
       this.status = this.step.currentStatus.label;
@@ -133,12 +131,5 @@ export class StepComponent implements OnInit, OnDestroy {
     // Partially visible elements return true:
     // isVisible = elemTop < window.innerHeight && elemBottom >= 0;
     return isVisible;
-  }
-
-  public randomValue() {
-    setInterval(() => {
-      this.top = Math.floor((Math.random() * 100) + 1);
-      console.log(this.top);
-    }, 1000);
   }
 }
