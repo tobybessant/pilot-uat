@@ -1,4 +1,4 @@
-import { Post, Controller, Get } from "@overnightjs/core";
+import { Post, Controller, Get, Middleware } from "@overnightjs/core";
 import { Request, Response } from "express";
 import { UserRepository } from "../repositories/userRepository";
 import StepRepository from "../repositories/stepRepository";
@@ -8,6 +8,14 @@ import { BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "./baseController";
 import { injectable } from "tsyringe";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { ICreateFeedbackRequest } from "../dto/request/client/feedback.interface";
+import { BodyMatches } from "../services/middleware/joi/bodyMatches";
+import { Validator } from "joiful";
+import { CreateFeedback } from "../services/middleware/joi/schemas/createFeedback";
+import { IStepFeedbackResponse } from "../dto/response/client/feedback.interface";
+import { StepFeedbackDbo } from "../database/entities/stepFeedbackDbo";
+import { UserDbo } from "../database/entities/userDbo";
+import { IUserStepFeedbackResponse } from "../dto/response/supplier/userStepFeedback.interface";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/feedback`)
@@ -22,15 +30,18 @@ export class StepFeedbackController extends BaseController {
   }
 
   @Post()
+  @Middleware(new BodyMatches(new Validator()).schema(CreateFeedback))
   public async addStepFeedback(req: Request, res: Response) {
+    const model: ICreateFeedbackRequest = req.body;
+
     try {
       const user = await this.userRepository.getUserByEmail(req.user?.email || "");
       if (!user) throw new ApiError("no user", BAD_REQUEST);
 
-      const step = await this.stepRepository.getStepById(req.body.stepId);
+      const step = await this.stepRepository.getStepById(model.stepId.toString());
       if (!step) throw new ApiError("no step", BAD_REQUEST);
 
-      const addFeedback = await this.stepFeedbackRepository.addStepFeedback(user, step, req.body.notes, req.body.status);
+      const addFeedback = await this.stepFeedbackRepository.addStepFeedback(user, step, model.notes, model.status);
       if (!addFeedback) {
         throw new ApiError("Feedback not found!", BAD_REQUEST);
       }
@@ -44,19 +55,63 @@ export class StepFeedbackController extends BaseController {
   @Get()
   public async getLatestUserFeedbackForStep(req: Request, res: Response) {
     try {
-      let feedback: any[] = [];
-
       if (!req.query.userEmail) {
-        feedback = await this.stepFeedbackRepository.getAllUserFeedbackForStep(req.query.stepId);
-      } else {
-        feedback = await this.stepFeedbackRepository.getUserFeedbackForStep(req.query.stepId, req.query.userEmail);
+        const feedbackPerUser: UserDbo[] = await this.stepFeedbackRepository.getAllUserFeedbackForStep(req.query.stepId);
+        return this.OK<IUserStepFeedbackResponse[]>(res, feedbackPerUser.map(user => ({
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          createdDate: user.createdDate,
+          feedback: user.stepFeedback.map(s => ({
+            id: s.id,
+            createdDate: s.createdDate,
+            notes: s.notes,
+            status: {
+              id: s.status.id.toString(),
+              label: s.status.label
+            }
+          }))
+        })));
       }
 
-      if(req.query.onlyLatest) {
-        feedback = feedback[0] || {};
+      const feedback = await this.stepFeedbackRepository.getUserFeedbackForStep(req.query.stepId, req.query.userEmail);
+      if (req.query.onlyLatest) {
+        const latestFeedback: StepFeedbackDbo = feedback[0] || {};
+        return this.OK<IStepFeedbackResponse>(res, {
+          createdDate: latestFeedback.createdDate,
+          id: latestFeedback.id,
+          notes: latestFeedback.notes,
+          status: {
+            id: latestFeedback.status.id.toString(),
+            label: latestFeedback.status.label
+          },
+          user: {
+            createdDate: latestFeedback.user.createdDate,
+            email: latestFeedback.user.email,
+            firstName: latestFeedback.user.firstName,
+            lastName: latestFeedback.user.lastName,
+            id: latestFeedback.user.id
+          }
+        });
       }
 
-      return this.OK(res, feedback);
+      return this.OK<IStepFeedbackResponse[]>(res, feedback.map(f => ({
+        createdDate: f.createdDate,
+        id: f.id,
+        notes: f.notes,
+        status: {
+          id: f.status.id.toString(),
+          label: f.status.label
+        },
+        user: {
+          createdDate: f.user.createdDate,
+          email: f.user.email,
+          firstName: f.user.firstName,
+          lastName: f.user.lastName,
+          id: f.user.id
+        }
+      })));
     } catch (error) {
       return this.serverError(res, error);
     }

@@ -75,7 +75,7 @@ export abstract class BaseController {
 
   protected serverError(res: Response, error: Error, redirectToErrorPage?: boolean): void {
     if(process.env.NODE_ENV === "development") {
-      Logger.Err("[SERVER_ERROR] " + error.message);
+      Logger.Err("[SERVER_ERROR] " + error.toString());
     }
 
     if (error instanceof ApiError) {

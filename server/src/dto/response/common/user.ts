@@ -6,5 +6,5 @@ export interface IUserResponse {
   firstName: string;
   lastName: string;
   createdDate: Date;
-  type: string;
+  type?: string;
 }
