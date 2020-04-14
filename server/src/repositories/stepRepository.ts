@@ -30,7 +30,7 @@ export default class StepRepository {
     });
   }
 
-  public async getStepsForCase(id: string, clientEmail?: string): Promise<StepDbo[]> {
+  public async getStepsForCase(id: string): Promise<StepDbo[]> {
     const query = await this.baseStepRepository
       .createQueryBuilder("step")
       .leftJoin("step.case", "case")

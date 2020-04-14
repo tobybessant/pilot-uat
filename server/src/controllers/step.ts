@@ -14,7 +14,7 @@ import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 import { StepFeedbackRepository } from "../repositories/stepFeedbackRepository";
-import { IStepReponse } from "../dto/response/client/step.interface";
+import { IStepResponse as IStepResponseClient } from "../dto/response/client/step.interface";
 import StepStatusRepository from "../repositories/stepStatusRepository";
 import { ApiError } from "../services/apiError";
 import { BAD_REQUEST } from "http-status-codes";
@@ -65,7 +65,7 @@ export class StepController extends BaseController {
         throw new ApiError("Broken!!", BAD_REQUEST);
       }
 
-      const mappedSteps: IStepReponse[] = [];
+      const mappedSteps: IStepResponseClient[] = [];
       for (const step of steps) {
         const latestStepFeedback = await this.stepFeedbackRepository.getUserFeedbackForStep(step.id.toString(), req.user?.email || "");
 
@@ -78,7 +78,7 @@ export class StepController extends BaseController {
           }
         });
       }
-      return this.OK<IStepReponse[]>(res, mappedSteps);
+      return this.OK<IStepResponse[]>(res, mappedSteps);
     } catch (error) {
       this.serverError(res, error);
     }
