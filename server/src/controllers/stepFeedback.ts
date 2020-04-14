@@ -36,17 +36,22 @@ export class StepFeedbackController extends BaseController {
 
     try {
       const user = await this.userRepository.getUserByEmail(req.user?.email || "");
-      if (!user) throw new ApiError("no user", BAD_REQUEST);
+      if (!user) throw new ApiError("User not found", BAD_REQUEST);
 
       const step = await this.stepRepository.getStepById(model.stepId.toString());
-      if (!step) throw new ApiError("no step", BAD_REQUEST);
+      if (!step) throw new ApiError("Step not found", BAD_REQUEST);
 
       const addFeedback = await this.stepFeedbackRepository.addStepFeedback(user, step, model.notes, model.status);
-      if (!addFeedback) {
-        throw new ApiError("Feedback not found!", BAD_REQUEST);
-      }
 
-      return this.created<any>(res, addFeedback);
+      return this.created<IStepFeedbackResponse>(res, {
+        createdDate: addFeedback.createdDate,
+        id: addFeedback.id.toString(),
+        notes: addFeedback.notes,
+        status: {
+          id: addFeedback.status.id.toString(),
+          label: addFeedback.status.label
+        }
+      });
     } catch (error) {
       return this.serverError(res, error);
     }

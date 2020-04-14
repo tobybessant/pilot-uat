@@ -15,7 +15,7 @@ export class StepFeedbackRepository extends TypeORMRepository<StepFeedbackDbo> {
     this.baseStepStatusRepository = repositoryService.getRepositoryFor(StepStatusDbo);
   }
 
-  public async addStepFeedback(user: UserDbo, step: StepDbo, notes: string, statusLabel: string) {
+  public async addStepFeedback(user: UserDbo, step: StepDbo, notes: string, statusLabel: string): Promise<StepFeedbackDbo> {
     const status = await this.baseStepStatusRepository
       .createQueryBuilder("status")
       .where("status.label = :label", { label: statusLabel })

@@ -1,5 +1,4 @@
 import { IMock, Mock, It, Times } from "typemoq";
-
 import { Request, Response } from "express";
 import { StepController } from "../../src/controllers";
 import StepRepository from "../../src/repositories/stepRepository";
