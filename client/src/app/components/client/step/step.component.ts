@@ -5,6 +5,7 @@ import { SessionService } from "src/app/services/session/session.service";
 import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { IStepResponse } from "src/app/models/api/response/client/step.interface";
+import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFeedback.interface";
 
 @Component({
   selector: "app-step",
@@ -41,7 +42,7 @@ export class StepComponent implements OnInit {
 
   private step: IStepResponse;
   private user: IUserResponse;
-  private latestFeedback: any;
+  private latestFeedback: IStepFeedbackResponse;
   public notes: string = "";
   public status: string = "Not Started";
 
