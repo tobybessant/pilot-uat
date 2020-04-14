@@ -1,5 +1,5 @@
-import { IStepStatusResponse } from "../supplier/stepStatus";
-import { IUserResponse } from "../common/user";
+import { IStepStatusResponse } from "./step-status.interface";
+import { IUserResponse } from "../common/user.interface";
 
 export interface IStepFeedbackResponse {
   createdDate: Date;

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject, Observable } from "rxjs";
+import { IStepResponse } from "src/app/models/api/response/client/step.interface";
 
 @Injectable({
   providedIn: "root"
@@ -8,11 +9,11 @@ export class ActiveStepService {
 
   private stepSubject = new Subject<any>();
   private stepUpdatedSubject = new Subject<void>();
-  private selectedStep: any;
+  private selectedStep: IStepResponse;
 
   constructor() { }
 
-  async setSelectedStep(step: any) {
+  async setSelectedStep(step: IStepResponse) {
     this.selectedStep = step;
     this.stepSubject.next(step);
   }

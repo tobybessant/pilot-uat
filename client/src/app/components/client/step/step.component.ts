@@ -4,6 +4,7 @@ import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-f
 import { SessionService } from "src/app/services/session/session.service";
 import { IUserResponse } from "src/app/models/api/response/common/user.interface";
 import { trigger, transition, style, animate } from "@angular/animations";
+import { IStepResponse } from "src/app/models/api/response/client/step.interface";
 
 @Component({
   selector: "app-step",
@@ -38,7 +39,7 @@ export class StepComponent implements OnInit, OnDestroy {
   @ViewChild("stepPanel")
   public stepPanel: ElementRef;
 
-  private step: any;
+  private step: IStepResponse;
   private user: IUserResponse;
   private latestFeedback: any;
   public notes: string = "";

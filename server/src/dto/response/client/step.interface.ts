@@ -1,7 +1,7 @@
 import { IStepStatusResponse } from "../supplier/stepStatus";
 
-export interface IStepReponseClient {
+export interface IStepReponse {
   id: string;
   description: string;
-  status: IStepStatusResponse;
+  currentStatus: IStepStatusResponse;
 }

@@ -17,7 +17,7 @@ export class ClientTestStepListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public setSelectedStep(step: any) {
+  public setSelectedStep(step: IStepResponse) {
     this.activeStepService.setSelectedStep(step);
   }
 }

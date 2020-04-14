@@ -64,7 +64,7 @@ export class StepFeedbackController extends BaseController {
           lastName: user.lastName,
           createdDate: user.createdDate,
           feedback: user.stepFeedback.map(s => ({
-            id: s.id,
+            id: s.id.toString(),
             createdDate: s.createdDate,
             notes: s.notes,
             status: {
@@ -80,7 +80,7 @@ export class StepFeedbackController extends BaseController {
         const latestFeedback: StepFeedbackDbo = feedback[0] || {};
         return this.OK<IStepFeedbackResponse>(res, {
           createdDate: latestFeedback.createdDate,
-          id: latestFeedback.id,
+          id: latestFeedback.id.toString(),
           notes: latestFeedback.notes,
           status: {
             id: latestFeedback.status.id.toString(),
@@ -98,7 +98,7 @@ export class StepFeedbackController extends BaseController {
 
       return this.OK<IStepFeedbackResponse[]>(res, feedback.map(f => ({
         createdDate: f.createdDate,
-        id: f.id,
+        id: f.id.toString(),
         notes: f.notes,
         status: {
           id: f.status.id.toString(),

@@ -14,7 +14,10 @@ import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 import { StepFeedbackRepository } from "../repositories/stepFeedbackRepository";
-import { StepStatus } from "../database/entities/stepStatusDbo";
+import { IStepReponse } from "../dto/response/client/step.interface";
+import StepStatusRepository from "../repositories/stepStatusRepository";
+import { ApiError } from "../services/apiError";
+import { BAD_REQUEST } from "http-status-codes";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/steps`)
@@ -22,6 +25,7 @@ import { StepStatus } from "../database/entities/stepStatusDbo";
 export class StepController extends BaseController {
 
   constructor(private stepRepository: StepRepository,
+    private stepStatusRepository: StepStatusRepository,
     private stepFeedbackRepository: StepFeedbackRepository) {
     super();
   }
@@ -56,17 +60,23 @@ export class StepController extends BaseController {
       }
 
       steps = await this.stepRepository.getStepsForCase(req.query.caseId);
-      const mappedSteps = [];
-
+      const defaultStatus = await this.stepStatusRepository.getStatusByLabel("Not Started");
+      if(!defaultStatus) {
+        throw new ApiError("Broken!!", BAD_REQUEST);
+      }
+      const mappedSteps: IStepReponse[] = [];
       for (const step of steps) {
         const latestStepFeedback = await this.stepFeedbackRepository.getUserFeedbackForStep(step.id.toString(), req.user?.email || "");
         mappedSteps.push({
-          id: step.id,
+          id: step.id.toString(),
           description: step.description,
-          currentStatus: latestStepFeedback[0]?.status || { label: StepStatus.NOT_STARTED }
+          currentStatus: {
+            id: latestStepFeedback[0]?.status.id.toString() || defaultStatus.id.toString(),
+            label: latestStepFeedback[0]?.status.label || defaultStatus.label
+          }
         });
       }
-      return this.OK<any>(res, mappedSteps);
+      return this.OK<IStepReponse[]>(res, mappedSteps);
     } catch (error) {
       this.serverError(res, error);
     }
