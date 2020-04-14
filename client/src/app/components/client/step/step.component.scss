@@ -1,6 +1,9 @@
 .step {
+  position: relative;
+  top: 0px;
   width: 300px;
   height: 100%;
+  max-height: 550px;
   margin: 20px 0;
   padding: 20px;
   display: flex;
@@ -40,17 +43,6 @@
 
 textarea {
   max-width: 100%;
-  max-height: 100%;
-}
-
-.success-border {
-  border: 2px solid var(--color-success-400);
-}
-
-.fail-border {
-  border: 2px solid var(--color-danger-400);
-}
-
-.not-started-border {
-  border: 2px solid var(--divider-color);
+  height: 200px;
+  resize: vertical;
 }

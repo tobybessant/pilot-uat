@@ -26,5 +26,4 @@ export class StepStatusChipComponent implements OnInit {
         return "var(--color-primary-transparent-200)";
     }
   }
-
 }

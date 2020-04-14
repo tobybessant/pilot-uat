@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, ElementRef, ViewChild, OnDestroy, AfterViewInit } from "@angular/core";
 import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { SessionService } from "src/app/services/session/session.service";
@@ -18,7 +18,7 @@ import { trigger, transition, style, animate } from "@angular/animations";
           [
             style({ width: 0, opacity: 0 }),
             animate("0.08s ease-out",
-                    style({ width: 300, opacity: 1 }))
+              style({ width: 300, opacity: 1 }))
           ]
         ),
         transition(
@@ -26,14 +26,19 @@ import { trigger, transition, style, animate } from "@angular/animations";
           [
             style({ width: 300, opacity: 1 }),
             animate("0.08s ease-in",
-                    style({ width: 0, opacity: 0 }))
+              style({ width: 0, opacity: 0 }))
           ]
         )
       ]
     )
   ]
 })
-export class StepComponent implements OnInit {
+export class StepComponent implements OnInit, OnDestroy {
+
+  @ViewChild("stepPanel")
+  public stepPanel: ElementRef;
+
+  public top: number;
 
   private step: any;
   private user: IUserResponse;
@@ -47,15 +52,31 @@ export class StepComponent implements OnInit {
     private stepFeedbackApiService: StepFeedbackApiService
   ) { }
 
+
   ngOnInit(): void {
+    this.randomValue();
     this.user = this.sessionService.getCurrentUser();
     this.activeStepService.getStepSubject().subscribe(step => {
       this.setSelectedStep(step);
     });
 
+    window.addEventListener("scroll", (evt) => {
+      if (this.stepSelected()) {
+        this.checkPosition(evt);
+      }
+    }, true);
+
     if (this.step) {
       this.setSelectedStep(this.activeStepService.getSelectedStep());
     }
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener("scroll", (evt) => {
+      if (this.stepSelected()) {
+        this.checkPosition(evt);
+      }
+    }, true);
   }
 
   private async setSelectedStep(step: any) {
@@ -98,14 +119,26 @@ export class StepComponent implements OnInit {
     this.closeStepPanel();
   }
 
-  public getStatusGradientBackgroundClass(): string {
-    switch (this.status) {
-      case "Passed":
-        return "success-border";
-      case "Failed":
-        return "fail-border";
-      default:
-        return "not-started-border";
-    }
+  public checkPosition(evt: any) {
+    console.log(this.isScrolledIntoView(this.stepPanel.nativeElement));
+  }
+
+  private isScrolledIntoView(element: any) {
+    const boundary = element.getBoundingClientRect();
+    const top = boundary.top;
+    const bottom = boundary.bottom;
+
+    // Only completely visible elements return true:
+    const isVisible = (top >= 0) && (bottom <= window.innerHeight);
+    // Partially visible elements return true:
+    // isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+    return isVisible;
+  }
+
+  public randomValue() {
+    setInterval(() => {
+      this.top = Math.floor((Math.random() * 100) + 1);
+      console.log(this.top);
+    }, 1000);
   }
 }

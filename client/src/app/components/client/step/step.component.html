@@ -1,4 +1,10 @@
-<div *ngIf="stepSelected()" [@inOutAnimation] class="step" [class]="[ getStatusGradientBackgroundClass() ]">
+<div
+  #stepPanel
+  *ngIf="stepSelected()"
+  [@inOutAnimation]
+  class="step"
+  [style.top]="900"
+>
   <div class="header">
     <h6>Step Feedback</h6>
     <button
@@ -25,7 +31,7 @@
     <textarea
       nbInput
       fullWidth
-      placeholder="Add notes..."
+      placeholder="Add notes... (optional)"
       [(ngModel)]="notes"
     ></textarea>
   </div>
