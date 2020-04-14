@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild, OnDestroy, AfterViewInit } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { SessionService } from "src/app/services/session/session.service";
