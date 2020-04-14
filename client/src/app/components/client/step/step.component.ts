@@ -34,7 +34,7 @@ import { IStepResponse } from "src/app/models/api/response/client/step.interface
     )
   ]
 })
-export class StepComponent implements OnInit, OnDestroy {
+export class StepComponent implements OnInit {
 
   @ViewChild("stepPanel")
   public stepPanel: ElementRef;
@@ -58,30 +58,15 @@ export class StepComponent implements OnInit, OnDestroy {
       this.setSelectedStep(step);
     });
 
-    window.addEventListener("scroll", (evt) => {
-      if (this.stepSelected()) {
-        this.checkPosition(evt);
-      }
-    }, true);
-
     if (this.step) {
       this.setSelectedStep(this.activeStepService.getSelectedStep());
     }
-  }
-
-  ngOnDestroy(): void {
-    window.removeEventListener("scroll", (evt) => {
-      if (this.stepSelected()) {
-        this.checkPosition(evt);
-      }
-    }, true);
   }
 
   private async setSelectedStep(step: any) {
     this.step = step;
     if (step) {
       const feedback = await this.stepFeedbackApiService.getLatestStepFeedbackFromUser(this.step.id, this.user.email);
-      console.log(feedback);
       this.latestFeedback = feedback.payload;
       this.notes = this.latestFeedback?.notes || "";
       this.status = this.step.currentStatus.label;
@@ -116,21 +101,5 @@ export class StepComponent implements OnInit, OnDestroy {
     await this.stepFeedbackApiService.addFeedbackForStep(this.step.id, this.notes, this.status);
     await this.activeStepService.stepDetailsUpdated();
     this.closeStepPanel();
-  }
-
-  public checkPosition(evt: any) {
-    console.log(this.isScrolledIntoView(this.stepPanel.nativeElement));
-  }
-
-  private isScrolledIntoView(element: any) {
-    const boundary = element.getBoundingClientRect();
-    const top = boundary.top;
-    const bottom = boundary.bottom;
-
-    // Only completely visible elements return true:
-    const isVisible = (top >= 0) && (bottom <= window.innerHeight);
-    // Partially visible elements return true:
-    // isVisible = elemTop < window.innerHeight && elemBottom >= 0;
-    return isVisible;
   }
 }

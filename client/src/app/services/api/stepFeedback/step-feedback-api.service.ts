@@ -17,7 +17,6 @@ export class StepFeedbackApiService {
   }
 
   public addFeedbackForStep(stepId: string, notes: string, status: string): Promise<IApiResponse<any>> {
-    console.log({ stepId, notes, status });
     return this.apiService.post(`${this.baseUrl}`, { stepId, notes, status });
   }
 }
