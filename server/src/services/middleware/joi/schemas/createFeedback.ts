@@ -16,7 +16,7 @@ export class CreateFeedback implements ICreateFeedbackRequest {
   @jf.string()
     .label("notes")
     .max(800)
-    .required()
+    .allow("")
   notes!: string;
 
 }

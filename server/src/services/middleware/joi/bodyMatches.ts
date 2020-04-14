@@ -11,6 +11,8 @@ export class BodyMatches {
     const jfScoped = this.jf;
     return function(req: Request, res: Response, next: NextFunction) {
       try {
+        console.log(req.body);
+        
         const check = jfScoped.validateAsClass(req.body, model);
 
         const { error, value } = check;
