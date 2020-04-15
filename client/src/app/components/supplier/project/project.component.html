@@ -1,7 +1,7 @@
 <div class="project-container">
   <ng-container *ngIf="project">
     <nb-tabset class="tabs-view">
-      <nb-tab tabTitle="Tests" class="no-h-padding">
+      <nb-tab tabTitle="Tests" tabIcon="pantone-outline" class="no-h-padding">
         <div class="tab-content">
           <app-test-suite-list
             [suitesData]="project.suites"
@@ -16,12 +16,17 @@
           ></app-test-suite>
         </div>
       </nb-tab>
-      <nb-tab tabTitle="Users">
+      <nb-tab tabTitle="Results" tabIcon="done-all-outline">
+        <div class="tab-content">
+          results!
+        </div>
+      </nb-tab>
+      <nb-tab tabTitle="Users" tabIcon="people-outline">
         <div class="tab-content">
           <app-users [projectId]="project.id"></app-users>
         </div>
       </nb-tab>
-      <nb-tab tabTitle="Settings">
+      <nb-tab tabTitle="Settings" tabIcon="settings-outline">
         <div class="tab-content">
           <app-project-settings [project]="project"> </app-project-settings>
         </div>
