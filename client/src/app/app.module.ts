@@ -58,6 +58,7 @@ import { InviteUserDialogComponent } from "./components/supplier/invite-user-dia
 import { UserTypeChipComponent } from "./components/common/user-type-chip/user-type-chip.component";
 import { ErrorComponent } from "./components/common/error/error.component";
 import { StepComponent } from './components/client/step/step.component';
+import { ResultsComponent } from './components/supplier/results/results.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { StepComponent } from './components/client/step/step.component';
     ClientTestStepListComponent,
     UserTypeChipComponent,
     ErrorComponent,
-    StepComponent
+    StepComponent,
+    ResultsComponent
   ],
   imports: [
     /* Angular */
