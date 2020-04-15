@@ -1,5 +1,4 @@
 <div class="results-matrix">
-
   <div class="headings">
     <span class="step-column"></span>
     <h6 class="client-column" *ngFor="let client of clients">
@@ -7,13 +6,18 @@
     </h6>
   </div>
 
-  <div class="row" *ngFor="let step of steps">
-    <p class="step-column">{{ step.description }}</p>
-    <div *ngFor="let client of clients" class="client-column">
-      <app-step-status-chip
-        [status]="getClientFeedbackStatusForStep(step)"
-      ></app-step-status-chip>
+  <div class="suite" *ngFor="let suite of suites">
+    <h6>{{ suite.name }}</h6>
+    <div class="case" *ngFor="let case of suite.cases">
+      <p>{{ case.name }}</p>
+      <div class="row" *ngFor="let step of case.steps">
+        <p class="step-column">{{ step.description }}</p>
+        <div *ngFor="let client of clients" class="client-column">
+          <app-step-status-chip
+            [status]="getClientFeedbackStatusForStep(step)"
+          ></app-step-status-chip>
+        </div>
+      </div>
     </div>
   </div>
-  
 </div>

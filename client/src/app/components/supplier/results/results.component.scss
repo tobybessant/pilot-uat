@@ -1,5 +1,6 @@
 :host {
   width: 100%;
+  padding: 15px;
 }
 
 .results-matrix {
@@ -25,6 +26,16 @@
 
   .client-column {
     min-width: 120px;
+  }
+
+  .suite, .case {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+
+    h6 {
+       margin: 0 0 8px 0;
+    }
   }
 
   .row {

@@ -7,8 +7,6 @@ import { Component, OnInit } from "@angular/core";
 })
 export class ResultsComponent implements OnInit {
 
- 
-
   public steps: any = [
     {
       description: "Step 1"
@@ -21,23 +19,56 @@ export class ResultsComponent implements OnInit {
     }
   ];
 
-  public suite: any = {
+  public suites: any = [{
     name: "suite1",
     cases: [
       {
         name: "Case 1",
         steps: this.steps
+      },
+      {
+        name: "Case 2",
+        steps: this.steps
+      },
+      {
+        name: "Case 6",
+        steps: this.steps
+      }
+      ,
+      {
+        name: "Case 6",
+        steps: this.steps
+      },
+      {
+        name: "Case 6",
+        steps: this.steps
       }
     ]
-  };
+  },
+  {
+    name: "suite222±±",
+    cases: [
+      {
+        name: "Case 6",
+        steps: this.steps
+      },
+      {
+        name: "Case 6",
+        steps: this.steps
+      },
+      {
+        name: "Case 6",
+        steps: this.steps
+      }
+    ]
+  }];
   public clients: any = [
     { name: "John" },
     { name: "Wayne" },
     { name: "Patricia" },
     { name: "John" },
-    { name: "Wayne" },
-    { name: "Patricia" }
   ];
+
   constructor() { }
 
   ngOnInit(): void {
