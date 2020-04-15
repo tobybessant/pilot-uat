@@ -1,4 +1,4 @@
-import { IStepStatusResponse } from "./step-status.interface";
+import { IStepStatusResponse } from "../supplier/stepStatus";
 
 export interface IStepResponse {
   id: string;

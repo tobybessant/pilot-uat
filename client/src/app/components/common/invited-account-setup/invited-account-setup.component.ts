@@ -25,7 +25,6 @@ export class InvitedAccountSetupComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe(params => {
-      console.log(params);
       this.token = params.get("t");
     });
   }

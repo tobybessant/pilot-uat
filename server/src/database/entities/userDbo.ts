@@ -3,6 +3,7 @@ import { UserTypeDbo } from "./userTypeDbo";
 import { OrganisationDbo } from "./organisationDbo";
 import { ProjectDbo } from "./projectDbo";
 import { UserProjectRoleDbo } from "./userProjectRoleDbo";
+import { StepFeedbackDbo } from "./stepFeedbackDbo";
 
 
 export const TABLE_NAME: string = "User";
@@ -35,6 +36,9 @@ export class UserDbo {
 
     @OneToMany(type => UserProjectRoleDbo, role => role.user)
     projects!: UserProjectRoleDbo[];
+
+    @OneToMany(type => StepFeedbackDbo, step => step.user)
+    stepFeedback!: StepFeedbackDbo[];
 
     @CreateDateColumn()
     createdDate!: Date;

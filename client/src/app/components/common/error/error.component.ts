@@ -14,7 +14,6 @@ export class ErrorComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe(params => {
-      console.log(params);
       this.messages = JSON.parse(params.get("m"));
     });
   }

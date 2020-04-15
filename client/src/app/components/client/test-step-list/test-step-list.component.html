@@ -3,8 +3,12 @@
     <div class="existing-step container right">
       <div class="content">
         <div class="step-details">
-          <app-step-status-chip [status]="step.status"></app-step-status-chip>
-          <p>{{ step.description }}</p>
+          <app-step-status-chip
+            [status]="step.currentStatus"
+          ></app-step-status-chip>
+          <div class="step-description" (click)="setSelectedStep(step)">
+            <p>{{ step.description }}</p>
+          </div>
         </div>
       </div>
     </div>

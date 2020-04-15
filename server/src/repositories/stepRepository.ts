@@ -26,18 +26,16 @@ export default class StepRepository {
 
     return this.baseStepRepository.save({
       description,
-      case: testCase,
-      status: defaultStatus
+      case: testCase
     });
   }
 
   public async getStepsForCase(id: string): Promise<StepDbo[]> {
-    return this.baseStepRepository
+    const query = await this.baseStepRepository
       .createQueryBuilder("step")
       .leftJoin("step.case", "case")
-      .leftJoinAndSelect("step.status", "status")
-      .where("case.id = :id", { id })
-      .getMany();
+      .where("case.id = :id", { id });
+    return query.getMany();
   }
 
   public async updateStep(step: StepDbo): Promise<StepDbo> {

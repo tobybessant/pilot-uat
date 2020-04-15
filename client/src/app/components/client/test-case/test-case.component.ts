@@ -1,10 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { ICaseResponse } from "src/app/models/api/response/client/case.interface";
 import { IStepResponse } from "src/app/models/api/response/client/step.interface";
-import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { StepApiService } from "src/app/services/api/step/step-api.service";
-import { NbDialogService } from "@nebular/theme";
-import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/confirmation-prompt.component";
+import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 
 @Component({
   selector: "app-test-case-client",
@@ -19,17 +17,20 @@ export class ClientTestCaseComponent implements OnInit {
   public steps: IStepResponse[] = [];
 
   constructor(
-    private stepApiService: StepApiService
+    private stepApiService: StepApiService,
+    private activeStepService: ActiveStepService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.activeStepService.getStepUpdatedSubject().subscribe(async () => {
+      await this.fetchStepsForCase();
+    });
+
     await this.fetchStepsForCase();
   }
 
   public async fetchStepsForCase() {
-    const response = await this.stepApiService.getStepsforCase(this.case.id);
+    const response = await this.stepApiService.getStepsforCase<IStepResponse[]>(this.case.id);
     this.steps = response.payload;
   }
-
-
 }

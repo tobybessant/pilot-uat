@@ -63,17 +63,8 @@ export class ClientTestSuiteComponent implements OnInit {
 
   private async fetchTestsForActiveSuite() {
     if (this.activeSuite) {
-      const response = await this.testApiService.getCasesForSuite(this.activeSuite.id);
+      const response = await this.testApiService.getCasesForSuite<ICaseResponse[]>(this.activeSuite.id);
       this.cases = response.payload;
     }
-  }
-
-  public updateSelectedTestCase(id: number) {
-    this.fetchTestsForActiveSuite();
-    this.activeTestCaseService.setTestCase(null);
-  }
-
-  public newCaseSelected({ selected }) {
-    this.activeTestCaseService.setTestCase(selected[0]);
   }
 }

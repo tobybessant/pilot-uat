@@ -13,13 +13,20 @@ import { UpdateStep } from "../services/middleware/joi/schemas/updateStep";
 import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { StepFeedbackRepository } from "../repositories/stepFeedbackRepository";
+import { IStepResponse as IStepResponseClient } from "../dto/response/client/step.interface";
+import StepStatusRepository from "../repositories/stepStatusRepository";
+import { ApiError } from "../services/apiError";
+import { BAD_REQUEST } from "http-status-codes";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/steps`)
 @ClassMiddleware(checkAuthentication)
 export class StepController extends BaseController {
 
-  constructor(private stepRepository: StepRepository) {
+  constructor(private stepRepository: StepRepository,
+    private stepStatusRepository: StepStatusRepository,
+    private stepFeedbackRepository: StepFeedbackRepository) {
     super();
   }
 
@@ -33,11 +40,7 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse>(res, {
         id: step.id.toString(),
-        description: step.description,
-        status: {
-          id: step.status.id.toString(),
-          label: step.status.label
-        }
+        description: step.description
       });
     } catch (error) {
       this.serverError(res, error);
@@ -47,15 +50,35 @@ export class StepController extends BaseController {
   @Get()
   public async getStepsForCase(req: Request, res: Response) {
     try {
-      const steps = await this.stepRepository.getStepsForCase(req.query.caseId);
-      this.OK<IStepResponse[]>(res, steps.map(step => ({
-        description: step.description,
-        id: step.id.toString(),
-        status: {
-          id: step.status.id.toString(),
-          label: step.status.label
-        }
-      })));
+      let steps = [];
+      if (req.user?.type === "Supplier") {
+        steps = await this.stepRepository.getStepsForCase(req.query.caseId);
+        return this.OK<IStepResponse[]>(res, steps.map(step => ({
+          description: step.description,
+          id: step.id.toString()
+        })));
+      }
+
+      steps = await this.stepRepository.getStepsForCase(req.query.caseId);
+      const defaultStatus = await this.stepStatusRepository.getStatusByLabel("Not Started");
+      if(!defaultStatus) {
+        throw new ApiError("Broken!!", BAD_REQUEST);
+      }
+
+      const mappedSteps: IStepResponseClient[] = [];
+      for (const step of steps) {
+        const latestStepFeedback = await this.stepFeedbackRepository.getUserFeedbackForStep(step.id.toString(), req.user?.email || "");
+
+        mappedSteps.push({
+          id: step.id.toString(),
+          description: step.description,
+          currentStatus: {
+            id: latestStepFeedback[0]?.status.id.toString() || defaultStatus.id.toString(),
+            label: latestStepFeedback[0]?.status.label || defaultStatus.label
+          }
+        });
+      }
+      return this.OK<IStepResponse[]>(res, mappedSteps);
     } catch (error) {
       this.serverError(res, error);
     }
@@ -83,11 +106,7 @@ export class StepController extends BaseController {
 
       this.OK<IStepResponse>(res, {
         id: updateStep.id.toString(),
-        description: updateStep.description,
-        status: {
-          id: updateStep.status.id.toString(),
-          label: updateStep.status.label
-        }
+        description: updateStep.description
       });
     } catch (error) {
       this.serverError(res, error);

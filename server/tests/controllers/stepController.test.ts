@@ -1,22 +1,28 @@
 import { IMock, Mock, It, Times } from "typemoq";
-
 import { Request, Response } from "express";
 import { StepController } from "../../src/controllers";
 import StepRepository from "../../src/repositories/stepRepository";
 import { ICreateStepRequest } from "../../src/dto/request/supplier/createStep";
 import { StepDbo } from "../../src/database/entities/stepDbo";
 import { IStepResponse } from "../../src/dto/response/supplier/step";
+import { IStepResponse as IStepResponseClient } from "../../src/dto/response/client/step.interface";
 import { StepStatus, StepStatusDbo } from "../../src/database/entities/stepStatusDbo";
 import { CaseRepository } from "../../src/repositories/caseRepository";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
 import { BaseController } from "../../src/controllers/baseController";
-import { IGetAllStepsRequest } from "../../src/dto/request/supplier/getAllSteps";
 import { IUpdateStepRequest } from "../../src/dto/request/supplier/updateStep";
 import { deepStrictEqual } from "../testUtils/deepStrictEqual";
+import StepStatusRepository from "../../src/repositories/stepStatusRepository";
+import { StepFeedbackRepository } from "../../src/repositories/stepFeedbackRepository";
+import { IUserToken } from "../../src/dto/response/common/userToken";
+import { StepFeedbackDbo } from "../../src/database/entities/stepFeedbackDbo";
+import { UserDbo } from "../../src/database/entities/userDbo";
 
 suite("Step Controller", () => {
   let stepRepository: IMock<StepRepository>;
   let caseRepository: IMock<CaseRepository>;
+  let stepStatusRepository: IMock<StepStatusRepository>;
+  let stepFeedbackRepository: IMock<StepFeedbackRepository>;
 
   let req: IMock<Request>;
   let res: IMock<Response>;
@@ -26,16 +32,17 @@ suite("Step Controller", () => {
   setup(() => {
     stepRepository = Mock.ofType<StepRepository>();
     caseRepository = Mock.ofType<CaseRepository>();
+    stepStatusRepository = Mock.ofType<StepStatusRepository>();
+    stepFeedbackRepository = Mock.ofType<StepFeedbackRepository>();
 
     req = Mock.ofType<Request>();
     res = Mock.ofType<Response>();
 
-    subject = new StepController(stepRepository.object);
+    subject = new StepController(stepRepository.object, stepStatusRepository.object, stepFeedbackRepository.object);
   });
 
   suite("Add Step to Test Case", () => {
     let addStepBody: ICreateStepRequest;
-    let stepStatus: StepStatusDbo;
     let createdStep: StepDbo;
     let createdStepResponse: IStepResponse;
 
@@ -47,22 +54,13 @@ suite("Step Controller", () => {
           description: "I am a new test step!"
         };
 
-        stepStatus = new StepStatusDbo();
-        stepStatus.id = 1;
-        stepStatus.label = StepStatus.NOT_STARTED;
-
         createdStep = new StepDbo();
         createdStep.description = addStepBody.description;
         createdStep.id = 3;
-        createdStep.status = stepStatus;
 
         createdStepResponse = {
           description: createdStep.description,
           id: createdStep.id.toString(),
-          status: {
-            id: createdStep.status.id.toString(),
-            label: createdStep.status.label
-          }
         };
       });
 
@@ -115,86 +113,163 @@ suite("Step Controller", () => {
   });
 
   suite("Get Steps for Case", () => {
-    let getStepsBody: IGetAllStepsRequest;
+    let user: IUserToken;
+    let query: any;
     let stepStatus: StepStatusDbo;
     const steps: StepDbo[] = [];
 
-    const getAllStepsResponse: IStepResponse[] = [];
+    const supplierGetAllStepsResponse: IStepResponse[] = [];
+    const clientGetAllStepsResponse: IStepResponseClient[] = [];
 
-    suite("Valid request conditions", () => {
+
+    suite("As Supplier", () => {
 
       setup(() => {
-        getStepsBody = {
-          caseId: "9"
+        user = {
+          email: "xy@me.com",
+          type: "Supplier"
         };
-
-        stepStatus = new StepStatusDbo();
-        stepStatus.id = 2;
-        stepStatus.label = StepStatus.PASSED;
-
-        for (let i = 0; i < 1; i++) {
-          const s = new StepDbo();
-          s.id = i;
-          s.description = "Suite " + i;
-          s.status = stepStatus;
-          steps.push(s);
-        }
-
-        for (const step of steps) {
-          getAllStepsResponse.push({
-            id: step.id.toString(),
-            description: step.description,
-            status: {
-              id: step.status.id.toString(),
-              label: step.status.label
-            }
-          });
-        }
       });
 
-      test("A list of steps is returned in response body", async () => {
-        given_Request_body_is(getStepsBody);
-        given_stepRepository_getStepsForCase_returns(steps);
+      suite("Valid request conditions", () => {
 
-        await subject.getStepsForCase(req.object, res.object);
+        setup(() => {
+          query = {
+            caseId: "9"
+          };
 
-        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, getAllStepsResponse))), Times.once());
+          for (let i = 0; i < 1; i++) {
+            const s = new StepDbo();
+            s.id = i;
+            s.description = "Suite " + i;
+
+            steps.push(s);
+          }
+
+          for (const step of steps) {
+            supplierGetAllStepsResponse.push({
+              id: step.id.toString(),
+              description: step.description
+            });
+          }
+        });
+
+        test("A list of steps is returned in response body", async () => {
+          given_Request_user_is(user);
+          given_Request_query_is(query);
+          given_stepRepository_getStepsForCase_returns_whenGiven(steps, query.caseId);
+
+          await subject.getStepsForCase(req.object, res.object);
+
+          res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, supplierGetAllStepsResponse))), Times.once());
+        });
+
+        test("Response returns statusCode 200", async () => {
+          given_Request_user_is(user);
+          given_Request_query_is(query);
+          given_stepRepository_getStepsForCase_returns_whenGiven(steps, query.caseId);
+
+          await subject.getStepsForCase(req.object, res.object);
+
+          res.verify(r => r.status(OK), Times.once());
+        });
       });
 
-      test("Response returns statusCode 200", async () => {
-        given_Request_body_is(getStepsBody);
-        given_stepRepository_getStepsForCase_returns(steps);
+      suite("Unexpected 'Error' thrown by stepRepository", () => {
 
-        await subject.getStepsForCase(req.object, res.object);
+        setup(() => {
+          query = {
+            caseId: "9"
+          };
+        });
 
-        res.verify(r => r.status(OK), Times.once());
+        test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} returned in errors array`, async () => {
+          given_Request_user_is(user);
+          given_Request_query_is(query);
+          given_stepRepository_getStepsForCase_throws();
+
+          await subject.getStepsForCase(req.object, res.object);
+
+          res.verify(r => r.json(It.is(body => body.errors.includes(BaseController.INTERNAL_SERVER_ERROR_MESSAGE))), Times.once());
+        });
+
+        test("Response returns statusCode 500", async () => {
+          given_Request_user_is(user);
+          given_Request_query_is(query);
+          given_stepRepository_getStepsForCase_throws();
+
+          await subject.getStepsForCase(req.object, res.object);
+
+          res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        });
       });
     });
 
-    suite("Unexpected 'Error' thrown by stepRepository", () => {
+    suite("As Client", () => {
+      let stepFeedback: StepFeedbackDbo;
 
       setup(() => {
-        getStepsBody = {
-          caseId: "9"
+        user = {
+          email: "xy@me.com",
+          type: "Client"
         };
       });
 
-      test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} is returned in response errors array`, async () => {
-        given_Request_body_is(getStepsBody);
-        given_stepRepository_getStepsForCase_throws();
+      suite("Valid request conditions", () => {
+        setup(() => {
+          query = {
+            caseId: "9"
+          };
 
-        await subject.getStepsForCase(req.object, res.object);
+          for (let i = 0; i < 1; i++) {
+            const s = new StepDbo();
+            s.id = i;
+            s.description = "Suite " + i;
 
-        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors,[BaseController.INTERNAL_SERVER_ERROR_MESSAGE]))), Times.once());
-      });
+            steps.push(s);
+          }
 
-      test("Response returns statusCode 500", async () => {
-        given_Request_body_is(getStepsBody);
-        given_stepRepository_getStepsForCase_throws();
+          stepFeedback = new StepFeedbackDbo();
+          stepFeedback.notes = "notes !";
+          stepFeedback.status = { id: 4, label: StepStatus.PASSED };
+          stepFeedback.user = new UserDbo();
+          stepFeedback.step = new StepDbo();
 
-        await subject.getStepsForCase(req.object, res.object);
+          for (const step of steps) {
+            clientGetAllStepsResponse.push({
+              id: step.id.toString(),
+              description: step.description,
+              currentStatus: {
+                id: stepFeedback.status.id.toString(),
+                label: stepFeedback.status.label
+              }
+            });
+          }
+        });
 
-        res.verify(r => r.status(INTERNAL_SERVER_ERROR), Times.once());
+        test("Response body returns array of steps with latest feedback status", async () => {
+          given_Request_user_is(user);
+          given_Request_query_is(query);
+          given_stepRepository_getStepsForCase_returns_whenGiven(steps, query.caseId);
+          given_stepStatusRepository_getStatusByLabel_returns(stepFeedback.status);
+          given_stepFeedbackRepository_getUserFeedbackForStep_returns([stepFeedback]);
+
+          await subject.getStepsForCase(req.object, res.object);
+
+          res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, clientGetAllStepsResponse))), Times.once());
+        });
+
+        test("Response returns status code 200", async () => {
+          given_Request_user_is(user);
+          given_Request_query_is(query);
+          given_stepRepository_getStepsForCase_returns_whenGiven(steps, query.caseId);
+          given_stepStatusRepository_getStatusByLabel_returns(stepFeedback.status);
+          given_stepFeedbackRepository_getUserFeedbackForStep_returns([stepFeedback]);
+
+          await subject.getStepsForCase(req.object, res.object);
+
+          res.verify(r => r.status(OK), Times.once());
+        });
       });
     });
   });
@@ -202,7 +277,6 @@ suite("Step Controller", () => {
   suite("Update Step", () => {
     let updateStepBody: IUpdateStepRequest;
 
-    let stepStatus: StepStatusDbo;
     let originalStep: StepDbo;
     let updatedStep: StepDbo;
     let updatedStepResponse: IStepResponse;
@@ -214,27 +288,17 @@ suite("Step Controller", () => {
           description: "New Description"
         };
 
-        stepStatus = new StepStatusDbo();
-        stepStatus.id = 90;
-        stepStatus.label = StepStatus.PASSED;
-
         originalStep = new StepDbo();
         originalStep.description = "Original description...";
         originalStep.id = 4;
-        originalStep.status = stepStatus;
 
         updatedStep = new StepDbo();
         updatedStep.description = updateStepBody.description!;
         updatedStep.id = 4;
-        updatedStep.status = stepStatus;
 
         updatedStepResponse = {
           description: updatedStep.description,
-          id: updatedStep.id.toString(),
-          status: {
-            id: updatedStep.status.id.toString(),
-            label: updatedStep.status.label
-          }
+          id: updatedStep.id.toString()
         };
       });
 
@@ -278,7 +342,7 @@ suite("Step Controller", () => {
 
         await subject.updateStep(req.object, res.object);
 
-        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors,["Error finding step"]))), Times.once());
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.errors, ["Error finding step"]))), Times.once());
       });
 
       test("Response returns statusCode 400", async () => {
@@ -326,14 +390,9 @@ suite("Step Controller", () => {
           description: "New Description"
         };
 
-        stepStatus = new StepStatusDbo();
-        stepStatus.id = 90;
-        stepStatus.label = StepStatus.PASSED;
-
         originalStep = new StepDbo();
         originalStep.description = "Original description...";
         originalStep.id = 3;
-        originalStep.status = stepStatus;
       });
 
       test(`Generic error ${BaseController.INTERNAL_SERVER_ERROR_MESSAGE} returned in errors array`, async () => {
@@ -443,6 +502,12 @@ suite("Step Controller", () => {
       .returns(async () => steps);
   }
 
+  function given_stepRepository_getStepsForCase_returns_whenGiven(steps: StepDbo[], whenGiven: any) {
+    stepRepository
+      .setup(sr => sr.getStepsForCase(whenGiven))
+      .returns(async () => steps);
+  }
+
   function given_stepRepository_getStepsForCase_throws() {
     stepRepository
       .setup(sr => sr.getStepsForCase(It.isAny()))
@@ -478,6 +543,18 @@ suite("Step Controller", () => {
       .returns(() => params);
   }
 
+  function given_Request_query_is(query: any) {
+    req
+      .setup(r => r.query)
+      .returns(() => query);
+  }
+
+  function given_Request_user_is(user: IUserToken) {
+    req
+      .setup(r => r.user)
+      .returns(() => user);
+  }
+
   function given_stepRepository_deleteStepById_returns(returns: any) {
     stepRepository
       .setup(sr => sr.deleteStepById(It.isAny()))
@@ -488,5 +565,17 @@ suite("Step Controller", () => {
     stepRepository
       .setup(sr => sr.deleteStepById(It.isAny()))
       .throws(new Error("Sensitive database information!"));
+  }
+
+  function given_stepFeedbackRepository_getUserFeedbackForStep_returns(returns: StepFeedbackDbo[]) {
+    stepFeedbackRepository
+      .setup(sfr => sfr.getUserFeedbackForStep(It.isAny(), It.isAny()))
+      .returns(async () => returns);
+  }
+
+  function given_stepStatusRepository_getStatusByLabel_returns(returns: StepStatusDbo) {
+    stepStatusRepository
+      .setup(sfr => sfr.getStatusByLabel(It.isAny()))
+      .returns(async () => returns);
   }
 });

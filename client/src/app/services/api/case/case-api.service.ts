@@ -23,8 +23,8 @@ export class CaseApiService {
     return response;
   }
 
-  public async getCasesForSuite(suiteId: string): Promise<IApiResponse<ICaseResponse[]>> {
-    const response = await this.apiService.get<ICaseResponse[]>(`${this.baseUrl}?suiteId=${suiteId}`);
+  public async getCasesForSuite<T>(suiteId: string): Promise<IApiResponse<T>> {
+    const response = await this.apiService.get<T>(`${this.baseUrl}?suiteId=${suiteId}`);
     return response;
   }
 
