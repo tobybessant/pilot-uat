@@ -37,9 +37,6 @@ import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFe
 })
 export class StepComponent implements OnInit {
 
-  @ViewChild("stepPanel")
-  public stepPanel: ElementRef;
-
   private step: IStepResponse;
   private user: IUserResponse;
   private latestFeedback: IStepFeedbackResponse;
@@ -99,8 +96,10 @@ export class StepComponent implements OnInit {
   }
 
   public async addFeedbackAndCloseStepPanel() {
-    await this.stepFeedbackApiService.addFeedbackForStep(this.step.id, this.notes, this.status);
-    await this.activeStepService.stepDetailsUpdated();
-    this.closeStepPanel();
+    const response = await this.stepFeedbackApiService.addFeedbackForStep(this.step.id, this.notes, this.status);
+    if (response.errors.length === 0) {
+      await this.activeStepService.stepDetailsUpdated();
+      this.closeStepPanel();
+    }
   }
 }
