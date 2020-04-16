@@ -15,6 +15,7 @@ import { Validator } from "joiful";
 import { IUserResponse } from "../dto/response/common/user";
 import { ProjectInviteRepository } from "../repositories/projectInviteRepository";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { ProjectDbo } from "../database/entities/projectDbo";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/projects`)
@@ -63,26 +64,49 @@ export class ProjectController extends BaseController {
   public async getProjectById(req: Request, res: Response) {
     try {
       const authorised = await this.projectRepository.userHasAccessToProject(req.user!.email, req.params.id);
-      if(!authorised) {
+      if (!authorised) {
         return this.badRequest(res, ["Error finding project"]);
       }
 
-      const project = await this.projectRepository.getProjectById(req.params.id);
+      const project = await this.projectRepository.getProjectById(req.params.id, req.query.extensive);
 
       if (!project) {
         return this.badRequest(res, ["Error finding project"]);
       }
 
-      this.OK<IProjectResponse>(res, {
+      if (req.query.extensive) {
+        const payloadExt: any = {
+          id: project.id.toString(),
+          title: project.title,
+          suites: project.suites.map(s => ({
+            id: s.id.toString(),
+            title: s.title,
+            cases: s.cases.map(c => ({
+              id: c.id.toString(),
+              title: c.title,
+              steps: c.steps.map(st => ({
+                id: st.id.toString(),
+                description: st.description
+              }))
+            }))
+          }))
+        };
+
+        return this.OK<IProjectResponse>(res, payloadExt);
+      }
+
+      const payload: IProjectResponse = {
         id: project.id.toString(),
         title: project.title,
         suites: project.suites.map(s => ({
           id: s.id.toString(),
           title: s.title
         }))
-      });
+      };
+
+      return this.OK<IProjectResponse>(res, payload);
     } catch (error) {
-      this.serverError(res, error);
+      return this.serverError(res, error);
     }
   }
 
@@ -117,7 +141,7 @@ export class ProjectController extends BaseController {
 
   @Get(":id/users")
   public async getUsersForProject(req: Request, res: Response) {
-    const userRoles = await this.projectRepository.getUsersForProject(req.params.id);
+    const userRoles = await this.projectRepository.getUsersForProject(req.params.id, req.query.type);
 
     this.OK<IUserResponse[]>(res, userRoles.map(role => ({
       id: role.user.id,

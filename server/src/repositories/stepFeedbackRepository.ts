@@ -48,4 +48,22 @@ export class StepFeedbackRepository extends TypeORMRepository<StepFeedbackDbo> {
 
     return feedbackQuery.getMany();
   }
+
+  public async getFeedbackForProject(projectId: string): Promise<UserDbo[]> {
+    const feedbackQuery = await this.userRepository.getBaseRepo()
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.stepFeedback", "feedback")
+    .leftJoinAndSelect("feedback.status", "status")
+    .leftJoinAndSelect("feedback.step", "step")
+    .leftJoin("user.userType", "type")
+    .leftJoin("step.case", "case")
+    .leftJoin("case.suite", "suite")
+    .leftJoin("suite.project", "project")
+    .where("project.id = :id", { id: projectId })
+    .andWhere("type.type = :label", { label: "Client" })
+    .orderBy("user.createdDate", "ASC")
+    .addOrderBy("feedback.createdDate", "DESC");
+
+    return feedbackQuery.getMany();
+  }
 }

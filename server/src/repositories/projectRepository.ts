@@ -36,9 +36,20 @@ export class ProjectRepository {
     return savedProject;
   }
 
-  public async getProjectById(id: string): Promise<ProjectDbo | undefined> {
-    const project: ProjectDbo | undefined = await this.baseProjectRepository.findOne({ id: Number(id) });
-    return project;
+  public async getProjectById(id: string, extensive?: boolean): Promise<ProjectDbo | undefined> {
+    const query = this.baseProjectRepository
+      .createQueryBuilder("project")
+      .leftJoinAndSelect("project.suites", "suites")
+      .where("project.id = :id", { id });
+
+    if (extensive) {
+      query
+        .leftJoinAndSelect("project.users", "users")
+        .leftJoinAndSelect("suites.cases", "cases")
+        .leftJoinAndSelect("cases.steps", "steps");
+    }
+
+    return query.getOne();
   }
 
   public async getProjectsForUser(email: string): Promise<ProjectDbo[] | undefined> {
@@ -94,15 +105,19 @@ export class ProjectRepository {
     return this.userProjectRoleRepository.delete({ user, project });
   }
 
-  public async getUsersForProject(projectId: string) {
-    const projectWithUsers = await this.baseProjectRepository
+  public async getUsersForProject(projectId: string, type?: string) {
+    const query = await this.baseProjectRepository
       .createQueryBuilder("project")
       .leftJoinAndSelect("project.users", "userRoles")
       .leftJoinAndSelect("userRoles.user", "users")
       .leftJoinAndSelect("users.userType", "type")
-      .where("project.id = :id", { id: projectId })
-      .getOne();
+      .where("project.id = :id", { id: projectId });
 
+    if (type) {
+      query.andWhere("type.type = :type", { type });
+    }
+
+    const projectWithUsers = await query.getOne();
     if (!projectWithUsers) {
       throw new Error("Project does not exist");
     }

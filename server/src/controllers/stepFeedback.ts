@@ -60,7 +60,7 @@ export class StepFeedbackController extends BaseController {
   @Get()
   public async getLatestUserFeedbackForStep(req: Request, res: Response) {
     try {
-      if (!req.query.userEmail) {
+      if (!req.query.userEmail && req.query.stepId) {
         const feedbackPerUser: UserDbo[] = await this.stepFeedbackRepository.getAllUserFeedbackForStep(req.query.stepId);
         return this.OK<IUserStepFeedbackResponse[]>(res, feedbackPerUser.map(user => ({
           id: user.id,
@@ -80,11 +80,41 @@ export class StepFeedbackController extends BaseController {
         })));
       }
 
+      if (req.query.projectId) {
+        const feedbackPerUser: UserDbo[] = await this.stepFeedbackRepository.getFeedbackForProject(req.query.projectId);
+        const userFeedbackMap: any = {};
+
+        // tslint:disable-next-line: prefer-for-of
+        console.time("Mapped user feedback data");
+        for (let i = 0; i < feedbackPerUser.length; i++) {
+          const results: any = {};
+          const u = feedbackPerUser[i];
+          // tslint:disable-next-line: prefer-for-of
+          for (let j = 0; j < u.stepFeedback.length; j++) {
+            const f = u.stepFeedback[j];
+            if (!results[f.step.id]) {
+              results[f.step.id] = f;
+            }
+          }
+          userFeedbackMap[u.email] = results;
+        }
+        console.timeEnd("Mapped user feedback data");
+
+        return this.OK<any[]>(res, feedbackPerUser.map(user => ({
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          createdDate: user.createdDate,
+          feedback: userFeedbackMap[user.email]
+        })));
+      }
+
       const feedback = await this.stepFeedbackRepository.getUserFeedbackForStep(req.query.stepId, req.query.userEmail);
       if (req.query.onlyLatest) {
         const latestFeedback: StepFeedbackDbo | undefined = feedback[0];
 
-        if(latestFeedback){
+        if (latestFeedback) {
           return this.OK<IStepFeedbackResponse>(res, {
             createdDate: latestFeedback.createdDate,
             id: latestFeedback.id.toString(),
