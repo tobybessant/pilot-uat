@@ -15,12 +15,12 @@ export class UserTypeChipComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public getBackground(): string {
+  public getStyle(): { background: string; color: string; } {
     switch (this.type) {
       case "Client":
-        return "var(--color-success-300)";
+        return { background: "var(--color-primary-400)", color: "white" };
       default:
-        return "var(--color-primary-transparent-100)";
+        return { background: "var(--color-primary-transparent-100)", color: "black" };
     }
   }
 
