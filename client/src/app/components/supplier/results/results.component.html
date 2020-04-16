@@ -1,20 +1,20 @@
-<div class="results-matrix">
+<div class="results-matrix" *ngIf="project">
   <div class="headings">
     <span class="step-column"></span>
     <h6 class="client-column" *ngFor="let client of clients">
-      {{ client.name }}
+      {{ client.firstName + " " + client.lastName }}
     </h6>
   </div>
 
-  <div class="suite" *ngFor="let suite of suites">
-    <h6>{{ suite.name }}</h6>
+  <div class="suite" *ngFor="let suite of project.suites">
+    <h6>{{ suite.title }}</h6>
     <div class="case" *ngFor="let case of suite.cases">
-      <p>{{ case.name }}</p>
+      <p>{{ case.title }}</p>
       <div class="row" *ngFor="let step of case.steps">
         <p class="step-column">{{ step.description }}</p>
         <div *ngFor="let client of clients" class="client-column">
           <app-step-status-chip
-            [status]="getClientFeedbackStatusForStep(step)"
+            [status]="getClientFeedbackStatusForStep(client, step)"
           ></app-step-status-chip>
         </div>
       </div>
