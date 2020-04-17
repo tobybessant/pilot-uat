@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
-import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 
 @Component({
   selector: "app-results",
