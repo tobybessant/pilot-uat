@@ -1,5 +1,5 @@
 <div class="results-matrix" *ngIf="project">
-  <div class="headings">
+  <div class="headings" id="table-headings">
     <span class="step-column"></span>
     <h6 class="client-column" *ngFor="let client of clients">
       {{ client.firstName + " " + client.lastName }}
@@ -12,7 +12,12 @@
     (click)="collapse($event, suite)"
   >
     <div class="row">
-      <p><nb-icon [icon]="suite.collapsed ? 'arrow-right' : 'arrow-down'"></nb-icon> {{ suite.title }}</p>
+      <p>
+        <nb-icon
+          [icon]="suite.collapsed ? 'arrow-right' : 'arrow-down'"
+        ></nb-icon>
+        <b>{{ suite.title }}</b>
+      </p>
     </div>
     <span *ngIf="!suite.collapsed">
       <div
@@ -22,7 +27,12 @@
       >
         <span *ngIf="case.steps.length > 0">
           <div class="row">
-            <p><nb-icon [icon]="case.collapsed ? 'arrow-right' : 'arrow-down'"></nb-icon> {{ case.title }}</p>
+            <p>
+              <nb-icon
+                [icon]="case.collapsed ? 'arrow-right' : 'arrow-down'"
+              ></nb-icon
+              ><b>{{ case.title }}</b>
+            </p>
           </div>
           <span *ngIf="!case.collapsed">
             <div

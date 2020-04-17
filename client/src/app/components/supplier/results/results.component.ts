@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Inject, HostListener } from "@angular/core";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
+import { DOCUMENT } from "@angular/common";
 
 @Component({
   selector: "app-results",
@@ -16,6 +17,7 @@ export class ResultsComponent implements OnInit {
   public project: any;
 
   constructor(
+    @Inject(DOCUMENT) document,
     private feedbackApiService: StepFeedbackApiService,
     private projectsApiService: ProjectApiService
   ) { }
@@ -42,5 +44,17 @@ export class ResultsComponent implements OnInit {
   public collapse(evt, item: any) {
     evt.stopPropagation();
     item.collapsed = item.collapsed ? !item.collapsed : true;
+  }
+
+  @HostListener("window:scroll", ["$event"])
+  onWindowScroll(e) {
+    console.log(window.pageYOffset);
+    if (window.pageYOffset > 160) {
+      const element = document.getElementById("table-headings");
+      element.classList.add("sticky");
+    } else {
+      const element = document.getElementById("table-headings");
+      element.classList.remove("sticky");
+    }
   }
 }
