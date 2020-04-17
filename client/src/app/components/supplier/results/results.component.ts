@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
-import { ActivatedRoute } from "@angular/router";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 
@@ -15,7 +14,7 @@ export class ResultsComponent implements OnInit {
   private projectId: string;
 
   public clients: any[] = [];
-  public project: IProjectResponse;
+  public project: any;
 
   constructor(
     private feedbackApiService: StepFeedbackApiService,
@@ -41,8 +40,8 @@ export class ResultsComponent implements OnInit {
     return { label: "Not Started" };
   }
 
-  public hello(evt, item: any) {
+  public collapse(evt, item: any) {
     evt.stopPropagation();
-    console.log(evt, item);
+    item.collapsed = item.collapsed ? !item.collapsed : true;
   }
 }

@@ -6,24 +6,40 @@
     </h6>
   </div>
 
-  <div class="suite" *ngFor="let suite of project.suites" (click)="hello($event, suite)">
+  <div
+    class="suite"
+    *ngFor="let suite of project.suites"
+    (click)="collapse($event, suite)"
+  >
     <div class="row">
-      <p>{{ suite.title }}</p>
+      <p><nb-icon [icon]="suite.collapsed ? 'arrow-right' : 'arrow-down'"></nb-icon> {{ suite.title }}</p>
     </div>
-    <div class="case" *ngFor="let case of suite.cases" (click)="hello($event, case)">
-      <span *ngIf="case.steps.length > 0">
-        <div class="row">
-          <p>{{ case.title }}</p>
-        </div>
-        <div class="step row" *ngFor="let step of case.steps" (click)="hello($event, step)">
-          <p class="step-column">{{ step.description }}</p>
-          <div *ngFor="let client of clients" class="client-column">
-            <app-step-status-chip
-              [status]="getClientFeedbackStatusForStep(client, step)"
-            ></app-step-status-chip>
+    <span *ngIf="!suite.collapsed">
+      <div
+        class="case"
+        *ngFor="let case of suite.cases"
+        (click)="collapse($event, case)"
+      >
+        <span *ngIf="case.steps.length > 0">
+          <div class="row">
+            <p><nb-icon [icon]="case.collapsed ? 'arrow-right' : 'arrow-down'"></nb-icon> {{ case.title }}</p>
           </div>
-        </div>
-      </span>
-    </div>
+          <span *ngIf="!case.collapsed">
+            <div
+              class="step row"
+              *ngFor="let step of case.steps"
+              (click)="collapse($event, {})"
+            >
+              <p class="step-column">{{ step.description }}</p>
+              <div *ngFor="let client of clients" class="client-column">
+                <app-step-status-chip
+                  [status]="getClientFeedbackStatusForStep(client, step)"
+                ></app-step-status-chip>
+              </div>
+            </div>
+          </span>
+        </span>
+      </div>
+    </span>
   </div>
 </div>

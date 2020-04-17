@@ -62,14 +62,14 @@
         background: var(--color-basic-transparent-600);
       }
     }
-    .step {
 
+    .step {
       P {
         padding-left: 45px;
       }
-  
+
       &.row {
-        background:white;
+        background: white;
 
         &:hover {
           background: var(--color-primary-transparent-200);
@@ -77,8 +77,6 @@
       }
     }
   }
-
-  
 }
 
 p {
@@ -93,4 +91,14 @@ p {
   margin: -1px;
   box-sizing: border-box;
   padding: 2px 0;
+
+  ::selection {
+    color: none;
+    background: none;
+  }
+  /* For Mozilla Firefox */
+  ::-moz-selection {
+    color: none;
+    background: none;
+  }
 }
