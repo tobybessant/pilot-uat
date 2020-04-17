@@ -40,4 +40,9 @@ export class ResultsComponent implements OnInit {
     }
     return { label: "Not Started" };
   }
+
+  public hello(evt, item: any) {
+    evt.stopPropagation();
+    console.log(evt, item);
+  }
 }

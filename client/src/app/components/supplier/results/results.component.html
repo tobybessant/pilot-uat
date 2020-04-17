@@ -6,16 +6,16 @@
     </h6>
   </div>
 
-  <div class="suite" *ngFor="let suite of project.suites">
+  <div class="suite" *ngFor="let suite of project.suites" (click)="hello($event, suite)">
     <div class="row">
       <p>{{ suite.title }}</p>
     </div>
-    <div class="case" *ngFor="let case of suite.cases">
+    <div class="case" *ngFor="let case of suite.cases" (click)="hello($event, case)">
       <span *ngIf="case.steps.length > 0">
         <div class="row">
           <p>{{ case.title }}</p>
         </div>
-        <div class="step row" *ngFor="let step of case.steps">
+        <div class="step row" *ngFor="let step of case.steps" (click)="hello($event, step)">
           <p class="step-column">{{ step.description }}</p>
           <div *ngFor="let client of clients" class="client-column">
             <app-step-status-chip

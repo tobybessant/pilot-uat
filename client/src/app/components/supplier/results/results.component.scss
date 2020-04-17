@@ -34,7 +34,11 @@
     text-align: left;
 
     .row {
-      background: var(--color-primary-transparent-500);
+      background: var(--color-primary-transparent-400);
+
+      &:hover {
+        background: var(--color-primary-transparent-600);
+      }
     }
 
     p {
@@ -52,7 +56,11 @@
     }
 
     .row {
-      background: var(--color-basic-transparent-400);
+      background: var(--color-basic-transparent-300);
+
+      &:hover {
+        background: var(--color-basic-transparent-600);
+      }
     }
     .step {
 
@@ -62,6 +70,10 @@
   
       &.row {
         background:white;
+
+        &:hover {
+          background: var(--color-primary-transparent-200);
+        }
       }
     }
   }
@@ -78,5 +90,7 @@ p {
   display: flex;
   align-items: center;
   border: 1px solid var(--divider-color);
-  margin:-1px;
+  margin: -1px;
+  box-sizing: border-box;
+  padding: 2px 0;
 }
