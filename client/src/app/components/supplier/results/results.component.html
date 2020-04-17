@@ -1,4 +1,4 @@
-<div class="results-matrix" *ngIf="project">
+<div class="results-matrix" *ngIf="project && clients.length > 0">
   <div class="headings" id="table-headings">
     <span class="step-column"></span>
     <h6 class="client-column" *ngFor="let client of clients">
@@ -52,4 +52,13 @@
       </div>
     </span>
   </div>
+</div>
+
+
+<div class="center" *ngIf="clients.length === 0">
+  <h4>Add a client to this project to start seeing results!</h4>
+</div>
+
+<div class="center" *ngIf="!project">
+  <h4>Error finding project details</h4>
 </div>
