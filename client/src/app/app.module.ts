@@ -10,7 +10,7 @@ import {
   NbLayoutModule, NbButtonModule, NbThemeModule,
   NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
   NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule
+  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule, NbPopoverModule, NbToggleModule
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
@@ -120,6 +120,8 @@ import { ResultsComponent } from './components/supplier/results/results.componen
     NbActionsModule,
     NbTreeGridModule,
     NbSelectModule,
+    NbPopoverModule,
+    NbToggleModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),

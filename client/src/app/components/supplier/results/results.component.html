@@ -1,3 +1,4 @@
+<nb-toggle [(ngModel)]="tableSettings.minified">Minify</nb-toggle>
 <div class="results-matrix" *ngIf="project && clients.length > 0">
   <div class="headings" id="table-headings">
     <span class="step-column"></span>
@@ -43,6 +44,10 @@
               <p class="step-column">{{ step.description }}</p>
               <div *ngFor="let client of clients" class="client-column">
                 <app-step-status-chip
+                  [nbPopover]="getClientFeedbackNotesForStep(client, step)"
+                  nbPopoverTrigger="hint"
+                  nbPopoverPlacement="left"
+                  [minified]="tableSettings.minified"
                   [status]="getClientFeedbackStatusForStep(client, step)"
                 ></app-step-status-chip>
               </div>
@@ -53,7 +58,6 @@
     </span>
   </div>
 </div>
-
 
 <div class="center" *ngIf="clients.length === 0">
   <h4>Add a client to this project to start seeing results!</h4>

@@ -3,6 +3,10 @@ import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-f
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { DOCUMENT } from "@angular/common";
 
+interface ITableSettings {
+  minified: boolean;
+}
+
 @Component({
   selector: "app-results",
   templateUrl: "./results.component.html",
@@ -12,6 +16,10 @@ export class ResultsComponent implements OnInit {
 
   @Input()
   private projectId: string;
+
+  public tableSettings: ITableSettings = {
+    minified: false
+  };
 
   public clients: any[] = [];
   public project: any;
@@ -33,12 +41,22 @@ export class ResultsComponent implements OnInit {
     const user = this.clients.find(c => c.email === client.email);
     if (user?.feedback) {
       const feedback = user.feedback[step.id];
-      // console.log(feedback);
       if (feedback) {
         return feedback.status;
       }
     }
     return { label: "Not Started" };
+  }
+
+  public getClientFeedbackNotesForStep(client: any, step: any): string {
+    const user = this.clients.find(c => c.email === client.email);
+    if (user?.feedback) {
+      const feedback = user.feedback[step.id];
+      if (feedback) {
+        return feedback.notes || "No User Notes Provided";
+      }
+    }
+    return  "No User Notes Provided";
   }
 
   public collapse(evt, item: any) {
