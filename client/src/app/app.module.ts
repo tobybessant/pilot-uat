@@ -125,7 +125,7 @@ import { ResultsComponent } from './components/supplier/results/results.componen
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
-    NbThemeModule.forRoot({ name: "dark" }),
+    NbThemeModule.forRoot({ name: "default" }),
     NbButtonModule,
 
     /* Other Libs */
