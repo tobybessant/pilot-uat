@@ -8,7 +8,7 @@ import { trigger, state, style, transition, animate } from "@angular/animations"
   styleUrls: ["./step-status-chip.component.scss"],
   animations: [
     // the fade-in/fade-out animation.
-    trigger("simpleFadeAnimation", [
+    trigger("fade", [
 
       // fade in when created. this could also be written as transition('void => *')
       transition(":enter", [

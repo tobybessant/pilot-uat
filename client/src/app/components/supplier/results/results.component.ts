@@ -21,6 +21,8 @@ export class ResultsComponent implements OnInit {
     minified: false
   };
 
+  public view: any = "overview";
+
   public clients: any[] = [];
   public project: any;
 
@@ -53,10 +55,10 @@ export class ResultsComponent implements OnInit {
     if (user?.feedback) {
       const feedback = user.feedback[step.id];
       if (feedback) {
-        return feedback.notes || "No User Notes Provided";
+        return feedback.notes;
       }
     }
-    return  "No User Notes Provided";
+    return  "";
   }
 
   public collapse(evt, item: any) {
@@ -74,5 +76,12 @@ export class ResultsComponent implements OnInit {
       const element = document.getElementById("table-headings");
       element.classList.remove("sticky");
     }
+  }
+
+  public getClientsToShow() {
+    if (this.view !== "overview") {
+      return this.clients.filter(c => c.email === this.view);
+    }
+    return this.clients;
   }
 }

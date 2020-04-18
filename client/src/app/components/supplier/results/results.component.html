@@ -1,8 +1,20 @@
-<nb-toggle [(ngModel)]="tableSettings.minified">Minify</nb-toggle>
+<div class="table-settings">
+  <nb-select [(ngModel)]="view">
+
+    <nb-option value="overview">Overview</nb-option>
+
+    <nb-option-group title="Focus User">
+      <nb-option *ngFor="let client of clients" [value]="client.email">{{
+        client.firstName + " " + client.lastName
+      }}</nb-option>
+    </nb-option-group>
+  </nb-select>
+  <nb-toggle [(ngModel)]="tableSettings.minified">Minify</nb-toggle>
+</div>
 <div class="results-matrix" *ngIf="project && clients.length > 0">
   <div class="headings" id="table-headings">
     <span class="step-column"></span>
-    <h6 class="client-column" *ngFor="let client of clients">
+    <h6 class="client-column" *ngFor="let client of getClientsToShow()">
       {{ client.firstName + " " + client.lastName }}
     </h6>
   </div>
@@ -42,11 +54,11 @@
               (click)="collapse($event, {})"
             >
               <p class="step-column">{{ step.description }}</p>
-              <div *ngFor="let client of clients" class="client-column">
+              <div class="indicators">
+                <span class="notes" *ngIf="view !== 'overview' && getClientFeedbackNotesForStep({ email: view }, step)"><nb-icon icon="message-square-outline"></nb-icon></span>
+              </div>
+              <div *ngFor="let client of getClientsToShow()" class="client-column">
                 <app-step-status-chip
-                  [nbPopover]="getClientFeedbackNotesForStep(client, step)"
-                  nbPopoverTrigger="hint"
-                  nbPopoverPlacement="left"
                   [minified]="tableSettings.minified"
                   [status]="getClientFeedbackStatusForStep(client, step)"
                 ></app-step-status-chip>
