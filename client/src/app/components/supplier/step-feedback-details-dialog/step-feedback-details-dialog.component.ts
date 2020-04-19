@@ -25,8 +25,16 @@ export class StepFeedbackDetailsDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public getFormattedCreatedTime(): string {
-    return this.feedback ? new Date(this.feedback.createdDate).toDateString() : "Unknown";
+  public getCreatedDate(): Date {
+    return this.feedback ? new Date(this.feedback.createdDate) : new Date();
+  }
+
+  public getFormattedTime() {
+    return this.getCreatedDate().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  public getFormattedDate() {
+    return this.getCreatedDate().toLocaleDateString();
   }
 
   public getFeedbackNotes() {

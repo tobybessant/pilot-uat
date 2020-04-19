@@ -1,15 +1,35 @@
+nb-card {
+  width: 600px;
+}
+
 .date {
   color: #909090;
 }
 
-.feedback {
+.date-status {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: start;
-  width: 550px;
+  width: 100%;
 }
 
 app-step-status-chip {
   margin-left: 20px;
+}
+
+.notes {
+  margin: 16px 0 0 0;
+
+   .label {
+     font-size: 0.9em;
+     margin-bottom: 6px;
+   }
+}
+
+p {
+  margin: 10px 0;
+}
+
+input:hover {
+  cursor: default;
 }

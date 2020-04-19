@@ -71,8 +71,7 @@ export class ResultsComponent implements OnInit {
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll(e) {
-    console.log(window.pageYOffset);
-    if (window.pageYOffset > 160) {
+    if (window.pageYOffset > 220) {
       const element = document.getElementById("table-headings");
       element.classList.add("sticky");
     } else {

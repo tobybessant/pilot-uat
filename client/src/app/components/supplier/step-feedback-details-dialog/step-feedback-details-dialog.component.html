@@ -2,12 +2,22 @@
   <nb-card-header>{{ getStepDescription() }} </nb-card-header>
   <nb-card-body>
     <div class="feedback" *ngIf="feedback">
-      <span class="date">{{ getFormattedCreatedTime() }}</span>
-      <app-step-status-chip [status]="feedback.status"></app-step-status-chip>
-    </div>
-    <label>Notes</label>
-    <p>{{ getFeedbackNotes() }}</p>
+      <div class="date-status">
+        <span class="date">{{ getFormattedDate() }} ({{ getFormattedTime() }})</span>
+        <app-step-status-chip [status]="feedback.status"></app-step-status-chip>
+      </div>
 
+      <div class="notes">
+        <label class="label">Notes</label>
+        <input
+          nbInput
+          fullWidth
+          type="multi"
+          readonly
+          [value]="getFeedbackNotes()"
+        />
+      </div>
+    </div>
     <div class="feedback" *ngIf="!feedback">
       <p>User has not completed this step yet</p>
     </div>
