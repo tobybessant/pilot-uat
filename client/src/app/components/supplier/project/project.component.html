@@ -1,7 +1,16 @@
 <div class="project-container">
   <ng-container *ngIf="project">
-    <nb-tabset class="tabs-view">
-      <nb-tab tabTitle="Tests" tabIcon="pantone-outline" class="no-h-padding">
+    <nb-tabset
+      class="tabs-view"
+      routeParam="tab"
+      (changeTab)="updateUrlParameter($event)"
+    >
+      <nb-tab
+        tabTitle="Tests"
+        tabIcon="pantone-outline"
+        class="no-h-padding"
+        route="tests"
+      >
         <div class="tab-content">
           <app-test-suite-list
             [suitesData]="project.suites"
@@ -16,17 +25,22 @@
           ></app-test-suite>
         </div>
       </nb-tab>
-      <nb-tab tabTitle="Results" tabIcon="done-all-outline" class="no-h-padding">
+      <nb-tab
+        tabTitle="Results"
+        tabIcon="done-all-outline"
+        class="no-h-padding"
+        route="results"
+      >
         <div class="tab-content">
           <app-results [projectId]="project.id"></app-results>
         </div>
       </nb-tab>
-      <nb-tab tabTitle="Users" tabIcon="people-outline">
+      <nb-tab tabTitle="Users" route="users" tabIcon="people-outline">
         <div class="tab-content">
           <app-users [projectId]="project.id"></app-users>
         </div>
       </nb-tab>
-      <nb-tab tabTitle="Settings" tabIcon="settings-2-outline">
+      <nb-tab tabTitle="Settings" route="settings" tabIcon="settings-2-outline">
         <div class="tab-content">
           <app-project-settings [project]="project"> </app-project-settings>
         </div>

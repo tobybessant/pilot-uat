@@ -11,6 +11,11 @@ const routes: Routes = [
   },
   {
     path: "project/:id",
+    component: ProjectComponent,
+    pathMatch: "full"
+  },
+  {
+    path: "project/:id/:tab",
     component: ProjectComponent
   }
 ];
