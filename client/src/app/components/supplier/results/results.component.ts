@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Inject, HostListener } from "@angular/core";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { DOCUMENT } from "@angular/common";
+import { NbDialogService } from "@nebular/theme";
+import { StepFeedbackDetailsDialogComponent } from "../step-feedback-details-dialog/step-feedback-details-dialog.component";
 
 interface ITableSettings {
   minified: boolean;
@@ -29,7 +31,8 @@ export class ResultsComponent implements OnInit {
   constructor(
     @Inject(DOCUMENT) document,
     private feedbackApiService: StepFeedbackApiService,
-    private projectsApiService: ProjectApiService
+    private projectsApiService: ProjectApiService,
+    private dialogService: NbDialogService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -83,5 +86,24 @@ export class ResultsComponent implements OnInit {
       return this.clients.filter(c => c.email === this.view);
     }
     return this.clients;
+  }
+
+  public openFeedbackModal(client: any, step: any) {
+    let feedback: any;
+    const user = this.clients.find(c => c.email === client.email);
+    if (user?.feedback) {
+      const fb = user.feedback[step.id];
+      if (fb) {
+        feedback = fb;
+      }
+    }
+
+    console.log(feedback);
+    this.dialogService.open(StepFeedbackDetailsDialogComponent, {
+      context: {
+        step,
+        feedback
+      }
+    });
   }
 }

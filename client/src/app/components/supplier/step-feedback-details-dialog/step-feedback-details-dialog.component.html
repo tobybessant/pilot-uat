@@ -1,0 +1,18 @@
+<nb-card>
+  <nb-card-header>{{ getStepDescription() }} </nb-card-header>
+  <nb-card-body>
+    <div class="feedback" *ngIf="feedback">
+      <span class="date">{{ getFormattedCreatedTime() }}</span>
+      <app-step-status-chip [status]="feedback.status"></app-step-status-chip>
+    </div>
+    <label>Notes</label>
+    <p>{{ getFeedbackNotes() }}</p>
+
+    <div class="feedback" *ngIf="!feedback">
+      <p>User has not completed this step yet</p>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton fullWidth status="basic" (click)="close()">Close</button>
+  </nb-card-footer>
+</nb-card>

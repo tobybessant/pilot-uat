@@ -75,6 +75,10 @@
         &:hover {
           background: var(--color-primary-transparent-200);
         }
+
+        &:hover button.details-button.appearance-ghost.size-small {
+          visibility: visible;
+        }
       }
     }
   }
@@ -134,4 +138,9 @@ p {
 
 .notes {
   margin-right: 10px;
+}
+
+button.details-button.appearance-ghost.size-small {
+  padding: 3px 10px;
+  visibility: hidden;
 }

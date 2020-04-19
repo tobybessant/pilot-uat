@@ -1,6 +1,5 @@
 <div class="table-settings">
   <nb-select [(ngModel)]="view">
-
     <nb-option value="overview">Overview</nb-option>
 
     <nb-option-group title="Focus User">
@@ -9,7 +8,7 @@
       }}</nb-option>
     </nb-option-group>
   </nb-select>
-  <nb-toggle [(ngModel)]="tableSettings.minified">Minify</nb-toggle>
+  <nb-toggle [(ngModel)]="tableSettings.minified">Minify Status</nb-toggle>
 </div>
 <div class="results-matrix" *ngIf="project && clients.length > 0">
   <div class="headings" id="table-headings">
@@ -55,14 +54,34 @@
             >
               <p class="step-column">{{ step.description }}</p>
               <div class="indicators">
-                <span class="notes" *ngIf="view !== 'overview' && getClientFeedbackNotesForStep({ email: view }, step)"><nb-icon icon="message-square-outline"></nb-icon></span>
+                <span
+                  class="notes"
+                  *ngIf="
+                    view !== 'overview' &&
+                    getClientFeedbackNotesForStep({ email: view }, step)
+                  "
+                  ><nb-icon icon="message-square-outline"></nb-icon
+                ></span>
               </div>
-              <div *ngFor="let client of getClientsToShow()" class="client-column">
+              <div
+                *ngFor="let client of getClientsToShow()"
+                class="client-column"
+              >
                 <app-step-status-chip
                   [minified]="tableSettings.minified"
                   [status]="getClientFeedbackStatusForStep(client, step)"
                 ></app-step-status-chip>
               </div>
+              <button
+                class="details-button"
+                nbButton
+                ghost
+                size="small"
+                *ngIf="view !== 'overview'"
+                (click)="openFeedbackModal({ email: view }, step)"
+              >
+                Details
+              </button>
             </div>
           </span>
         </span>
