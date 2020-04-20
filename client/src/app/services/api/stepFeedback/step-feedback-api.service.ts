@@ -17,7 +17,7 @@ export class StepFeedbackApiService {
   }
 
   public getAllFeedbackForProject(projectId: string): Promise<IApiResponse<any>> {
-    return this.apiService.get(`${this.baseUrl}?projectId=${projectId}`);
+    return this.apiService.get(`${this.baseUrl}/project?projectId=${projectId}`);
   }
 
   public addFeedbackForStep(stepId: string, notes: string, status: string): Promise<IApiResponse<any>> {
