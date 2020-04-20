@@ -12,10 +12,11 @@ import { ICreateFeedbackRequest } from "../dto/request/client/feedback.interface
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { Validator } from "joiful";
 import { CreateFeedback } from "../services/middleware/joi/schemas/createFeedback";
-import { IStepFeedbackResponse } from "../dto/response/client/feedback.interface";
+import { IStepFeedbackResponse } from "../dto/response/client/feedback";
 import { StepFeedbackDbo } from "../database/entities/stepFeedbackDbo";
 import { UserDbo } from "../database/entities/userDbo";
-import { IUserStepFeedbackResponse } from "../dto/response/supplier/userStepFeedback.interface";
+import { IUserStepFeedbackResponse } from "../dto/response/supplier/userStepFeedback";
+import { Dictionary } from "tsyringe/dist/typings/types";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/feedback`)
@@ -131,21 +132,29 @@ export class StepFeedbackController extends BaseController {
     try {
       if (req.query.projectId) {
         const feedbackPerUser: UserDbo[] = await this.stepFeedbackRepository.getFeedbackForProject(req.query.projectId);
+
+        // NOTE: Map<string, Map<number, StepFeedbackDbo>>
         const userFeedbackMap: any = {};
 
-        // tslint:disable-next-line: prefer-for-of
+        // iterate user list
         for (let i = 0; i < feedbackPerUser.length; i++) {
-          const results: any = {};
+          // NOTE: Map<number, StepFeedbackDbo>
+          const latestUserFeedbackPerStep: any = {};
+
           const u = feedbackPerUser[i];
 
-          // tslint:disable-next-line: prefer-for-of
+          // iterate all feedback for current user, taking only the latest per step and pushing it back to map
+          // NOTE: feedback is returned in order CreatedDate DESC. This loop is iterating over the list and
+          // only adding the first feedback it finds - as this will be the most recent for each given step.
           for (let j = 0; j < u.stepFeedback.length; j++) {
-            const f = u.stepFeedback[j];
-            if (!results[f.step.id]) {
-              results[f.step.id] = f;
+            const feedback = u.stepFeedback[j];
+            if (!latestUserFeedbackPerStep[feedback.step.id]) {
+              latestUserFeedbackPerStep[feedback.step.id] = feedback;
             }
           }
-          userFeedbackMap[u.email] = results;
+
+          // push map of most recent feedback per step back to user map
+          userFeedbackMap[u.email] = latestUserFeedbackPerStep;
         }
 
         return this.OK<any[]>(res, feedbackPerUser.map(user => ({

@@ -5,7 +5,7 @@ import StepRepository from "../../src/repositories/stepRepository";
 import { ICreateStepRequest } from "../../src/dto/request/supplier/createStep";
 import { StepDbo } from "../../src/database/entities/stepDbo";
 import { IStepResponse } from "../../src/dto/response/supplier/step";
-import { IStepResponse as IStepResponseClient } from "../../src/dto/response/client/step.interface";
+import { IStepResponse as IStepResponseClient } from "../../src/dto/response/client/step";
 import { StepStatus, StepStatusDbo } from "../../src/database/entities/stepStatusDbo";
 import { CaseRepository } from "../../src/repositories/caseRepository";
 import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";

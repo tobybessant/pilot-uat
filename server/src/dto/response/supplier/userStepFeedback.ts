@@ -1,4 +1,4 @@
-import { IStepFeedbackResponse } from "../client/feedback.interface";
+import { IStepFeedbackResponse } from "../client/feedback";
 
 export interface IUserStepFeedbackResponse {
   id: string;
