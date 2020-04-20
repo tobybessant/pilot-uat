@@ -18,9 +18,9 @@ export class UserTypeChipComponent implements OnInit {
   public getStyle(): { background: string; color: string; } {
     switch (this.type) {
       case "Client":
-        return { background: "var(--color-primary-400)", color: "white" };
+        return { background: "var(--color-basic-600)", color: "white" };
       default:
-        return { background: "var(--color-primary-transparent-100)", color: "black" };
+        return { background: "#8a51c4", color: "white" };
     }
   }
 
