@@ -1,16 +1,16 @@
-<div class="table-settings"  *ngIf="project && clients.length > 0">
-  <nb-select [(ngModel)]="view">
-    <nb-option value="overview">Overview</nb-option>
+<div class="table-settings" *ngIf="project && clientResultsMatrix.length > 0">
+  <nb-select [(ngModel)]="tableSettings.selectedUser" (ngModelChange)="saveTableSettings()">
+    <nb-option value="none">Overview</nb-option>
 
     <nb-option-group title="Focus User">
-      <nb-option *ngFor="let client of clients" [value]="client.email">{{
+      <nb-option *ngFor="let client of clientResultsMatrix" [value]="client.id">{{
         client.firstName + " " + client.lastName
       }}</nb-option>
     </nb-option-group>
   </nb-select>
-  <nb-toggle [(ngModel)]="tableSettings.minified">Minify Status</nb-toggle>
+  <nb-toggle [(ngModel)]="tableSettings.minified" (ngModelChange)="saveTableSettings()">Minify Status</nb-toggle>
 </div>
-<div class="results-matrix" *ngIf="project && clients.length > 0">
+<div class="results-matrix" *ngIf="project && clientResultsMatrix.length > 0">
   <div class="headings" id="table-headings">
     <span class="step-column"></span>
     <h6 class="client-column" *ngFor="let client of getClientsToShow()">
@@ -57,8 +57,8 @@
                 <span
                   class="notes"
                   *ngIf="
-                    view !== 'overview' &&
-                    getClientFeedbackNotesForStep({ email: view }, step)
+                    userIsSelected() &&
+                    getClientFeedbackNotesForStep(tableSettings.selectedUser, step)
                   "
                   ><nb-icon icon="message-square-outline"></nb-icon
                 ></span>
@@ -69,7 +69,7 @@
               >
                 <app-step-status-chip
                   [minified]="tableSettings.minified"
-                  [status]="getClientFeedbackStatusForStep(client, step)"
+                  [status]="getClientFeedbackStatusForStep(client.id, step)"
                 ></app-step-status-chip>
               </div>
               <button
@@ -77,8 +77,8 @@
                 nbButton
                 ghost
                 size="small"
-                *ngIf="view !== 'overview'"
-                (click)="openFeedbackModal({ email: view }, step)"
+                *ngIf="userIsSelected()"
+                (click)="openFeedbackModal(tableSettings.selectedUser, step)"
               >
                 Details
               </button>
@@ -90,7 +90,7 @@
   </div>
 </div>
 
-<div class="center" *ngIf="clients.length === 0">
+<div class="center" *ngIf="clientResultsMatrix.length === 0">
   <h4>Add a client to this project to start seeing results!</h4>
 </div>
 

@@ -94,7 +94,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public updateUrlParameter(tab: NbTabComponent) {
     const urlSegs: UrlSegment[] = this.activeRoute.snapshot.url;
     const tabUrl: string = tab.tabTitle.toLocaleLowerCase();
-    console.log(tabUrl, urlSegs);
 
     if (urlSegs.length === 2 || urlSegs.length === 3 && urlSegs[2].path !== tabUrl) {
       this.location.replaceState(`${urlSegs[0].path}/${urlSegs[1].path}/${tabUrl}`);
