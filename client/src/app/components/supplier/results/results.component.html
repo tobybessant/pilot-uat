@@ -1,16 +1,34 @@
-<div class="table-settings" *ngIf="project && clientResultsMatrix.length > 0">
-  <nb-select [(ngModel)]="tableSettings.selectedUser" (ngModelChange)="saveTableSettings()">
-    <nb-option value="none">Overview</nb-option>
+<div
+  class="table-settings"
+  *ngIf="!isLoading && project && clientResultsMatrix.length > 0"
+>
+  <div>
+    <p>View</p>
+    <nb-select
+      [(ngModel)]="tableSettings.selectedUser"
+      (ngModelChange)="saveTableSettings()"
+    >
+      <nb-option value="none">Overview</nb-option>
 
-    <nb-option-group title="Focus User">
-      <nb-option *ngFor="let client of clientResultsMatrix" [value]="client.id">{{
-        client.firstName + " " + client.lastName
-      }}</nb-option>
-    </nb-option-group>
-  </nb-select>
-  <nb-toggle [(ngModel)]="tableSettings.minified" (ngModelChange)="saveTableSettings()">Minify Status</nb-toggle>
+      <nb-option-group title="Focus User">
+        <nb-option
+          *ngFor="let client of clientResultsMatrix"
+          [value]="client.id"
+          >{{ client.firstName + " " + client.lastName }}</nb-option
+        >
+      </nb-option-group>
+    </nb-select>
+  </div>
+  <nb-toggle
+    [(ngModel)]="tableSettings.minified"
+    (ngModelChange)="saveTableSettings()"
+    >Minify Status</nb-toggle
+  >
 </div>
-<div class="results-matrix" *ngIf="project && clientResultsMatrix.length > 0">
+<div
+  class="results-matrix"
+  *ngIf="!isLoading && project && clientResultsMatrix.length > 0"
+>
   <div class="headings" id="table-headings">
     <span class="step-column"></span>
     <h6 class="client-column" *ngFor="let client of getClientsToShow()">
@@ -58,7 +76,10 @@
                   class="notes"
                   *ngIf="
                     userIsSelected() &&
-                    getClientFeedbackNotesForStep(tableSettings.selectedUser, step)
+                    getClientFeedbackNotesForStep(
+                      tableSettings.selectedUser,
+                      step
+                    )
                   "
                   ><nb-icon icon="message-square-outline"></nb-icon
                 ></span>
@@ -90,10 +111,19 @@
   </div>
 </div>
 
-<div class="center" *ngIf="clientResultsMatrix.length === 0">
+<div class="center" *ngIf="!isLoading && clientResultsMatrix.length === 0">
   <h4>Add a client to this project to start seeing results!</h4>
 </div>
 
-<div class="center" *ngIf="!project">
+<div class="center" *ngIf="!isLoading && !project">
   <h4>Error finding project details</h4>
 </div>
+
+<ngx-spinner
+  bdColor="rgba(0,0,0,0)"
+  size="medium"
+  color="rgba(125,26,211, 0.8)"
+  type="line-scale"
+  name="results_matrix"
+  [fullScreen]="false"
+></ngx-spinner>

@@ -7,6 +7,7 @@ import { StepFeedbackDetailsDialogComponent } from "../step-feedback-details-dia
 import { IResultsMatrixData, IUserStepFeedback } from "src/app/models/api/response/supplier/results-matrix.interface";
 import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
 import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
+import { NgxSpinnerService } from "ngx-spinner";
 
 interface ITableSettings {
   minified: boolean;
@@ -32,16 +33,21 @@ export class ResultsComponent implements OnInit {
   public clientResultsMatrix: IResultsMatrixData[] = [];
   public project: any;
 
+  public isLoading: boolean = true;
+  public SPINNER_NAME: string = "results_matrix";
+
   constructor(
     @Inject(DOCUMENT) private document,
     private feedbackApiService: StepFeedbackApiService,
     private projectsApiService: ProjectApiService,
     private dialogService: NbDialogService,
     private localStorageService: LocalStorageService,
-    private cdr: ChangeDetectorRef
+    private spinnerService: NgxSpinnerService
   ) { }
 
   async ngOnInit(): Promise<void> {
+    this.loading(true);
+
     this.TABLE_SETTINGS_KEY = `${this.projectId}_TABLE_SETTINGS`;
     const projectFeedbackPerUser = await this.feedbackApiService.getAllFeedbackForProject(this.projectId);
     this.clientResultsMatrix = projectFeedbackPerUser.payload;
@@ -49,7 +55,10 @@ export class ResultsComponent implements OnInit {
     this.project = (await this.projectsApiService.getProjectById(this.projectId, true)).payload;
 
     this.loadTableSettings();
-    this.cdr.detectChanges();
+
+    setTimeout(() => {
+      this.loading(false);
+    }, 1000);
   }
 
   public getClientFeedbackStatusForStep(id: string, step: IStepResponse) {
@@ -137,5 +146,10 @@ export class ResultsComponent implements OnInit {
 
   private getUserFromMatrixData(id: string): IResultsMatrixData | undefined {
     return this.clientResultsMatrix.find(r => r.id === id);
+  }
+
+  private loading(isLoading: boolean) {
+    isLoading ? this.spinnerService.show(this.SPINNER_NAME) : this.spinnerService.hide(this.SPINNER_NAME);
+    this.isLoading = isLoading;
   }
 }
