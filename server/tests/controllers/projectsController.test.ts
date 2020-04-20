@@ -479,9 +479,9 @@ suite("Project Controller", () => {
       .returns(async () => returns);
   }
 
-  function given_projectRepository_getProjectById_returns_whenGiven(returns: ProjectDbo | undefined, ...whenGiven: any[]) {
+  function given_projectRepository_getProjectById_returns_whenGiven(returns: ProjectDbo | undefined, ...[id, extensive]: any[]) {
     projectRepository
-      .setup(pr => pr.getProjectById(whenGiven[0], whenGiven[1]))
+      .setup(pr => pr.getProjectById(id, extensive))
       .returns(async () => returns);
   }
 
