@@ -3,7 +3,7 @@
   *ngIf="!isLoading && project && clientResultsMatrix.length > 0"
 >
   <div>
-    <p>View</p>
+    <h6>View</h6>
     <nb-select
       [(ngModel)]="tableSettings.selectedUser"
       (ngModelChange)="saveTableSettings()"
@@ -22,6 +22,7 @@
   <nb-toggle
     [(ngModel)]="tableSettings.minified"
     (ngModelChange)="saveTableSettings()"
+    labelPosition="left"
     >Minify Status</nb-toggle
   >
 </div>
@@ -31,7 +32,7 @@
 >
   <div class="headings" id="table-headings">
     <span class="step-column"></span>
-    <h6 class="client-column" *ngFor="let client of getClientsToShow()">
+    <h6 class="client-column" *ngFor="let client of getClientsToShow()" [class.user-focused]="getClientsToShow().length === 1">
       {{ client.firstName + " " + client.lastName }}
     </h6>
   </div>
@@ -122,7 +123,7 @@
 <ngx-spinner
   bdColor="rgba(0,0,0,0)"
   size="medium"
-  color="rgba(125,26,211, 0.8)"
+  color="rgba(52,102,255, 0.6)"
   type="line-scale"
   name="results_matrix"
   [fullScreen]="false"
