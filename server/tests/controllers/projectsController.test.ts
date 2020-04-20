@@ -16,6 +16,8 @@ import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectInviteRepository } from "../../src/repositories/projectInviteRepository";
 import { deepStrictEqual } from "../testUtils/deepStrictEqual";
+import { CaseDbo } from "../../src/database/entities/caseDbo";
+import { StepDbo } from "../../src/database/entities/stepDbo";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -248,6 +250,80 @@ suite("Project Controller", () => {
         res.verify(r => r.status(OK), Times.once());
       });
     });
+
+    suite("Valid request conditions, fetching extended result", () => {
+      let testCase: CaseDbo;
+      let step: StepDbo;
+
+      setup(() => {
+        step = new StepDbo();
+        step.id = 4;
+        step.description = "step 1";
+
+        testCase = new CaseDbo();
+        testCase.id = 5;
+        testCase.steps = [step];
+
+        const testSuite = new SuiteDbo();
+        testSuite.id = 3;
+        testSuite.title = "Suite 1";
+        testSuite.cases = [testCase];
+
+        project = new ProjectDbo();
+        project.id = 4000;
+        project.title = "Fetched Project Title";
+        project.suites = [testSuite];
+
+        params = {
+          id: project.id
+        };
+
+        projectResponse = {
+          id: project.id.toString(),
+          title: project.title,
+          suites: project.suites.map(s => ({
+            id: s.id.toString(),
+            title: s.title,
+            cases: s.cases.map(c => ({
+              id: c.id.toString(),
+              title: c.title,
+              steps: c.steps.map(st => ({
+                id: st.id.toString(),
+                description: st.description
+              }))
+            }))
+          }))
+        };
+
+        query = {
+          extensive: true
+        };
+      });
+
+      test("Should return entire project in response body", async () => {
+        given_Request_query_is(query);
+        given_projectRepository_userHasAccessToProject_returns(true);
+        given_projectRepository_getProjectById_returns_whenGiven(project, params.id, query.extensive);
+        given_Request_params_are(params);
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, projectResponse))), Times.once());
+      });
+
+      test("Should return responseCode 200", async () => {
+        given_Request_query_is(query);
+        given_projectRepository_userHasAccessToProject_returns(true);
+        given_projectRepository_getProjectById_returns_whenGiven(project, params.id, query.extensive);
+        given_Request_params_are(params);
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, projectResponse))), Times.once());
+      });
+
+    });
+
 
     suite("Find project by id does not find project", () => {
       setup(() => {
