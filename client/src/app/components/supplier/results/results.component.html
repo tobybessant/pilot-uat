@@ -1,4 +1,4 @@
-<div class="table-settings">
+<div class="table-settings"  *ngIf="project && clients.length > 0">
   <nb-select [(ngModel)]="view">
     <nb-option value="overview">Overview</nb-option>
 
