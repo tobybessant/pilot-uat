@@ -5,8 +5,9 @@ import { Injectable } from "@angular/core";
 })
 export class NavbarService {
 
+  private DEFAULT_HEADER = "Pilot";
   private isViewingProject: boolean = false;
-  private header: string = "Pilot";
+  private header: string = this.DEFAULT_HEADER;
 
   constructor() { }
 
@@ -19,7 +20,7 @@ export class NavbarService {
   }
 
   public clearHeader() {
-    this.header = "Pilot";
+    this.setHeader(this.DEFAULT_HEADER);
   }
 
   public setIsViewingProject(viewing: boolean) {
