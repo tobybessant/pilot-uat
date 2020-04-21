@@ -13,7 +13,7 @@ export class StepFeedbackApiService {
 
   constructor(private apiService: ApiService) { }
 
-  public async getLatestStepFeedbackFromUser(stepId: string, userEmail): Promise<IApiResponse<IStepFeedbackResponse>> {
+  public async getLatestStepFeedbackFromUser(stepId: string, userEmail: string): Promise<IApiResponse<IStepFeedbackResponse>> {
     return this.apiService.get(`${this.baseUrl}?stepId=${stepId}&userEmail=${userEmail}&onlyLatest=true`);
   }
 

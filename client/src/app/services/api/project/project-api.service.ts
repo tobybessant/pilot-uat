@@ -39,7 +39,7 @@ export class ProjectApiService {
     return response;
   }
 
-  public async getProjectOpenInvites(projectId: string) {
+  public async getOpenInvitesForProject(projectId: string) {
     const response = await this.apiService.get<any[]>(`${this.baseUrl}/${projectId}/invites`);
     return response;
   }

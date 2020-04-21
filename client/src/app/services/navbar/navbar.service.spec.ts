@@ -4,9 +4,4 @@ import { NavbarService } from "./navbar.service";
 
 describe("NavbarService", () => {
   let subject: NavbarService;
-
-  beforeEach(() => {
-    subject = new NavbarService();
-  });
-
 });
