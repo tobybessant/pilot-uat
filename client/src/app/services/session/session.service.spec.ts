@@ -3,6 +3,7 @@ import { SessionService } from "./session.service";
 import { UserApiService } from "../api/user/user-api.service";
 import { IApiResponse } from "src/app/models/api/response/api-response.interface";
 import { expectNothing } from "../../../../test-utils/expect-nothing";
+import { Observable } from "rxjs";
 
 describe("SessionService", () => {
   let subject: SessionService;
@@ -42,7 +43,25 @@ describe("SessionService", () => {
 
       await subject.setUser();
 
-      expect(subject.getCurrentUser()).toEqual(accountDetailsResponse.payload);
+      // tslint:disable-next-line: no-string-literal
+      expect(subject["currentUser"]).toEqual(accountDetailsResponse.payload);
+    });
+  });
+
+  describe("getSubject", () => {
+    it("returns a type of Observable", async () => {
+      const user = subject.getSubject();
+
+      expect(user).toBeInstanceOf(Observable);
+    });
+  });
+
+  describe("logout", () => {
+    it("sets the current user to null", async () => {
+      const user = subject.logout();
+
+      // tslint:disable-next-line: no-string-literal
+      expect(subject["currentUser"]).toBeNull();
     });
   });
 
