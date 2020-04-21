@@ -59,7 +59,7 @@ import { UserTypeChipComponent } from "./components/common/user-type-chip/user-t
 import { ErrorComponent } from "./components/common/error/error.component";
 import { StepComponent } from "./components/client/step/step.component";
 import { ResultsComponent } from "./components/supplier/results/results.component";
-import { StepFeedbackDetailsDialogComponent } from './components/supplier/step-feedback-details-dialog/step-feedback-details-dialog.component';
+import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-feedback-details-dialog/step-feedback-details-dialog.component";
 
 @NgModule({
   declarations: [
@@ -141,6 +141,10 @@ import { StepFeedbackDetailsDialogComponent } from './components/supplier/step-f
       useFactory: initApp,
       deps: [SessionService],
       multi: true
+    },
+    {
+      provide: "LOCAL_STORAGE",
+      useFactory: () => (typeof window !== "undefined") ? window.localStorage : null
     }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
