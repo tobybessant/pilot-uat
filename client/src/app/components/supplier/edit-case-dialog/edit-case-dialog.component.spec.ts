@@ -6,20 +6,5 @@ describe("EditCaseDialogComponent", () => {
   let component: EditCaseDialogComponent;
   let fixture: ComponentFixture<EditCaseDialogComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EditCaseDialogComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditCaseDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+  
 });
