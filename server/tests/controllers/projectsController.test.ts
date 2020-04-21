@@ -9,13 +9,15 @@ import { UserDbo } from "../../src/database/entities/userDbo";
 import { ProjectRepository } from "../../src/repositories/projectRepository";
 import { IProjectResponse } from "../../src/dto/response/supplier/project";
 import { UserRepository } from "../../src/repositories/userRepository";
-import { CREATED, OK, NOT_FOUND, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-status-codes";
+import { CREATED, OK, BAD_REQUEST, INTERNAL_SERVER_ERROR } from "http-status-codes";
 import { ProjectDbo } from "../../src/database/entities/projectDbo";
 import { IUserToken } from "../../src/dto/response/common/userToken";
 import { TestSuiteRepository } from "../../src/repositories/suiteRepository";
 import { SuiteDbo } from "../../src/database/entities/suiteDbo";
 import { ProjectInviteRepository } from "../../src/repositories/projectInviteRepository";
 import { deepStrictEqual } from "../testUtils/deepStrictEqual";
+import { CaseDbo } from "../../src/database/entities/caseDbo";
+import { StepDbo } from "../../src/database/entities/stepDbo";
 
 suite("Project Controller", () => {
   let userRepository: IMock<UserRepository>;
@@ -191,13 +193,14 @@ suite("Project Controller", () => {
   });
 
   suite("Get Project by ID", async () => {
+    let params: any;
     let getProjectBody: any;
     let project: ProjectDbo;
     let projectResponse: IProjectResponse;
+    let query: any;
 
-    suite("Valid request conditions", () => {
+    suite("Valid request conditions, fetching non-extended result", () => {
       setup(() => {
-
         const testSuite = new SuiteDbo();
         testSuite.id = 3;
         testSuite.title = "Suite 1";
@@ -207,7 +210,7 @@ suite("Project Controller", () => {
         project.title = "Fetched Project Title";
         project.suites = [testSuite];
 
-        getProjectBody = {
+        params = {
           id: project.id
         };
 
@@ -219,13 +222,17 @@ suite("Project Controller", () => {
             title: s.title
           }))
         };
+
+        query = {
+          extensive: false
+        };
       });
 
       test("Should return project in response body", async () => {
+        given_Request_query_is(query);
         given_projectRepository_userHasAccessToProject_returns(true);
-        given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
-        given_projectRepository_getTestSuitesForProject_returns_whenGiven(project.suites, It.isAny());
-        given_Request_body_is(getProjectBody);
+        given_projectRepository_getProjectById_returns_whenGiven(project, params.id, query.extensive);
+        given_Request_params_are(params);
 
         await subject.getProjectById(req.object, res.object);
 
@@ -233,15 +240,90 @@ suite("Project Controller", () => {
       });
 
       test("Should have statusCode 200", async () => {
+        given_Request_query_is(query);
         given_projectRepository_userHasAccessToProject_returns(true);
-        given_projectRepository_getProjectById_returns_whenGiven(project, It.isAny());
-        given_Request_body_is(getProjectBody);
+        given_projectRepository_getProjectById_returns_whenGiven(project, params.id, query.extensive);
+        given_Request_params_are(params);
 
         await subject.getProjectById(req.object, res.object);
 
         res.verify(r => r.status(OK), Times.once());
       });
     });
+
+    suite("Valid request conditions, fetching extended result", () => {
+      let testCase: CaseDbo;
+      let step: StepDbo;
+
+      setup(() => {
+        step = new StepDbo();
+        step.id = 4;
+        step.description = "step 1";
+
+        testCase = new CaseDbo();
+        testCase.id = 5;
+        testCase.steps = [step];
+
+        const testSuite = new SuiteDbo();
+        testSuite.id = 3;
+        testSuite.title = "Suite 1";
+        testSuite.cases = [testCase];
+
+        project = new ProjectDbo();
+        project.id = 4000;
+        project.title = "Fetched Project Title";
+        project.suites = [testSuite];
+
+        params = {
+          id: project.id
+        };
+
+        projectResponse = {
+          id: project.id.toString(),
+          title: project.title,
+          suites: project.suites.map(s => ({
+            id: s.id.toString(),
+            title: s.title,
+            cases: s.cases.map(c => ({
+              id: c.id.toString(),
+              title: c.title,
+              steps: c.steps.map(st => ({
+                id: st.id.toString(),
+                description: st.description
+              }))
+            }))
+          }))
+        };
+
+        query = {
+          extensive: true
+        };
+      });
+
+      test("Should return entire project in response body", async () => {
+        given_Request_query_is(query);
+        given_projectRepository_userHasAccessToProject_returns(true);
+        given_projectRepository_getProjectById_returns_whenGiven(project, params.id, query.extensive);
+        given_Request_params_are(params);
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, projectResponse))), Times.once());
+      });
+
+      test("Should return responseCode 200", async () => {
+        given_Request_query_is(query);
+        given_projectRepository_userHasAccessToProject_returns(true);
+        given_projectRepository_getProjectById_returns_whenGiven(project, params.id, query.extensive);
+        given_Request_params_are(params);
+
+        await subject.getProjectById(req.object, res.object);
+
+        res.verify(r => r.json(It.is(body => deepStrictEqual(body.payload, projectResponse))), Times.once());
+      });
+
+    });
+
 
     suite("Find project by id does not find project", () => {
       setup(() => {
@@ -437,6 +519,12 @@ suite("Project Controller", () => {
       .returns(() => user);
   }
 
+  function given_Request_query_is(q: any) {
+    req
+      .setup(r => r.query)
+      .returns(() => q);
+  }
+
   function given_Request_body_is(body: any): void {
     req
       .setup(r => r.body)
@@ -467,9 +555,9 @@ suite("Project Controller", () => {
       .returns(async () => returns);
   }
 
-  function given_projectRepository_getProjectById_returns_whenGiven(returns: ProjectDbo | undefined, whenGiven: any) {
+  function given_projectRepository_getProjectById_returns_whenGiven(returns: ProjectDbo | undefined, ...[id, extensive]: any[]) {
     projectRepository
-      .setup(pr => pr.getProjectById(whenGiven))
+      .setup(pr => pr.getProjectById(id, extensive))
       .returns(async () => returns);
   }
 

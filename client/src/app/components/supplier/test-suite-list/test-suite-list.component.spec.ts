@@ -6,20 +6,4 @@ describe("TestSuiteListComponent", () => {
   let component: TestSuiteListComponent;
   let fixture: ComponentFixture<TestSuiteListComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ TestSuiteListComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TestSuiteListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
 });

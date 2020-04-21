@@ -19,8 +19,8 @@ export class ProjectApiService {
     return response;
   }
 
-  public async getProjectById(id: string) {
-    const response = await this.apiService.get<IProjectResponse>(`${this.baseUrl}/${id}`);
+  public async getProjectById(id: string, extensive?: boolean) {
+    const response = await this.apiService.get<IProjectResponse>(`${this.baseUrl}/${id}?extensive=${extensive === true}`);
     return response;
   }
 

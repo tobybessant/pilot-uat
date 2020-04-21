@@ -10,7 +10,7 @@ import {
   NbLayoutModule, NbButtonModule, NbThemeModule,
   NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
   NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule
+  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule, NbPopoverModule, NbToggleModule
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
@@ -19,7 +19,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatChipsModule } from "@angular/material/chips";
 
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 
 import { initApp } from "./app-initialiser";
 
@@ -57,7 +57,9 @@ import { UsersComponent } from "./components/supplier/users/users.component";
 import { InviteUserDialogComponent } from "./components/supplier/invite-user-dialog/invite-user-dialog.component";
 import { UserTypeChipComponent } from "./components/common/user-type-chip/user-type-chip.component";
 import { ErrorComponent } from "./components/common/error/error.component";
-import { StepComponent } from './components/client/step/step.component';
+import { StepComponent } from "./components/client/step/step.component";
+import { ResultsComponent } from "./components/supplier/results/results.component";
+import { StepFeedbackDetailsDialogComponent } from './components/supplier/step-feedback-details-dialog/step-feedback-details-dialog.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +94,9 @@ import { StepComponent } from './components/client/step/step.component';
     ClientTestStepListComponent,
     UserTypeChipComponent,
     ErrorComponent,
-    StepComponent
+    StepComponent,
+    ResultsComponent,
+    StepFeedbackDetailsDialogComponent
   ],
   imports: [
     /* Angular */
@@ -118,6 +122,8 @@ import { StepComponent } from './components/client/step/step.component';
     NbActionsModule,
     NbTreeGridModule,
     NbSelectModule,
+    NbPopoverModule,
+    NbToggleModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),

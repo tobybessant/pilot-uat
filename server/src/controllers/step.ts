@@ -14,7 +14,7 @@ import { IUpdateStepRequest } from "../dto/request/supplier/updateStep";
 import { PermittedAccountTypes } from "../services/middleware/permittedAccountTypes";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 import { StepFeedbackRepository } from "../repositories/stepFeedbackRepository";
-import { IStepResponse as IStepResponseClient } from "../dto/response/client/step.interface";
+import { IStepResponse as IStepResponseClient } from "../dto/response/client/step";
 import StepStatusRepository from "../repositories/stepStatusRepository";
 import { ApiError } from "../services/apiError";
 import { BAD_REQUEST } from "http-status-codes";

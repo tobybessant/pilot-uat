@@ -12,10 +12,11 @@ import { ICreateFeedbackRequest } from "../dto/request/client/feedback.interface
 import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { Validator } from "joiful";
 import { CreateFeedback } from "../services/middleware/joi/schemas/createFeedback";
-import { IStepFeedbackResponse } from "../dto/response/client/feedback.interface";
+import { IStepFeedbackResponse } from "../dto/response/client/feedback";
 import { StepFeedbackDbo } from "../database/entities/stepFeedbackDbo";
 import { UserDbo } from "../database/entities/userDbo";
-import { IUserStepFeedbackResponse } from "../dto/response/supplier/userStepFeedback.interface";
+import { IUserStepFeedbackResponse } from "../dto/response/supplier/userStepFeedback";
+import { Dictionary } from "tsyringe/dist/typings/types";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/feedback`)
@@ -60,7 +61,7 @@ export class StepFeedbackController extends BaseController {
   @Get()
   public async getLatestUserFeedbackForStep(req: Request, res: Response) {
     try {
-      if (!req.query.userEmail) {
+      if (!req.query.userEmail && req.query.stepId) {
         const feedbackPerUser: UserDbo[] = await this.stepFeedbackRepository.getAllUserFeedbackForStep(req.query.stepId);
         return this.OK<IUserStepFeedbackResponse[]>(res, feedbackPerUser.map(user => ({
           id: user.id,
@@ -84,7 +85,7 @@ export class StepFeedbackController extends BaseController {
       if (req.query.onlyLatest) {
         const latestFeedback: StepFeedbackDbo | undefined = feedback[0];
 
-        if(latestFeedback){
+        if (latestFeedback) {
           return this.OK<IStepFeedbackResponse>(res, {
             createdDate: latestFeedback.createdDate,
             id: latestFeedback.id.toString(),
@@ -123,6 +124,50 @@ export class StepFeedbackController extends BaseController {
       })));
     } catch (error) {
       return this.serverError(res, error);
+    }
+  }
+
+  @Get("project")
+  public async getProjectFeedbackMatrix(req: Request, res: Response) {
+    try {
+      if (req.query.projectId) {
+        const feedbackPerUser: UserDbo[] = await this.stepFeedbackRepository.getFeedbackForProject(req.query.projectId);
+
+        // NOTE: Map<string, Map<number, StepFeedbackDbo>>
+        const userFeedbackMap: any = {};
+
+        // iterate user list
+        for (let i = 0; i < feedbackPerUser.length; i++) {
+          // NOTE: Map<number, StepFeedbackDbo>
+          const latestUserFeedbackPerStep: any = {};
+
+          const u = feedbackPerUser[i];
+
+          // iterate all feedback for current user, taking only the latest per step and pushing it back to map
+          // NOTE: feedback is returned in order CreatedDate DESC. This loop is iterating over the list and
+          // only adding the first feedback it finds - as this will be the most recent for each given step.
+          for (let j = 0; j < u.stepFeedback.length; j++) {
+            const feedback = u.stepFeedback[j];
+            if (!latestUserFeedbackPerStep[feedback.step.id]) {
+              latestUserFeedbackPerStep[feedback.step.id] = feedback;
+            }
+          }
+
+          // push map of most recent feedback per step back to user map
+          userFeedbackMap[u.email] = latestUserFeedbackPerStep;
+        }
+
+        return this.OK<any[]>(res, feedbackPerUser.map(user => ({
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          createdDate: user.createdDate,
+          feedback: userFeedbackMap[user.email]
+        })));
+      }
+    } catch (error) {
+      this.serverError(res, error);
     }
   }
 }

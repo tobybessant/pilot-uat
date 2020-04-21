@@ -11,9 +11,9 @@ import { StepDbo } from "../../src/database/entities/stepDbo";
 import { StepFeedbackDbo } from "../../src/database/entities/stepFeedbackDbo";
 import { StepStatus } from "../../src/database/entities/stepStatusDbo";
 import { deepStrictEqual } from "../testUtils/deepStrictEqual";
-import { IStepFeedbackResponse } from "../../src/dto/response/client/feedback.interface";
+import { IStepFeedbackResponse } from "../../src/dto/response/client/feedback";
 import { CREATED, OK, INTERNAL_SERVER_ERROR, BAD_REQUEST } from "http-status-codes";
-import { IUserStepFeedbackResponse } from "../../src/dto/response/supplier/userStepFeedback.interface";
+import { IUserStepFeedbackResponse } from "../../src/dto/response/supplier/userStepFeedback";
 import { BaseController } from "../../src/controllers/baseController";
 
 suite("StepFeedbackController", () => {

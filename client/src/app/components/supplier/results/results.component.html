@@ -1,0 +1,130 @@
+<div
+  class="table-settings"
+  *ngIf="!isLoading && project && clientResultsMatrix.length > 0"
+>
+  <div>
+    <h6>View</h6>
+    <nb-select
+      [(ngModel)]="tableSettings.selectedUser"
+      (ngModelChange)="saveTableSettings()"
+    >
+      <nb-option value="none">Overview</nb-option>
+
+      <nb-option-group title="Focus User">
+        <nb-option
+          *ngFor="let client of clientResultsMatrix"
+          [value]="client.id"
+          >{{ client.firstName + " " + client.lastName }}</nb-option
+        >
+      </nb-option-group>
+    </nb-select>
+  </div>
+  <nb-toggle
+    [(ngModel)]="tableSettings.minified"
+    (ngModelChange)="saveTableSettings()"
+    labelPosition="left"
+    >Minify Status</nb-toggle
+  >
+</div>
+<div
+  class="results-matrix"
+  *ngIf="!isLoading && project && clientResultsMatrix.length > 0"
+>
+  <div class="headings" id="table-headings">
+    <span class="step-column"></span>
+    <h6 class="client-column" *ngFor="let client of getClientsToShow()" [class.user-focused]="getClientsToShow().length === 1">
+      {{ client.firstName + " " + client.lastName }}
+    </h6>
+  </div>
+
+  <div
+    class="suite"
+    *ngFor="let suite of project.suites"
+    (click)="collapse($event, suite)"
+  >
+    <div class="row">
+      <p>
+        <nb-icon
+          [icon]="suite.collapsed ? 'arrow-right' : 'arrow-down'"
+        ></nb-icon>
+        <b>{{ suite.title }}</b>
+      </p>
+    </div>
+    <span *ngIf="!suite.collapsed">
+      <div
+        class="case"
+        *ngFor="let case of suite.cases"
+        (click)="collapse($event, case)"
+      >
+        <span *ngIf="case.steps.length > 0">
+          <div class="row">
+            <p>
+              <nb-icon
+                [icon]="case.collapsed ? 'arrow-right' : 'arrow-down'"
+              ></nb-icon
+              ><b>{{ case.title }}</b>
+            </p>
+          </div>
+          <span *ngIf="!case.collapsed">
+            <div
+              class="step row"
+              *ngFor="let step of case.steps"
+              (click)="collapse($event, {})"
+            >
+              <p class="step-column">{{ step.description }}</p>
+              <div class="indicators">
+                <span
+                  class="notes"
+                  *ngIf="
+                    userIsSelected() &&
+                    getClientFeedbackNotesForStep(
+                      tableSettings.selectedUser,
+                      step
+                    )
+                  "
+                  ><nb-icon icon="message-square-outline"></nb-icon
+                ></span>
+              </div>
+              <div
+                *ngFor="let client of getClientsToShow()"
+                class="client-column"
+              >
+                <app-step-status-chip
+                  [minified]="tableSettings.minified"
+                  [status]="getClientFeedbackStatusForStep(client.id, step)"
+                ></app-step-status-chip>
+              </div>
+              <button
+                class="details-button"
+                nbButton
+                ghost
+                size="small"
+                *ngIf="userIsSelected()"
+                (click)="openFeedbackModal(tableSettings.selectedUser, step)"
+              >
+                Details
+              </button>
+            </div>
+          </span>
+        </span>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="center" *ngIf="!isLoading && clientResultsMatrix.length === 0">
+  <h4>Add a client to this project to start seeing results!</h4>
+</div>
+
+<div class="center" *ngIf="!isLoading && !project">
+  <h4>Error finding project details</h4>
+</div>
+
+<ngx-spinner
+  bdColor="rgba(0,0,0,0)"
+  size="medium"
+  color="rgba(52,102,255, 0.6)"
+  type="line-scale"
+  name="results_matrix"
+  [fullScreen]="false"
+></ngx-spinner>
