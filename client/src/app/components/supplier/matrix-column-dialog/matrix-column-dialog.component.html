@@ -1,0 +1,23 @@
+<nb-card>
+  <nb-card-header>
+    Edit Matrix Columns
+  </nb-card-header>
+  <nb-card-body>
+    <div class="selection-list">
+      <nb-checkbox
+        *ngFor="let client of selectionMap"
+        [(ngModel)]="client.selected"
+        (ngModelChange)="calculateSelected()"
+        >{{ client.user.firstName }} {{ client.user.lastName }} ({{
+          client.user.email
+        }})</nb-checkbox
+      >
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="save()">
+      Save
+    </button>
+    <button nbButton status="basic" (click)="close()">Cancel</button>
+  </nb-card-footer>
+</nb-card>

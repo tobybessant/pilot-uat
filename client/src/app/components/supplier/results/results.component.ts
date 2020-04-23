@@ -8,10 +8,12 @@ import { IResultsMatrixData, IUserStepFeedback } from "src/app/models/api/respon
 import { IStepResponse } from "src/app/models/api/response/supplier/step.interface";
 import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
 import { NgxSpinnerService } from "ngx-spinner";
+import { MatrixColumnDialogComponent } from "../matrix-column-dialog/matrix-column-dialog.component";
 
 interface ITableSettings {
   minified: boolean;
-  selectedUser: string;
+  viewingUser: string;
+  userColumns: string[];
 }
 
 @Component({
@@ -27,14 +29,16 @@ export class ResultsComponent implements OnInit {
   private TABLE_SETTINGS_KEY;
   public tableSettings: ITableSettings = {
     minified: false,
-    selectedUser: "none"
+    viewingUser: "none",
+    userColumns: []
   };
+  public showStickyHeader: boolean = false;
 
   public clientResultsMatrix: IResultsMatrixData[] = [];
   public project: any;
 
   public isLoading: boolean = true;
-  public SPINNER_NAME: string = "results_matrix";
+  public readonly SPINNER_NAME: string = "results_matrix";
 
   constructor(
     @Inject(DOCUMENT) private document,
@@ -53,6 +57,11 @@ export class ResultsComponent implements OnInit {
     this.clientResultsMatrix = projectFeedbackPerUser.payload;
 
     this.project = (await this.projectsApiService.getProjectById(this.projectId, true)).payload;
+
+    for (let i = 0; i < 3 && i < this.clientResultsMatrix.length; i++) {
+      console.log(i);
+      this.tableSettings.userColumns.push(this.clientResultsMatrix[i].id);
+    }
 
     this.loadTableSettings();
 
@@ -90,22 +99,23 @@ export class ResultsComponent implements OnInit {
 
   @HostListener("window:scroll", ["$event"])
   onWindowScroll(e) {
-    if (window.pageYOffset > 220) {
-      const element = this.document.getElementById("table-headings");
-      element.classList.add("sticky");
+    if (window.pageYOffset > 263) {
+      this.showStickyHeader = true;
     } else {
-      const element = this.document.getElementById("table-headings");
-      element.classList.remove("sticky");
+      this.showStickyHeader = false;
     }
   }
 
   public getClientsToShow() {
-    const user = this.getUserFromMatrixData(this.tableSettings.selectedUser);
+    const user = this.getUserFromMatrixData(this.tableSettings.viewingUser);
     if (user) {
-      const u = this.tableSettings.selectedUser;
+      const u = this.tableSettings.viewingUser;
       return this.clientResultsMatrix.filter(c => c.email === user.email);
     }
-    return this.clientResultsMatrix;
+
+    return this.clientResultsMatrix.filter(u => {
+      return this.tableSettings.userColumns.includes(u.id);
+    });
   }
 
   public openFeedbackModal(id: string, step: IStepResponse) {
@@ -127,7 +137,7 @@ export class ResultsComponent implements OnInit {
   }
 
   public userIsSelected(): boolean {
-    return this.tableSettings.selectedUser !== "none";
+    return this.tableSettings.viewingUser !== "none";
   }
 
   public loadTableSettings() {
@@ -151,5 +161,17 @@ export class ResultsComponent implements OnInit {
   private loading(isLoading: boolean) {
     isLoading ? this.spinnerService.show(this.SPINNER_NAME) : this.spinnerService.hide(this.SPINNER_NAME);
     this.isLoading = isLoading;
+  }
+
+  public openEditMatrixColumnsDialog() {
+    this.dialogService.open(MatrixColumnDialogComponent, {
+      context: {
+        matrixClients: this.clientResultsMatrix,
+        selectedClients: this.tableSettings.userColumns
+      }
+    }).onClose.subscribe((selectedColumns: string[]) => {
+      this.tableSettings.userColumns = selectedColumns;
+      this.saveTableSettings();
+    });
   }
 }

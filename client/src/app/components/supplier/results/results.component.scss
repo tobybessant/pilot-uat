@@ -6,32 +6,10 @@
 .results-matrix {
   width: 100%;
   text-align: center;
-  border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-
-  .headings {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    border-bottom: 1px solid grey;
-
-    h6 {
-      margin: 8px 0 8px 0;
-
-      &.user-focused {
-        margin-right: 70px;
-      }
-    }
-  }
-
-  .step-column {
-    text-align: left;
-    flex: 2;
-  }
-
-  .client-column {
-    min-width: 120px;
-  }
+  margin-bottom: 20px;
+  border: 1px solid grey;
+  border-bottom: 2px solid grey;
 
   .suite {
     width: 100%;
@@ -39,10 +17,10 @@
     text-align: left;
 
     .row {
-      background: var(--color-primary-transparent-400);
+      background: var(--color-basic-transparent-600);
 
       &:hover {
-        background: var(--color-primary-transparent-600);
+        background: #a3a3a3;
       }
     }
 
@@ -64,7 +42,7 @@
       background: var(--color-basic-transparent-300);
 
       &:hover {
-        background: var(--color-basic-transparent-600);
+        background: var(--color-basic-transparent-500);
       }
     }
 
@@ -112,17 +90,39 @@ p {
     background: none;
   }
 }
+.client-column {
+  min-width: 120px;
+}
+.step-column {
+  min-width: 500px;
+  text-align: left;
+  flex: 2;
+}
 
-.sticky {
-  background: var(--card-background-color);
-  box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
-  position: fixed;
-  top: 0;
-  height: 120px;
+.headings {
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  max-height: 50px;
+  border-bottom: 1px solid grey;
 
-  &.headings {
-    padding: 5px 34px 0 34px;
+  h6 {
+    margin: 8px 0 8px 0;
+
+    &.user-focused {
+      margin-right: 70px;
+    }
+  }
+
+  &.sticky {
+    background: var(--card-background-color);
+    max-width: calc(100% - 34px);
+    display: flex;
+    text-align: center;
+    flex-direction: row;
+    box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
   }
 }
 
@@ -153,4 +153,16 @@ button.details-button.appearance-ghost.size-small {
 
 h6 {
   margin: 0 0 10px 0;
+}
+
+@media (max-width: 991.98px) {
+  .headings.sticky {
+    max-width: calc(100% - 82px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .headings.sticky {
+    max-width: calc(100% - 66px);
+  }
 }

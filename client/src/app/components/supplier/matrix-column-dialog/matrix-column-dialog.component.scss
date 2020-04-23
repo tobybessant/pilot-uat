@@ -1,0 +1,15 @@
+nb-card {
+  max-width: 600px;
+}
+
+.selection-list {
+  display: flex;
+  flex-direction: column;
+}
+
+nb-card-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}

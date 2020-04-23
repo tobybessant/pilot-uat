@@ -5,7 +5,7 @@
   <div>
     <h6>View</h6>
     <nb-select
-      [(ngModel)]="tableSettings.selectedUser"
+      [(ngModel)]="tableSettings.viewingUser"
       (ngModelChange)="saveTableSettings()"
     >
       <nb-option value="none">Overview</nb-option>
@@ -26,17 +26,53 @@
     >Minify Status</nb-toggle
   >
 </div>
+
+<div *ngIf="showStickyHeader" class="headings sticky" id="table-headings">
+  <span class="step-column">
+    <button
+      *ngIf="!userIsSelected()"
+      nbButton
+      ghost
+      size="medium"
+      status="basic"
+      (click)="openEditMatrixColumnsDialog()"
+    >
+      Edit Columns
+    </button>
+  </span>
+  <h6
+    class="client-column"
+    *ngFor="let client of getClientsToShow()"
+    [class.user-focused]="getClientsToShow().length === 1"
+  >
+    {{ client.firstName + " " + client.lastName }}
+  </h6>
+</div>
+
 <div
   class="results-matrix"
   *ngIf="!isLoading && project && clientResultsMatrix.length > 0"
 >
   <div class="headings" id="table-headings">
-    <span class="step-column"></span>
-    <h6 class="client-column" *ngFor="let client of getClientsToShow()" [class.user-focused]="getClientsToShow().length === 1">
+    <span class="step-column">
+      <button
+        *ngIf="!userIsSelected()"
+        nbButton
+        ghost
+        size="medium"
+        (click)="openEditMatrixColumnsDialog()"
+      >
+        Edit Columns
+      </button>
+    </span>
+    <h6
+      class="client-column"
+      *ngFor="let client of getClientsToShow()"
+      [class.user-focused]="getClientsToShow().length === 1"
+    >
       {{ client.firstName + " " + client.lastName }}
     </h6>
   </div>
-
   <div
     class="suite"
     *ngFor="let suite of project.suites"
@@ -78,12 +114,13 @@
                   *ngIf="
                     userIsSelected() &&
                     getClientFeedbackNotesForStep(
-                      tableSettings.selectedUser,
+                      tableSettings.viewingUser,
                       step
                     )
                   "
-                  ><nb-icon icon="message-square-outline"></nb-icon
-                ></span>
+                >
+                  <nb-icon icon="message-square-outline"></nb-icon>
+                </span>
               </div>
               <div
                 *ngFor="let client of getClientsToShow()"
@@ -100,7 +137,7 @@
                 ghost
                 size="small"
                 *ngIf="userIsSelected()"
-                (click)="openFeedbackModal(tableSettings.selectedUser, step)"
+                (click)="openFeedbackModal(tableSettings.viewingUser, step)"
               >
                 Details
               </button>
