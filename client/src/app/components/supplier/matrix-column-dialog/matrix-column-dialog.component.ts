@@ -31,7 +31,7 @@ export class MatrixColumnDialogComponent implements OnInit {
       this.selectionMap.push(data);
     });
 
-    this.selectedCount = this.selectedClients.length;
+    this.calculateSelected();
   }
 
   public save() {
@@ -53,6 +53,13 @@ export class MatrixColumnDialogComponent implements OnInit {
 
   public calculateSelected() {
     this.selectedCount = this.selectionMap.filter(s => s.selected).length;
-    console.log(this.selectedCount);
+  }
+
+  public canSelectMore() {
+    return this.selectedCount < 5;
+  }
+
+  public canSelectLess() {
+    return this.selectedCount > 2;
   }
 }

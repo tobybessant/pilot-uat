@@ -3,11 +3,14 @@
     Edit Matrix Columns
   </nb-card-header>
   <nb-card-body>
+    <p>Select up to 5 and no less than 2 clients to display on the matrix overview.</p>
     <div class="selection-list">
       <nb-checkbox
         *ngFor="let client of selectionMap"
+        [disabled]="(!canSelectMore() && !client.selected) || (!canSelectLess() && client.selected)"
         [(ngModel)]="client.selected"
         (ngModelChange)="calculateSelected()"
+        (checkedChange)="calculateSelected()"
         >{{ client.user.firstName }} {{ client.user.lastName }} ({{
           client.user.email
         }})</nb-checkbox
