@@ -11,10 +11,9 @@
         [(ngModel)]="client.selected"
         (ngModelChange)="calculateSelected()"
         (checkedChange)="calculateSelected()"
-        >{{ client.user.firstName }} {{ client.user.lastName }} ({{
-          client.user.email
-        }})</nb-checkbox
       >
+        {{ client.user.firstName }} {{ client.user.lastName }} <span class="email">({{ client.user.email}})</span>
+      </nb-checkbox>
     </div>
   </nb-card-body>
   <nb-card-footer>
