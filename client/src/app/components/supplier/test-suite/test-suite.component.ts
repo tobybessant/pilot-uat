@@ -75,7 +75,7 @@ export class TestSuiteComponent implements OnInit {
   }
 
   public async deleteSuite() {
-    await this.testSuiteApiService.deleteTestSuiteById(this.activeSuite.projectId, this.activeSuite.id);
+    await this.testSuiteApiService.deleteTestSuiteById(this.activeSuite.id);
     this.suiteDeleted.emit(this.activeSuite.id);
   }
 

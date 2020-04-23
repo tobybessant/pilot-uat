@@ -23,7 +23,7 @@ export class TestSuiteApiService {
     return response;
   }
 
-  public async deleteTestSuiteById(projectId: string, suiteId: string) {
+  public async deleteTestSuiteById(suiteId: string) {
     const response = await this.apiService.delete<void>(this.baseUrl + "/" + suiteId);
     return response;
   }

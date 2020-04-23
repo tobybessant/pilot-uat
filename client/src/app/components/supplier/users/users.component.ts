@@ -47,7 +47,7 @@ export class UsersComponent implements OnInit {
   }
 
   private async fetchOpenInvites() {
-    const invites = await this.projectApiService.getProjectOpenInvites(this.projectId);
+    const invites = await this.projectApiService.getOpenInvitesForProject(this.projectId);
     this.openInvites = invites.payload;
   }
 

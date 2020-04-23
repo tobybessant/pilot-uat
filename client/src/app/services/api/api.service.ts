@@ -7,7 +7,7 @@ import { NbToastrService } from "@nebular/theme";
   providedIn: "root"
 })
 export class ApiService {
-  private readonly root: string = "http://localhost:8080/api/v1";
+  public static readonly root: string = "http://localhost:8080/api/v1";
 
   constructor(private httpClient: HttpClient, private toastrService: NbToastrService) { }
 
@@ -17,7 +17,7 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.get<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
+      response = await this.httpClient.get<IApiResponse<T>>(ApiService.root + endpoint, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
@@ -39,7 +39,7 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.post<IApiResponse<T>>(this.root + endpoint, body, { withCredentials: true }).toPromise();
+      response = await this.httpClient.post<IApiResponse<T>>(ApiService.root + endpoint, body, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
@@ -63,7 +63,7 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.delete<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
+      response = await this.httpClient.delete<IApiResponse<T>>(ApiService.root + endpoint, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
@@ -85,7 +85,7 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.patch<IApiResponse<T>>(this.root + endpoint, payload, { withCredentials: true }).toPromise();
+      response = await this.httpClient.patch<IApiResponse<T>>(ApiService.root + endpoint, payload, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
