@@ -10,7 +10,7 @@ import {
   NbLayoutModule, NbButtonModule, NbThemeModule,
   NbCardModule, NbInputModule, NbAlertModule, NbUserModule, NbContextMenuModule,
   NbMenuModule, NbIconModule, NbSpinnerModule, NbDialogModule, NbTabsetModule,
-  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule, NbPopoverModule, NbToggleModule
+  NbActionsModule, NbTreeGridModule, NbSelectModule, NbToastrModule, NbPopoverModule, NbToggleModule, NbCheckboxModule
 } from "@nebular/theme";
 import { NbEvaIconsModule } from "@nebular/eva-icons";
 
@@ -60,6 +60,7 @@ import { ErrorComponent } from "./components/common/error/error.component";
 import { StepComponent } from "./components/client/step/step.component";
 import { ResultsComponent } from "./components/supplier/results/results.component";
 import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-feedback-details-dialog/step-feedback-details-dialog.component";
+import { MatrixColumnDialogComponent } from './components/supplier/matrix-column-dialog/matrix-column-dialog.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-f
     ErrorComponent,
     StepComponent,
     ResultsComponent,
-    StepFeedbackDetailsDialogComponent
+    StepFeedbackDetailsDialogComponent,
+    MatrixColumnDialogComponent
   ],
   imports: [
     /* Angular */
@@ -124,10 +126,11 @@ import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-f
     NbSelectModule,
     NbPopoverModule,
     NbToggleModule,
+    NbCheckboxModule,
     NbMenuModule.forRoot(),
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
-    NbThemeModule.forRoot({ name: "default" }),
+    NbThemeModule.forRoot({ name: "pilot-theme" }),
     NbButtonModule,
 
     /* Other Libs */
