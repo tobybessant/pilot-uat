@@ -21,7 +21,7 @@
       background: var(--color-basic-transparent-600);
 
       &:hover {
-        background: #a3a3a3;
+        background: rgba(148, 51, 255, 0.5);
       }
     }
 
@@ -43,7 +43,7 @@
       background: var(--color-basic-transparent-300);
 
       &:hover {
-        background: var(--color-basic-transparent-500);
+        background: rgba(148, 51, 255, 0.3);
       }
     }
 
