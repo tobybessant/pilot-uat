@@ -1,6 +1,7 @@
+<div *ngIf="stepSelected() && stickyStepModal" class="step-placeholder"></div>
 <div
   *ngIf="stepSelected()"
-  [@inOutAnimation]
+  [ngClass]="{'sticky': stickyStepModal}"
   class="step"
 >
   <div class="header">

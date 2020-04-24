@@ -1,39 +1,15 @@
-import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { ActiveStepService } from "src/app/services/active-step/active-step.service";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { SessionService } from "src/app/services/session/session.service";
 import { IUserResponse } from "src/app/models/api/response/common/user.interface";
-import { trigger, transition, style, animate } from "@angular/animations";
 import { IStepResponse } from "src/app/models/api/response/client/step.interface";
 import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFeedback.interface";
 
 @Component({
   selector: "app-step",
   templateUrl: "./step.component.html",
-  styleUrls: ["./step.component.scss"],
-  animations: [
-    trigger(
-      "inOutAnimation",
-      [
-        transition(
-          ":enter",
-          [
-            style({ width: 0, opacity: 0 }),
-            animate("0.08s ease-out",
-              style({ width: 300, opacity: 1 }))
-          ]
-        ),
-        transition(
-          ":leave",
-          [
-            style({ width: 300, opacity: 1 }),
-            animate("0.08s ease-in",
-              style({ width: 0, opacity: 0 }))
-          ]
-        )
-      ]
-    )
-  ]
+  styleUrls: ["./step.component.scss"]
 })
 export class StepComponent implements OnInit {
 
@@ -42,6 +18,8 @@ export class StepComponent implements OnInit {
   private latestFeedback: IStepFeedbackResponse;
   public notes: string = "";
   public status: string = "Not Started";
+
+  public stickyStepModal: boolean;
 
   constructor(
     private activeStepService: ActiveStepService,
@@ -100,6 +78,20 @@ export class StepComponent implements OnInit {
     if (response.errors.length === 0) {
       await this.activeStepService.stepDetailsUpdated();
       this.closeStepPanel();
+    }
+  }
+
+  @HostListener("window:scroll", ["$event"])
+  onWindowScrollCheckShouldStick(e) {
+    if (window.pageYOffset > 200) {
+      this.stickyStepModal = true;
+    }
+
+    // NOTE: Checking scroll offset not being 0 for when the select drop down
+    // options are being shown (NebularUI appears to set a root class to block)
+    // scrolling which un-stickies the component
+    if (window.pageYOffset < 200 && window.pageYOffset !== 0) {
+      this.stickyStepModal = false;
     }
   }
 }
