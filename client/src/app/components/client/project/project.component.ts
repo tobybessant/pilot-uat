@@ -6,6 +6,7 @@ import { ActivatedRoute } from "@angular/router";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
 import { IProjectResponse } from "src/app/models/api/response/client/project.interface";
+import { ActiveProjectService } from "src/app/services/active-project/active-project.service";
 
 @Component({
   selector: "app-project-client",
@@ -14,16 +15,14 @@ import { IProjectResponse } from "src/app/models/api/response/client/project.int
 })
 export class ClientProjectComponent implements OnInit, OnDestroy {
 
-  public project: IProjectResponse;
   public fetchAttemptComplete = false;
   public activeSuite: ISuiteResponse;
 
   constructor(
     private projectsApiService: ProjectApiService,
-    private testSuiteApiService: TestSuiteApiService,
-    private activeTestSuiteService: ActiveTestSuiteService,
     private activeRoute: ActivatedRoute,
-    private navbarService: NavbarService
+    private navbarService: NavbarService,
+    private activeProjectService: ActiveProjectService
   ) { }
 
   ngOnInit(): void {
@@ -37,27 +36,13 @@ export class ClientProjectComponent implements OnInit, OnDestroy {
   private async fetchProjectById(id: string) {
     const response = await this.projectsApiService.getProjectById(id);
     if (response.errors.length === 0) {
-      this.project = response.payload;
-      this.setActiveSuite(response.payload.suites[0]);
+      this.activeProjectService.setActiveProject(response.payload);
       this.navbarService.setHeader(response.payload.title);
     }
     this.fetchAttemptComplete = true;
   }
 
-  public updateActiveSuite($event) {
-    this.setActiveSuite(this.project.suites.filter(suite => suite.id === $event)[0]);
+  public getActiveProject(): IProjectResponse {
+    return this.activeProjectService.getActiveProject();
   }
-
-  public async fetchSuites() {
-    const response = await this.testSuiteApiService.getTestSuitesForProject(this.project.id);
-    if (response.errors.length > 0) {
-      return;
-    }
-    this.project.suites = response.payload;
-  }
-
-  private setActiveSuite(suite: ISuiteResponse) {
-    this.activeTestSuiteService.setSuite(suite);
-  }
-
 }

@@ -61,6 +61,7 @@ import { StepComponent } from "./components/client/step/step.component";
 import { ResultsComponent } from "./components/supplier/results/results.component";
 import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-feedback-details-dialog/step-feedback-details-dialog.component";
 import { MatrixColumnDialogComponent } from './components/supplier/matrix-column-dialog/matrix-column-dialog.component';
+import { ProjectTabsComponent } from './components/client/project-tabs/project-tabs.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { MatrixColumnDialogComponent } from './components/supplier/matrix-column
     StepComponent,
     ResultsComponent,
     StepFeedbackDetailsDialogComponent,
-    MatrixColumnDialogComponent
+    MatrixColumnDialogComponent,
+    ProjectTabsComponent
   ],
   imports: [
     /* Angular */

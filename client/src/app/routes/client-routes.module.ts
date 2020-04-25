@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { ProjectsGridComponent } from "../components/client/projects-grid/projects-grid.component";
 import { ClientProjectComponent } from "../components/client/project/project.component";
+import { ProjectTabsComponent } from "../components/client/project-tabs/project-tabs.component";
 
 const routes: Routes = [
   {
@@ -11,7 +12,13 @@ const routes: Routes = [
   },
   {
     path: "project/:id",
-    component: ClientProjectComponent
+    component: ClientProjectComponent,
+    children: [
+      {
+        path: "",
+        component: ProjectTabsComponent
+      }
+    ]
   }
 ];
 
