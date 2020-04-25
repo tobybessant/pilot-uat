@@ -37,7 +37,9 @@ export class NavComponent implements OnInit {
         this.navbarService.setIsViewingProject(false);
         this.navbarService.clearHeader();
 
-        this.router.navigate(["/login"]);
+        // NOTE: Completely reload to the login page - clearing any role-based
+        // session state i.e. routes.
+        window.location.assign(`${window.location.hostname}/login`);
       });
     });
 

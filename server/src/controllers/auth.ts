@@ -106,11 +106,9 @@ export class AuthController extends BaseController {
 
   @Get("logout")
   @Middleware(checkAuthentication)
-  public logout(req: Request, res: Response) {
+  public async logout(req: Request, res: Response) {
     req.logOut();
-    res.status(OK);
-    res.json({
-      message: "Logged out"
-    });
+    req.user = undefined;
+    return res.redirect("/");
   }
 }
