@@ -4,6 +4,14 @@
     <p>When I add a lead, they receive a welcome email</p>
   </nb-card-body>
 </nb-card>
+<div class="status-overview">
+  <app-step-status-chip 
+  *ngFor="let step of steps"
+  [class.current-step]="isCurrentStep(step)"
+  [minified]="true"
+  [status]="getFeedbackStatusForStep(step.id)"
+  ></app-step-status-chip>
+</div>
 <nb-card class="step">
   <nb-card-body>
     <div class="step-data">
@@ -35,7 +43,7 @@
         <nb-icon icon="arrow-ios-back-outline"></nb-icon>Previous Step
       </button>
       <button nbButton status="primary" (click)="nextStep()">
-        Next Step<nb-icon icon="arrow-ios-forward-outline"></nb-icon>
+        {{ getNextButtonText() }} <nb-icon icon="arrow-ios-forward-outline"></nb-icon>
       </button>
     </div>
   </nb-card-footer>

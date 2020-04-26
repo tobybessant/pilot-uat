@@ -6,7 +6,7 @@ nb-select {
 
 .case {
   max-width: 800px;
-  margin: 0 auto 20px auto;
+  margin: 0 auto;
 }
 
 .step {
@@ -22,6 +22,14 @@ nb-card-header {
   h5 {
     margin: 0;
   }
+}
+.status-overview {
+  max-width: 800px;
+  margin: 20px auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0;
 }
 
 .step-data {
@@ -45,4 +53,11 @@ h6 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.current-step {
+  padding: 5px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--color-basic-600);
+  transition: 500;
 }

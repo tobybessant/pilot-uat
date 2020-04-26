@@ -8,6 +8,7 @@ import { IStepResponse } from "src/app/models/api/response/client/step.interface
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
 import { SessionService } from "src/app/services/session/session.service";
 import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFeedback.interface";
+import { IStepStatusResponse } from "src/app/models/api/response/supplier/step-status.interface";
 
 @Component({
   selector: "app-step-wizard",
@@ -16,7 +17,7 @@ import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFe
 })
 export class StepWizardComponent implements OnInit {
 
-  private steps: IStepResponse[] = [];
+  public steps: IStepResponse[] = [];
   private feedback: Map<string, IStepFeedbackResponse>;
 
   private activeStepIndex: number = 0;
@@ -62,6 +63,14 @@ export class StepWizardComponent implements OnInit {
   private async fetchSteps(caseId: string): Promise<void> {
     const stepsResponse = await this.stepApiService.getStepsforCase<IStepResponse[]>(caseId);
     this.steps = stepsResponse.payload;
+
+    for (const step of this.steps) {
+      const feedbackForStep = await this.stepFeedbackApiService
+        .getLatestStepFeedbackFromUser(step.id, this.sessionService.getCurrentUser().email);
+
+      this.feedback.set(step.id, feedbackForStep.payload);
+    }
+
     this.loadStepData();
   }
 
@@ -85,8 +94,8 @@ export class StepWizardComponent implements OnInit {
 
   private async loadStepData(): Promise<void> {
     const stepId = this.getActiveStep().id;
-    console.log("fetching feedback for ", stepId);
-    if (!this.feedback.has(stepId)) {
+
+    if (!this.feedback.has(stepId) || this.feedback.get(stepId) !== undefined) {
       const feedbackForStep = await this.stepFeedbackApiService
         .getLatestStepFeedbackFromUser(stepId, this.sessionService.getCurrentUser().email);
 
@@ -122,19 +131,37 @@ export class StepWizardComponent implements OnInit {
     this.activeStepFeedbackStatus = feedback.status.label;
   }
 
+  public getFeedbackStatusForStep(stepId: string): IStepStatusResponse {
+    if (this.feedback.has(stepId) || this.feedback.get(stepId) !== undefined) {
+      return this.feedback.get(stepId).status;
+    }
+
+    return { id: "3", label: "Not Started" };
+  }
+
   private async addStepFeedback(): Promise<void> {
     const stepId = this.getActiveStep().id;
-    console.log(stepId);
     await this.stepFeedbackApiService.addFeedbackForStep(stepId, this.activeStepFeedbackNotes, this.activeStepFeedbackStatus);
-    this.feedback.delete(stepId);
+    this.loadStepData();
   }
 
   private stepFeedbackChanged(): boolean {
     const feedback = this.feedback.get(this.getActiveStep().id);
+    if (!feedback) {
+      return true;
+    }
+
     const notesChanged = feedback.notes !== this.activeStepFeedbackNotes;
     const statusChanged = feedback.status.label !== this.activeStepFeedbackStatus;
 
-    console.log("notes changed", notesChanged, "statusChanged", statusChanged);
     return notesChanged || statusChanged;
+  }
+
+  public isCurrentStep(step: IStepResponse): boolean {
+    return this.steps.indexOf(step) === this.activeStepIndex;
+  }
+
+  public getNextButtonText(): string {
+    return this.steps.length === this.activeStepIndex + 1 ? "Finish" : "Next Step";
   }
 }
