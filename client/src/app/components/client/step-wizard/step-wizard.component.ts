@@ -81,6 +81,8 @@ export class StepWizardComponent implements OnInit {
 
     if (this.activeStepIndex < this.steps.length - 1) {
       this.activeStepIndex++;
+      this.activeStepFeedbackNotes = "";
+      this.activeStepFeedbackStatus = "";
       await this.loadStepData();
     }
   }
@@ -142,7 +144,7 @@ export class StepWizardComponent implements OnInit {
   private async addStepFeedback(): Promise<void> {
     const stepId = this.getActiveStep().id;
     await this.stepFeedbackApiService.addFeedbackForStep(stepId, this.activeStepFeedbackNotes, this.activeStepFeedbackStatus);
-    this.loadStepData();
+    await this.loadStepData();
   }
 
   private stepFeedbackChanged(): boolean {
