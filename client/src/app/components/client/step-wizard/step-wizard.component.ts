@@ -65,10 +65,14 @@ export class StepWizardComponent implements OnInit {
     this.loadStepData();
   }
 
-  public nextStep(): void {
+  public async nextStep(): Promise<void> {
+    if (this.stepFeedbackChanged()) {
+      await this.addStepFeedback();
+    }
+
     if (this.activeStepIndex < this.steps.length - 1) {
       this.activeStepIndex++;
-      this.loadStepData();
+      await this.loadStepData();
     }
   }
 
@@ -81,8 +85,9 @@ export class StepWizardComponent implements OnInit {
 
   private async loadStepData(): Promise<void> {
     const stepId = this.getActiveStep().id;
+    console.log("fetching feedback for ", stepId);
     if (!this.feedback.has(stepId)) {
-      const feedbackForStep =  await this.stepFeedbackApiService
+      const feedbackForStep = await this.stepFeedbackApiService
         .getLatestStepFeedbackFromUser(stepId, this.sessionService.getCurrentUser().email);
 
       this.feedback.set(stepId, feedbackForStep.payload);
@@ -115,5 +120,21 @@ export class StepWizardComponent implements OnInit {
 
     this.activeStepFeedbackNotes = feedback.notes;
     this.activeStepFeedbackStatus = feedback.status.label;
+  }
+
+  private async addStepFeedback(): Promise<void> {
+    const stepId = this.getActiveStep().id;
+    console.log(stepId);
+    await this.stepFeedbackApiService.addFeedbackForStep(stepId, this.activeStepFeedbackNotes, this.activeStepFeedbackStatus);
+    this.feedback.delete(stepId);
+  }
+
+  private stepFeedbackChanged(): boolean {
+    const feedback = this.feedback.get(this.getActiveStep().id);
+    const notesChanged = feedback.notes !== this.activeStepFeedbackNotes;
+    const statusChanged = feedback.status.label !== this.activeStepFeedbackStatus;
+
+    console.log("notes changed", notesChanged, "statusChanged", statusChanged);
+    return notesChanged || statusChanged;
   }
 }
