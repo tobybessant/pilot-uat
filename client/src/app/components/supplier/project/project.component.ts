@@ -8,6 +8,7 @@ import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.s
 import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
+import { ExitProjectButtonComponent } from "../../common/nav/exit-project-button/exit-project-button.component";
 
 @Component({
   selector: "app-project",
@@ -25,6 +26,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public projectSettings: NbMenuItem[] = [];
 
   constructor(
+    private router: Router,
     private projectsApiService: ProjectApiService,
     private testSuiteApiService: TestSuiteApiService,
     private activeTestSuiteService: ActiveTestSuiteService,
@@ -34,8 +36,17 @@ export class ProjectComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.navbarService.setIsViewingProject(true);
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
+
+    this.navbarService.setActiveButton({
+      component: ExitProjectButtonComponent,
+      data: {
+        label: "Exit Project",
+        callback: () => {
+          this.router.navigate(["/"]);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {

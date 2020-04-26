@@ -4,6 +4,9 @@ import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.s
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { ActiveProjectService } from "src/app/services/active-project/active-project.service";
+import { NavbarService } from "src/app/services/navbar/navbar.service";
+import { ExitProjectButtonComponent } from "../../common/nav/exit-project-button/exit-project-button.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-project-tabs",
@@ -16,12 +19,24 @@ export class ProjectTabsComponent implements OnInit {
   public activeSuite: ISuiteResponse;
 
   constructor(
+    private router: Router,
+    private navBarService: NavbarService,
     private activeProjectService: ActiveProjectService,
     private activeTestSuiteService: ActiveTestSuiteService
   ) { }
 
   ngOnInit(): void {
     this.activeProjectService.$.subscribe(project => this.setProject(project));
+
+    this.navBarService.setActiveButton({
+      component: ExitProjectButtonComponent,
+      data: {
+        label: "Exit Project",
+        callback: () => {
+          this.router.navigate(["/"]);
+        }
+      }
+    });
 
     if (!this.project) {
       this.setProject(this.activeProjectService.getActiveProject());

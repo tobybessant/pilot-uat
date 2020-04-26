@@ -16,7 +16,7 @@ export class ProjectsGridComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.navbarService.clearHeader();
-    this.navbarService.setIsViewingProject(false);
+    this.navbarService.setActiveButton(null);
     await this.getUserProjects();
   }
 

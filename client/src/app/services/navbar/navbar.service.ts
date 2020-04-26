@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import { ExitProjectButtonComponent } from "src/app/components/common/nav/exit-project-button/exit-project-button.component";
+import { LeftNavButton } from "src/app/components/common/nav/nav-left-button";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -6,10 +9,19 @@ import { Injectable } from "@angular/core";
 export class NavbarService {
 
   private DEFAULT_HEADER = "Pilot";
-  private isViewingProject: boolean = false;
+
+  private leftButton: LeftNavButton;
+  private leftButtonSubject: Subject<LeftNavButton>;
+
   private header: string = this.DEFAULT_HEADER;
 
-  constructor() { }
+  constructor() { 
+    this.leftButtonSubject = new Subject<LeftNavButton>();
+  }
+
+  public get $leftButton() {
+    return this.leftButtonSubject.asObservable();
+  }
 
   public setHeader(newHeader: string): void {
     this.header = newHeader;
@@ -23,11 +35,12 @@ export class NavbarService {
     this.setHeader(this.DEFAULT_HEADER);
   }
 
-  public setIsViewingProject(viewing: boolean) {
-    this.isViewingProject = viewing;
+  public setActiveButton(btn: LeftNavButton | null) {
+    this.leftButton = btn;
+    this.leftButtonSubject.next(this.leftButton);
   }
 
-  public getIsViewingProject() {
-    return this.isViewingProject;
+  public getActiveButton(): LeftNavButton | null {
+    return this.leftButton;
   }
 }
