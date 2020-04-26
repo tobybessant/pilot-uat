@@ -41,7 +41,7 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     this.userContextMenuActions.set("Logout", async () => {
       this.authService.logout().then(() => {
-        this.navbarService.clearHeader();
+        this.navbarService.resetHeader();
 
         // NOTE: Completely reload to the login page - clearing any role-based
         // session state i.e. routes.

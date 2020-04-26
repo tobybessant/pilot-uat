@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { ExitProjectButtonComponent } from "src/app/components/common/nav/exit-project-button/exit-project-button.component";
 import { LeftNavButton } from "src/app/components/common/nav/nav-left-button";
 import { Subject } from "rxjs";
 
@@ -31,7 +30,7 @@ export class NavbarService {
     return this.header;
   }
 
-  public clearHeader() {
+  public resetHeader() {
     this.setHeader(this.DEFAULT_HEADER);
   }
 

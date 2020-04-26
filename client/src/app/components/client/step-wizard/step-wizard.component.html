@@ -1,1 +1,42 @@
-<p>step-wizard works!</p>
+<nb-card class="case">
+  <nb-card-body>
+    <h5>Case</h5>
+    <p>When I add a lead, they receive a welcome email</p>
+  </nb-card-body>
+</nb-card>
+<nb-card class="step">
+  <nb-card-body>
+    <div class="step-data">
+      <h5>Step {{ getCurrentStepIndex() }}/{{ getTotalSteps() }}</h5>
+      <h6>Description</h6>
+      {{ getActiveStepDescription() }}
+    </div>
+    <div class="step-feedback">
+      <h5>Your Feedback</h5>
+      <h6>Status</h6>
+      <nb-select fullWidth [(ngModel)]="activeStepFeedbackStatus">
+        <nb-option value="Not Started">Not Started</nb-option>
+        <nb-option value="Failed">Failed</nb-option>
+        <nb-option value="Passed">Passed</nb-option>
+      </nb-select>
+      <h6>Notes</h6>
+      <textarea
+        nbInput
+        fullWidth
+        fieldSize="small"
+        placeholder="Add notes... (optional)"
+        [(ngModel)]="activeStepFeedbackNotes"
+      ></textarea>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="step-controls">
+      <button nbButton status="basic" (click)="prevStep()">
+        <nb-icon icon="arrow-ios-back-outline"></nb-icon>Previous Step
+      </button>
+      <button nbButton status="primary" (click)="nextStep()">
+        Next Step<nb-icon icon="arrow-ios-forward-outline"></nb-icon>
+      </button>
+    </div>
+  </nb-card-footer>
+</nb-card>

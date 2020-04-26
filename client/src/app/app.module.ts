@@ -63,7 +63,7 @@ import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-f
 import { MatrixColumnDialogComponent } from "./components/supplier/matrix-column-dialog/matrix-column-dialog.component";
 import { ProjectTabsComponent } from "./components/client/project-tabs/project-tabs.component";
 import { StepWizardComponent } from "./components/client/step-wizard/step-wizard.component";
-import { ExitProjectButtonComponent } from './components/common/nav/exit-project-button/exit-project-button.component';
+import { BasicNavButtonComponent } from './components/common/nav/basic-nav-button/basic-nav-button.component';
 
 @NgModule({
   declarations: [
@@ -104,7 +104,7 @@ import { ExitProjectButtonComponent } from './components/common/nav/exit-project
     MatrixColumnDialogComponent,
     ProjectTabsComponent,
     StepWizardComponent,
-    ExitProjectButtonComponent
+    BasicNavButtonComponent
   ],
   imports: [
     /* Angular */

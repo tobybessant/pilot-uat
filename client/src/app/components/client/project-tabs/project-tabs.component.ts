@@ -1,11 +1,10 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
-import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { ActiveProjectService } from "src/app/services/active-project/active-project.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
-import { ExitProjectButtonComponent } from "../../common/nav/exit-project-button/exit-project-button.component";
+import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
 import { Router } from "@angular/router";
 
 @Component({
@@ -29,7 +28,7 @@ export class ProjectTabsComponent implements OnInit {
     this.activeProjectService.$.subscribe(project => this.setProject(project));
 
     this.navBarService.setActiveButton({
-      component: ExitProjectButtonComponent,
+      component: BasicNavButtonComponent,
       data: {
         label: "Exit Project",
         callback: () => {

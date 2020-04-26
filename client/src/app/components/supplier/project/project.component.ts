@@ -8,7 +8,7 @@ import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.s
 import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
-import { ExitProjectButtonComponent } from "../../common/nav/exit-project-button/exit-project-button.component";
+import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
 
 @Component({
   selector: "app-project",
@@ -39,7 +39,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
 
     this.navbarService.setActiveButton({
-      component: ExitProjectButtonComponent,
+      component: BasicNavButtonComponent,
       data: {
         label: "Exit Project",
         callback: () => {

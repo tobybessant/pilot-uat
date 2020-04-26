@@ -1,0 +1,48 @@
+textarea,
+nb-select {
+  max-width: 500px;
+  margin-bottom: 10px;
+}
+
+.case {
+  max-width: 800px;
+  margin: 0 auto 20px auto;
+}
+
+.step {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+nb-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h5 {
+    margin: 0;
+  }
+}
+
+.step-data {
+  width: 100%;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed rgba(0.8,0.8,0.8,0.4);
+}
+
+h5 {
+  margin: 0 0 10px 0;
+}
+
+h6 {
+  margin: 0 0 5px 0;
+  color: rgba(0.8,0.8,0.8,0.4);
+}
+
+.step-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
