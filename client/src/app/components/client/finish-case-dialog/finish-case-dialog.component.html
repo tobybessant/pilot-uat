@@ -6,8 +6,8 @@
   <nb-card-body>Case {{ caseName }} has been tested</nb-card-body>
   <nb-card-footer>
     <div class="action-buttons">
-      <button nbButton status="primary"><nb-icon icon="arrow-back-outline"></nb-icon> Back to Project</button>
-      <button nbButton status="primary">Next Case <nb-icon icon="arrow-ios-forward-outline"></nb-icon></button>
+      <button nbButton status="primary" (click)="backToProject()"><nb-icon icon="arrow-back-outline"></nb-icon> Back to Project</button>
+      <!-- <button nbButton status="primary">Next Case <nb-icon icon="arrow-ios-forward-outline"></nb-icon></button> -->
     </div>
   </nb-card-footer>
 </nb-card>

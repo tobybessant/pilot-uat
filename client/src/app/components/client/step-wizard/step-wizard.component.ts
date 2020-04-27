@@ -193,7 +193,7 @@ export class StepWizardComponent implements OnInit {
   private openFinishDialog(): void {
     this.dialogService.open(FinishCaseDialogComponent, {
       context: {
-        caseName: "DEMO_CASE"
+        projectUrl: this.getResolvedUrl(this.route.snapshot)[0]
       }
     });
   }

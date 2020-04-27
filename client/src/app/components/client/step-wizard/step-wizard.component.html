@@ -44,7 +44,7 @@
         <nb-icon icon="arrow-ios-back-outline"></nb-icon>Previous Step
       </button>
       <button class="next-action-button" nbButton status="primary" (click)="nextAction()">
-        {{ getNextButtonText() }} <nb-icon *ngIf="activeStepIndex + 1 < steps.length;" icon="arrow-ios-forward-outline"></nb-icon>
+        {{ getNextButtonText() }} <nb-icon icon="arrow-ios-forward-outline"></nb-icon>
       </button>
     </div>
   </nb-card-footer>
