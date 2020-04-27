@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
-import { ActiveProjectService } from "src/app/services/active-project/active-project.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
 import { Router, ActivatedRoute } from "@angular/router";
