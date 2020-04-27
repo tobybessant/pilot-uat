@@ -1,7 +1,11 @@
 textarea,
 nb-select {
-  max-width: 500px;
+  max-width: 200px;
   margin-bottom: 10px;
+}
+
+textarea {
+  max-width: 100%;
 }
 
 .case {
