@@ -59,7 +59,6 @@ export class ResultsComponent implements OnInit {
     this.project = (await this.projectsApiService.getProjectById(this.projectId, true)).payload;
 
     for (let i = 0; i < 5 && i < this.clientResultsMatrix.length; i++) {
-      console.log(i);
       this.tableSettings.userColumns.push(this.clientResultsMatrix[i].id);
     }
 
@@ -144,7 +143,6 @@ export class ResultsComponent implements OnInit {
     const existingTableSettings = this.localStorageService.get(this.TABLE_SETTINGS_KEY);
     if (existingTableSettings) {
       this.tableSettings = existingTableSettings;
-      console.log(this.tableSettings);
     } else {
       this.saveTableSettings();
     }

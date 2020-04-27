@@ -71,7 +71,9 @@ export class StepWizardComponent implements OnInit {
       const feedbackForStep = await this.stepFeedbackApiService
         .getLatestStepFeedbackFromUser(step.id, this.sessionService.getCurrentUser().email);
 
-      this.feedback.set(step.id, feedbackForStep.payload);
+      if (feedbackForStep.payload) {
+        this.feedback.set(step.id, feedbackForStep.payload);
+      }
     }
 
     this.loadStepData();
@@ -112,7 +114,9 @@ export class StepWizardComponent implements OnInit {
       const feedbackForStep = await this.stepFeedbackApiService
         .getLatestStepFeedbackFromUser(stepId, this.sessionService.getCurrentUser().email);
 
-      this.feedback.set(stepId, feedbackForStep.payload);
+      if (feedbackForStep.payload) {
+        this.feedback.set(stepId, feedbackForStep.payload);
+      }
       this.loadFeedbackForStep(stepId);
     }
   }
@@ -140,12 +144,18 @@ export class StepWizardComponent implements OnInit {
   private loadFeedbackForStep(stepId: string): void {
     const feedback = this.feedback.get(stepId);
 
+    if (!feedback) {
+      this.activeStepFeedbackNotes = "";
+      this.activeStepFeedbackStatus = "Not Started";
+      return;
+    }
+
     this.activeStepFeedbackNotes = feedback.notes;
     this.activeStepFeedbackStatus = feedback.status.label;
   }
 
   public getFeedbackStatusForStep(stepId: string): IStepStatusResponse {
-    if (this.feedback.has(stepId) || this.feedback.get(stepId) !== undefined) {
+    if (this.feedback.has(stepId)) {
       return this.feedback.get(stepId).status;
     }
 
