@@ -156,6 +156,10 @@ import { FinishCaseDialogComponent } from './components/client/finish-case-dialo
     {
       provide: "LOCAL_STORAGE",
       useFactory: () => (typeof window !== "undefined") ? window.localStorage : null
+    },
+    {
+      provide: "SESSION_STORAGE",
+      useFactory: () => (typeof window !== "undefined") ? window.sessionStorage : null
     }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

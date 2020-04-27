@@ -19,6 +19,7 @@ import { FinishCaseDialogComponent } from "../finish-case-dialog/finish-case-dia
 })
 export class StepWizardComponent implements OnInit {
 
+  private caseId: string;
   public steps: IStepResponse[] = [];
   private feedback: Map<string, IStepFeedbackResponse>;
 
@@ -64,6 +65,7 @@ export class StepWizardComponent implements OnInit {
   }
 
   private async fetchSteps(caseId: string): Promise<void> {
+    this.caseId = caseId;
     const stepsResponse = await this.stepApiService.getStepsforCase<IStepResponse[]>(caseId);
     this.steps = stepsResponse.payload;
 
@@ -206,5 +208,15 @@ export class StepWizardComponent implements OnInit {
         projectUrl: this.getResolvedUrl(this.route.snapshot)[0]
       }
     });
+  }
+
+  public async failRemainingTests(): Promise<void> {
+    const startIdx = this.activeStepIndex;
+    for (let i = startIdx; i < this.steps.length; i++) {
+      const stepId = this.steps[i].id;
+      await this.stepFeedbackApiService.addFeedbackForStep(stepId, this.activeStepFeedbackNotes, "Failed");
+    }
+
+    this.fetchSteps(this.caseId);
   }
 }
