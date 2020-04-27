@@ -10,16 +10,24 @@ import { filter, map } from "rxjs/operators";
 })
 export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
 
+  private _suites: ISuiteResponse[] = [];
+
   @Input()
-  public set suitesData(data: ISuiteResponse[]) {
-    this.mapAndAddSuitesToItems(data);
+  public set suitesData(value: ISuiteResponse[]) {
+    console.log(value);
+    this._suites = value;
+    this.mapAndAddSuitesToItems(value);
+  }
+
+  public get suites(): ISuiteResponse[] {
+    return this._suites;
   }
 
   @Output()
   public suiteSelected = new EventEmitter<string>();
 
   private alive: boolean = true;
-  public suites: NbMenuItem[] = [];
+  public suitesMenuItems: NbMenuItem[] = [];
 
   constructor(private nbMenuService: NbMenuService) { }
 
@@ -34,10 +42,15 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
           this.suiteSelected.emit(item.data.id);
         }
       });
+
+    console.log("suite list ng init", this._suites[0]);
+    this.suiteSelected.emit(this._suites[0]?.id);
   }
 
   ngOnDestroy(): void {
     this.alive = false;
+    this.suiteSelected.emit(null);
+    console.log("Destroying test-suite-list");
   }
 
   private mapAndAddSuitesToItems(suites: ISuiteResponse[] = []) {
@@ -48,7 +61,7 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
       }
     }) as NbMenuItem);
 
-    this.suites = suiteItems;
+    this.suitesMenuItems = suiteItems;
   }
 
 }

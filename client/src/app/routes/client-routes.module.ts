@@ -17,11 +17,13 @@ const routes: Routes = [
     children: [
       {
         path: "",
-        component: ProjectTabsComponent
+        component: ProjectTabsComponent,
+        pathMatch: "full"
       },
       {
         path: "test/:caseId",
-        component: StepWizardComponent
+        component: StepWizardComponent,
+        pathMatch: "full"
       }
     ]
   }

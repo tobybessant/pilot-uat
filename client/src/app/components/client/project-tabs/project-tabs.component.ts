@@ -1,31 +1,37 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
-import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { ActiveProjectService } from "src/app/services/active-project/active-project.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
+import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 
 @Component({
   selector: "app-project-tabs",
   templateUrl: "./project-tabs.component.html",
   styleUrls: ["./project-tabs.component.scss"]
 })
-export class ProjectTabsComponent implements OnInit {
+export class ProjectTabsComponent implements OnInit, OnDestroy {
 
   public project: IProjectResponse;
+
   public activeSuite: ISuiteResponse;
 
   constructor(
     private router: Router,
     private navBarService: NavbarService,
-    private activeProjectService: ActiveProjectService,
-    private activeTestSuiteService: ActiveTestSuiteService
+    private activeRoute: ActivatedRoute,
+    private projectApiService: ProjectApiService,
+    private navbarService: NavbarService
   ) { }
 
+  ngOnDestroy(): void {
+    console.log("Destroying project-tabs");
+  }
+
   ngOnInit(): void {
-    this.activeProjectService.$.subscribe(project => this.setProject(project));
+    this.activeRoute.params.subscribe(async (urlParameters) => await this.fetchProjectById(urlParameters.id));
 
     this.navBarService.setActiveButton({
       component: BasicNavButtonComponent,
@@ -36,22 +42,17 @@ export class ProjectTabsComponent implements OnInit {
         }
       }
     });
+  }
 
-    if (!this.project) {
-      this.setProject(this.activeProjectService.getActiveProject());
+  private async fetchProjectById(id: string) {
+    const response = await this.projectApiService.getProjectById(id);
+    if (response.errors.length === 0) {
+      this.navbarService.setHeader(response.payload.title);
+      this.project = response.payload;
     }
   }
 
-  private setProject(project: IProjectResponse): void {
-    this.project = project;
-    this.setActiveSuite(this.project.suites[0]);
-  }
-
-  public updateActiveSuite($event) {
-    this.setActiveSuite(this.project.suites.filter(suite => suite.id === $event)[0]);
-  }
-
-  private setActiveSuite(suite: ISuiteResponse) {
-    this.activeTestSuiteService.setSuite(suite);
+  public updateActiveSuite(suiteId: string) {
+    this.activeSuite = this.project.suites.find(s => s.id === suiteId);
   }
 }

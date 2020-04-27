@@ -6,7 +6,6 @@ import { IProjectResponse } from "src/app/models/api/response/supplier/project.i
 import { ActivatedRoute, Router, Params, UrlSegment } from "@angular/router";
 import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
 import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
-import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
 
@@ -29,7 +28,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
     private router: Router,
     private projectsApiService: ProjectApiService,
     private testSuiteApiService: TestSuiteApiService,
-    private activeTestSuiteService: ActiveTestSuiteService,
     private activeRoute: ActivatedRoute,
     private location: Location,
     private navbarService: NavbarService
@@ -99,7 +97,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   private setActiveSuite(suite: ISuiteResponse) {
-    this.activeTestSuiteService.setSuite(suite);
+    this.activeSuite = suite;
   }
 
   public updateUrlParameter(tab: NbTabComponent) {

@@ -1,6 +1,6 @@
 <nb-tabset class="tabs-view">
   <nb-tab tabTitle="Tests" class="no-h-padding">
-    <div class="tab-content">
+    <div class="tab-content" *ngIf="project">
       <app-test-suite-list-client
         [suitesData]="project.suites"
         (suiteSelected)="updateActiveSuite($event)"
