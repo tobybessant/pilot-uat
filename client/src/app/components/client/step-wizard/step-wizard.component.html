@@ -6,10 +6,11 @@
 </nb-card>
 <div class="status-overview">
   <app-step-status-chip 
-  *ngFor="let step of steps"
+  *ngFor="let step of steps; index as i"
   [class.current-step]="isCurrentStep(step)"
   [minified]="true"
   [status]="getFeedbackStatusForStep(step.id)"
+  (click)="nextStep(i)"
   ></app-step-status-chip>
 </div>
 <nb-card class="step">
@@ -42,8 +43,8 @@
       <button nbButton status="basic" (click)="prevStep()">
         <nb-icon icon="arrow-ios-back-outline"></nb-icon>Previous Step
       </button>
-      <button nbButton status="primary" (click)="nextStep()">
-        {{ getNextButtonText() }} <nb-icon icon="arrow-ios-forward-outline"></nb-icon>
+      <button class="next-action-button" nbButton status="primary" (click)="nextAction()">
+        {{ getNextButtonText() }} <nb-icon *ngIf="activeStepIndex + 1 < steps.length;" icon="arrow-ios-forward-outline"></nb-icon>
       </button>
     </div>
   </nb-card-footer>

@@ -9,6 +9,8 @@ import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-f
 import { SessionService } from "src/app/services/session/session.service";
 import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFeedback.interface";
 import { IStepStatusResponse } from "src/app/models/api/response/supplier/step-status.interface";
+import { NbDialogService } from "@nebular/theme";
+import { FinishCaseDialogComponent } from "../finish-case-dialog/finish-case-dialog.component";
 
 @Component({
   selector: "app-step-wizard",
@@ -20,7 +22,7 @@ export class StepWizardComponent implements OnInit {
   public steps: IStepResponse[] = [];
   private feedback: Map<string, IStepFeedbackResponse>;
 
-  private activeStepIndex: number = 0;
+  public activeStepIndex: number = 0;
 
   public activeStepFeedbackNotes: string = "";
   public activeStepFeedbackStatus: string = "Not Started";
@@ -31,7 +33,8 @@ export class StepWizardComponent implements OnInit {
     private navbarService: NavbarService,
     private stepApiService: StepApiService,
     private stepFeedbackApiService: StepFeedbackApiService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private dialogService: NbDialogService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -74,9 +77,17 @@ export class StepWizardComponent implements OnInit {
     this.loadStepData();
   }
 
-  public async nextStep(): Promise<void> {
+  public async nextStep(idx?: number): Promise<void> {
     if (this.stepFeedbackChanged()) {
       await this.addStepFeedback();
+    }
+
+    if (idx !== undefined && idx < this.steps.length && idx + 1 > 0) {
+      this.activeStepIndex = idx;
+      this.activeStepFeedbackNotes = "";
+      this.activeStepFeedbackStatus = "";
+      await this.loadStepData();
+      return;
     }
 
     if (this.activeStepIndex < this.steps.length - 1) {
@@ -164,6 +175,26 @@ export class StepWizardComponent implements OnInit {
   }
 
   public getNextButtonText(): string {
-    return this.steps.length === this.activeStepIndex + 1 ? "Finish" : "Next Step";
+    return this.activeStepIndex + 1 === this.steps.length ? "Finish" : "Next Step";
+  }
+
+  public onLastStep(): boolean {
+    return this.activeStepIndex + 1 === this.steps.length;
+  }
+
+  public nextAction(): void {
+    if (this.activeStepIndex + 1 === this.steps.length) {
+      return this.openFinishDialog();
+    }
+
+    this.nextStep();
+  }
+
+  private openFinishDialog(): void {
+    this.dialogService.open(FinishCaseDialogComponent, {
+      context: {
+        caseName: "DEMO_CASE"
+      }
+    });
   }
 }
