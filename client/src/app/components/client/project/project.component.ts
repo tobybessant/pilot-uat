@@ -6,18 +6,8 @@ import { ISuiteResponse } from "src/app/models/api/response/client/suite.interfa
   templateUrl: "./project.component.html",
   styleUrls: ["./project.component.scss"]
 })
-export class ClientProjectComponent implements OnInit, OnDestroy {
-
-  public fetchAttemptComplete = false;
-  public activeSuite: ISuiteResponse;
+export class ClientProjectComponent {
 
   constructor( ) { }
-
-  ngOnInit(): void {
-  }
-
-  ngOnDestroy(): void {
-    console.log("Destroying project");
-  }
 
 }

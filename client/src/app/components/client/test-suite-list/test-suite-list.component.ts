@@ -14,7 +14,6 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
 
   @Input()
   public set suitesData(value: ISuiteResponse[]) {
-    console.log(value);
     this._suites = value;
     this.mapAndAddSuitesToItems(value);
   }
@@ -43,14 +42,11 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
         }
       });
 
-    console.log("suite list ng init", this._suites[0]);
     this.suiteSelected.emit(this._suites[0]?.id);
   }
 
   ngOnDestroy(): void {
     this.alive = false;
-    this.suiteSelected.emit(null);
-    console.log("Destroying test-suite-list");
   }
 
   private mapAndAddSuitesToItems(suites: ISuiteResponse[] = []) {

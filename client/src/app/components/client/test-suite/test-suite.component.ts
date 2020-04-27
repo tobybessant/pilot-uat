@@ -39,10 +39,6 @@ export class ClientTestSuiteComponent {
     private readonly testApiService: CaseApiService,
   ) { }
 
-  ngOnDestroy(): void {
-    console.log("Destroying test-suite");
-  }
-
   public getSuiteId(): number | string {
     return this._activeSuite ? this._activeSuite.id : "";
   }

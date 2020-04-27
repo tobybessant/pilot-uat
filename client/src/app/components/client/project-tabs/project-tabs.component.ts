@@ -11,7 +11,7 @@ import { ProjectApiService } from "src/app/services/api/project/project-api.serv
   templateUrl: "./project-tabs.component.html",
   styleUrls: ["./project-tabs.component.scss"]
 })
-export class ProjectTabsComponent implements OnInit, OnDestroy {
+export class ProjectTabsComponent implements OnInit {
 
   public project: IProjectResponse;
 
@@ -24,10 +24,6 @@ export class ProjectTabsComponent implements OnInit, OnDestroy {
     private projectApiService: ProjectApiService,
     private navbarService: NavbarService
   ) { }
-
-  ngOnDestroy(): void {
-    console.log("Destroying project-tabs");
-  }
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(async (urlParameters) => await this.fetchProjectById(urlParameters.id));
