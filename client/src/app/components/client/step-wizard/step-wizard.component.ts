@@ -219,4 +219,17 @@ export class StepWizardComponent implements OnInit {
 
     this.fetchSteps(this.caseId);
   }
+
+  public allRemainingStepsFailed(): boolean {
+    const nonFailedSteps = this.steps.filter((s, idx) => {
+      if (idx > this.activeStepIndex) {
+        const f = this.feedback.get(s.id);
+        return f?.status.label !== "Failed";
+      }
+
+      return false;
+    });
+
+    return nonFailedSteps.length === 0;
+  }
 }

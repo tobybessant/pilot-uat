@@ -29,7 +29,7 @@
           <nb-option value="Passed">Passed</nb-option>
         </nb-select>
         <button
-          *ngIf="activeStepFeedbackStatus === 'Failed'"
+          *ngIf="activeStepFeedbackStatus === 'Failed' && !allRemainingStepsFailed()"
           nbButton
           outline
           status="danger"

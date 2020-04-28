@@ -59,5 +59,4 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
 
     this.suitesMenuItems = suiteItems;
   }
-
 }
