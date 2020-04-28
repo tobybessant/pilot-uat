@@ -38,6 +38,6 @@ export class ClientTestCaseComponent implements OnInit {
   }
 
   public startTests(id: string): void {
-    this.router.navigate(["test", id], { relativeTo: this.route });
+    this.router.navigate(["case", id], { relativeTo: this.route });
   }
 }

@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from "@angular/core";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
-import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { StepApiService } from "src/app/services/api/step/step-api.service";
 import { IStepResponse } from "src/app/models/api/response/client/step.interface";
 import { StepFeedbackApiService } from "src/app/services/api/stepFeedback/step-feedback-api.service";
@@ -46,7 +45,7 @@ export class StepWizardComponent implements OnInit {
         label: "Back to Project",
         callback: () => {
           const url = this.getResolvedUrl(this.route.snapshot);
-          this.router.navigate([url[0]]);
+          this.router.navigate([url]);
         }
       }
     });
@@ -56,12 +55,14 @@ export class StepWizardComponent implements OnInit {
     this.route.paramMap.subscribe(async p => await this.fetchSteps(p.get("caseId")));
   }
 
-  private getResolvedUrl(route: ActivatedRouteSnapshot): string[] {
-    return route.pathFromRoot
-      .map(
-        v => v.url.map(segment => segment.toString()).join("/")
-      )
-      .filter(s => s !== "");
+  private getResolvedUrl(route: ActivatedRouteSnapshot): string {
+    const routes = route.pathFromRoot.filter(r => r.url.length > 0);
+    const paths = routes.map(p => p.url);
+
+    if (paths.length > 0) {
+      const currentUrl = paths[0];
+      return currentUrl[0] + "/" + currentUrl[1];
+    }
   }
 
   private async fetchSteps(caseId: string): Promise<void> {
@@ -214,7 +215,7 @@ export class StepWizardComponent implements OnInit {
     const startIdx = this.activeStepIndex;
     for (let i = startIdx; i < this.steps.length; i++) {
       const stepId = this.steps[i].id;
-      await this.stepFeedbackApiService.addFeedbackForStep(stepId, this.activeStepFeedbackNotes, "Failed");
+      await this.stepFeedbackApiService.addFeedbackForStep(stepId, "", "Failed");
     }
 
     this.fetchSteps(this.caseId);
