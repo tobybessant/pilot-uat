@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { Location } from "@angular/common";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute, UrlSegment } from "@angular/router";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
+import { NbTabComponent } from "@nebular/theme";
 
 @Component({
   selector: "app-project-tabs",
@@ -19,6 +21,7 @@ export class ProjectTabsComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private location: Location,
     private navBarService: NavbarService,
     private activeRoute: ActivatedRoute,
     private projectApiService: ProjectApiService,
@@ -49,5 +52,14 @@ export class ProjectTabsComponent implements OnInit {
 
   public updateActiveSuite(suiteId: string) {
     this.activeSuite = this.project.suites.find(s => s.id === suiteId);
+  }
+
+  public updateUrlParameter(tab: NbTabComponent) {
+    const urlSegs: UrlSegment[] = this.activeRoute.snapshot.url;
+    const tabUrl: string = tab.tabTitle.toLocaleLowerCase();
+
+    if (urlSegs.length === 2 || urlSegs.length === 3 && urlSegs[2].path !== tabUrl) {
+      this.location.replaceState(`${urlSegs[0].path}/${urlSegs[1].path}/${tabUrl}`);
+    }
   }
 }

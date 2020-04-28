@@ -1,5 +1,5 @@
-<nb-tabset class="tabs-view">
-  <nb-tab tabTitle="Tests" class="no-h-padding">
+<nb-tabset class="tabs-view" routeParam="tab" (changeTab)="updateUrlParameter($event)">
+  <nb-tab tabTitle="Tests" route="tests" class="no-h-padding">
     <div class="tab-content" *ngIf="project">
       <app-test-suite-list-client
         [suitesData]="project.suites"

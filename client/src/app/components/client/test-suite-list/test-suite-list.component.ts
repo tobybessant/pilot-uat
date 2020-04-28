@@ -1,7 +1,9 @@
 import { Component, OnInit, EventEmitter, Output, Input, OnDestroy } from "@angular/core";
+import { Location } from "@angular/common";
 import { ISuiteResponse } from "src/app/models/api/response/client/suite.interface";
 import { NbMenuItem, NbMenuService } from "@nebular/theme";
 import { filter, map } from "rxjs/operators";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-test-suite-list-client",
@@ -11,6 +13,9 @@ import { filter, map } from "rxjs/operators";
 export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
 
   private _suites: ISuiteResponse[] = [];
+  private selectedSuiteId: string = "";
+
+  private firstLoad: boolean = true;
 
   @Input()
   public set suitesData(value: ISuiteResponse[]) {
@@ -38,11 +43,12 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
       )
       .subscribe(item => {
         if (this.alive) {
-          this.suiteSelected.emit(item.data.id);
+          this.setSelectedSuite(item.data.id);
+          this.mapAndAddSuitesToItems(this._suites);
         }
       });
 
-    this.suiteSelected.emit(this._suites[0]?.id);
+    this.setSelectedSuite(this._suites[0]?.id);
   }
 
   ngOnDestroy(): void {
@@ -50,13 +56,24 @@ export class ClientTestSuiteListComponent implements OnInit, OnDestroy {
   }
 
   private mapAndAddSuitesToItems(suites: ISuiteResponse[] = []) {
-    const suiteItems = suites.map(s => ({
+    const suiteItems = suites.map((s, idx) => ({
       title: s.title,
       data: {
         id: s.id
-      }
+      },
+      selected: (idx === 0 && this.firstLoad) || this.isSelected(s.id)
     }) as NbMenuItem);
 
+    this.firstLoad = false;
     this.suitesMenuItems = suiteItems;
+  }
+
+  private setSelectedSuite(id: string): void {
+    this.suiteSelected.emit(id);
+    this.selectedSuiteId = id;
+  }
+
+  private isSelected(id: string): boolean {
+    return id === this.selectedSuiteId;
   }
 }

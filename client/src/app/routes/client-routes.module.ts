@@ -1,9 +1,7 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { ProjectsGridComponent } from "../components/client/projects-grid/projects-grid.component";
-import { ClientProjectComponent } from "../components/client/project/project.component";
 import { ProjectTabsComponent } from "../components/client/project-tabs/project-tabs.component";
-import { StepWizardComponent } from "../components/client/step-wizard/step-wizard.component";
 
 const routes: Routes = [
   {
@@ -13,19 +11,12 @@ const routes: Routes = [
   },
   {
     path: "project/:id",
-    component: ClientProjectComponent,
-    children: [
-      {
-        path: "",
-        component: ProjectTabsComponent,
-        pathMatch: "full"
-      },
-      {
-        path: "test/:caseId",
-        component: StepWizardComponent,
-        pathMatch: "full"
-      }
-    ]
+    component: ProjectTabsComponent,
+    pathMatch: "full"
+  },
+  {
+    path: "project/:id/:tab",
+    component: ProjectTabsComponent
   }
 ];
 

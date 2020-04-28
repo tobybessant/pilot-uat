@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, QueryList, ChangeDetectorRef, ContentChildren, ViewChild, ViewChildren } from "@angular/core";
 import { Location } from "@angular/common";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
-import { NbMenuItem, NbTabComponent, NbTabsetComponent } from "@nebular/theme";
+import { NbMenuItem, NbTabComponent } from "@nebular/theme";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
 import { ActivatedRoute, Router, Params, UrlSegment } from "@angular/router";
 import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
@@ -15,9 +15,6 @@ import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic
   styleUrls: ["./project.component.scss"]
 })
 export class ProjectComponent implements OnInit, OnDestroy {
-
-  @ViewChildren(NbTabsetComponent)
-  public tabset: QueryList<NbTabsetComponent>;
 
   public project: IProjectResponse;
   public fetchAttemptComplete = false;
