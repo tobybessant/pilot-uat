@@ -28,8 +28,13 @@ export class CaseApiService {
     return response;
   }
 
-  public async deleteCaseById(testId: string): Promise<IApiResponse<ICaseResponse>> {
-    const response = await this.apiService.delete<ICaseResponse>(this.baseUrl + "/" + testId);
+  public async deleteCaseById(caseId: string): Promise<IApiResponse<ICaseResponse>> {
+    const response = await this.apiService.delete<ICaseResponse>(this.baseUrl + "/" + caseId);
+    return response;
+  }
+
+  public async getCaseById<T>(caseId): Promise<IApiResponse<T>> {
+    const response = await this.apiService.get<T>(this.baseUrl + "/" + caseId);
     return response;
   }
 }

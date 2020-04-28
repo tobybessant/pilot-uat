@@ -1,7 +1,7 @@
 <nb-card class="case">
   <nb-card-body>
     <h5>Case</h5>
-    <p>When I add a lead, they receive a welcome email</p>
+    <p>{{ getCaseTitle() }}</p>
   </nb-card-body>
 </nb-card>
 <div class="status-overview">
@@ -35,7 +35,7 @@
           status="danger"
           (click)="failRemainingTests()"
         >
-          Fail remaining
+          Fail Remaining Tests
         </button>
       </div>
       <h6>Notes</h6>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { BasicNavButtonComponent } from "../../common/nav/basic-nav-button/basic-nav-button.component";
@@ -10,6 +10,8 @@ import { IStepFeedbackResponse } from "src/app/models/api/response/client/stepFe
 import { IStepStatusResponse } from "src/app/models/api/response/supplier/step-status.interface";
 import { NbDialogService } from "@nebular/theme";
 import { FinishCaseDialogComponent } from "../finish-case-dialog/finish-case-dialog.component";
+import { CaseApiService } from "src/app/services/api/case/case-api.service";
+import { ICaseResponse } from "src/app/models/api/response/client/case.interface";
 
 @Component({
   selector: "app-step-wizard",
@@ -18,7 +20,7 @@ import { FinishCaseDialogComponent } from "../finish-case-dialog/finish-case-dia
 })
 export class StepWizardComponent implements OnInit {
 
-  private caseId: string;
+  private caseData: ICaseResponse;
   public steps: IStepResponse[] = [];
   private feedback: Map<string, IStepFeedbackResponse>;
 
@@ -32,6 +34,7 @@ export class StepWizardComponent implements OnInit {
     private route: ActivatedRoute,
     private navbarService: NavbarService,
     private stepApiService: StepApiService,
+    private caseApiService: CaseApiService,
     private stepFeedbackApiService: StepFeedbackApiService,
     private sessionService: SessionService,
     private dialogService: NbDialogService
@@ -66,9 +69,9 @@ export class StepWizardComponent implements OnInit {
   }
 
   private async fetchSteps(caseId: string): Promise<void> {
-    this.caseId = caseId;
-    const stepsResponse = await this.stepApiService.getStepsforCase<IStepResponse[]>(caseId);
-    this.steps = stepsResponse.payload;
+    const caseResponse = await this.caseApiService.getCaseById<ICaseResponse>(caseId);
+    this.caseData = caseResponse.payload;
+    this.steps = this.caseData.steps;
 
     for (const step of this.steps) {
       const feedbackForStep = await this.stepFeedbackApiService
@@ -218,7 +221,7 @@ export class StepWizardComponent implements OnInit {
       await this.stepFeedbackApiService.addFeedbackForStep(stepId, "", "Failed");
     }
 
-    this.fetchSteps(this.caseId);
+    this.fetchSteps(this.caseData.id);
   }
 
   public allRemainingStepsFailed(): boolean {
@@ -232,5 +235,9 @@ export class StepWizardComponent implements OnInit {
     });
 
     return nonFailedSteps.length === 0;
+  }
+
+  public getCaseTitle(): string {
+    return this.caseData?.title || "";
   }
 }
