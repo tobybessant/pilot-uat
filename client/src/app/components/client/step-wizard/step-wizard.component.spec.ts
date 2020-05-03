@@ -6,20 +6,4 @@ describe("StepWizardComponent", () => {
   let component: StepWizardComponent;
   let fixture: ComponentFixture<StepWizardComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ StepWizardComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StepWizardComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
 });

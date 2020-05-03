@@ -6,20 +6,4 @@ describe("BasicNavButton", () => {
   let component: BasicNavButtonComponent;
   let fixture: ComponentFixture<BasicNavButtonComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BasicNavButtonComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BasicNavButtonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
 });
