@@ -65,6 +65,28 @@ export class CaseController extends BaseController {
     }
   }
 
+  @Get(":caseId")
+  public async getCaseById(req: Request, res: Response) {
+    try {
+      const caseData = await this.caseRepository.getCaseById(req.params.caseId);
+
+      if (!caseData) {
+        return this.badRequest(res, ["Case not found"]);
+      }
+
+      return this.OK<ICaseResponse>(res, {
+        id: caseData.id.toString(),
+        title: caseData.title,
+        steps: caseData.steps.map(s => ({
+          id: s.id.toString(),
+          description: s.description
+        }))
+      });
+    } catch (error) {
+      return this.serverError(res, error);
+    }
+  }
+
   @Patch(":id")
   @Middleware([
     new BodyMatches(new Validator()).schema(UpdateCase)

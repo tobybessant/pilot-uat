@@ -42,7 +42,12 @@ export class CaseRepository {
   }
 
   public async getCaseById(id: string): Promise<CaseDbo | undefined> {
-    return this.baseCaseRepository.findOne({ id: Number(id) });
+    const query = this.baseCaseRepository
+      .createQueryBuilder("case")
+      .leftJoinAndSelect("case.steps", "steps")
+      .where("case.id = :id", { id });
+
+    return query.getOne();
   }
 
 }

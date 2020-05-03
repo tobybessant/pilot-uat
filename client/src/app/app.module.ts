@@ -60,7 +60,11 @@ import { ErrorComponent } from "./components/common/error/error.component";
 import { StepComponent } from "./components/client/step/step.component";
 import { ResultsComponent } from "./components/supplier/results/results.component";
 import { StepFeedbackDetailsDialogComponent } from "./components/supplier/step-feedback-details-dialog/step-feedback-details-dialog.component";
-import { MatrixColumnDialogComponent } from './components/supplier/matrix-column-dialog/matrix-column-dialog.component';
+import { MatrixColumnDialogComponent } from "./components/supplier/matrix-column-dialog/matrix-column-dialog.component";
+import { ProjectTabsComponent } from "./components/client/project-tabs/project-tabs.component";
+import { StepWizardComponent } from "./components/client/step-wizard/step-wizard.component";
+import { BasicNavButtonComponent } from './components/common/nav/basic-nav-button/basic-nav-button.component';
+import { FinishCaseDialogComponent } from './components/client/finish-case-dialog/finish-case-dialog.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +102,11 @@ import { MatrixColumnDialogComponent } from './components/supplier/matrix-column
     StepComponent,
     ResultsComponent,
     StepFeedbackDetailsDialogComponent,
-    MatrixColumnDialogComponent
+    MatrixColumnDialogComponent,
+    ProjectTabsComponent,
+    StepWizardComponent,
+    BasicNavButtonComponent,
+    FinishCaseDialogComponent
   ],
   imports: [
     /* Angular */
@@ -148,6 +156,10 @@ import { MatrixColumnDialogComponent } from './components/supplier/matrix-column
     {
       provide: "LOCAL_STORAGE",
       useFactory: () => (typeof window !== "undefined") ? window.localStorage : null
+    },
+    {
+      provide: "SESSION_STORAGE",
+      useFactory: () => (typeof window !== "undefined") ? window.sessionStorage : null
     }
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,7 +1,5 @@
 <div id="suites-list-container">
   <div class="add-suite-container">
-    <!-- <span class="menu-title"><strong>+ Add Suite</strong></span> -->
-    
     <span *ngIf="!getIsAddingSuite()">
       <button nbButton status="basic" (click)="setIsAddingSuite(true)">Add Suite</button>
     </span>
@@ -18,5 +16,5 @@
         />
     </span>
   </div>
-  <nb-menu tag="test-suites" [items]="suites" id="suites-list"></nb-menu>
+  <nb-menu tag="test-suites" [items]="suitesMenuItems" id="suites-list"></nb-menu>
 </div>

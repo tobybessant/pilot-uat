@@ -1,15 +1,10 @@
 <div class="left">
-  <button
-    *ngIf="navbarService.getIsViewingProject()"
-    nbButton
-    status="basic"
-    (click)="backToAllProjects()"
-    id="back-button"
-  >
-    <nb-icon icon="arrow-back-outline"></nb-icon>
-    Exit Project
-  </button>
-  <img *ngIf="!navbarService.getIsViewingProject()" src="../../../../assets/favicons/android-chrome-512x512.png" style="max-height: '25px'; margin-right: '10px'">
+  <ng-template #leftNavButton></ng-template>
+  <img
+  *ngIf="!navbarService.getActiveButton()"
+    src="../../../../assets/favicons/android-chrome-512x512.png"
+    style="max-height: '25px'; margin-right: '10px';"
+  />
   <h3>{{ navbarService.getHeader() }}</h3>
 </div>
 <nb-user

@@ -1,5 +1,9 @@
 <div class="test-case">
   <ng-container *ngIf="case">
+    <button nbButton ghost (click)="startTests(case.id)">
+      Start Case Player<nb-icon icon="play-circle-outline"></nb-icon>
+    </button>
+
     <div class="details">
       <div>
         <div class="heading"></div>

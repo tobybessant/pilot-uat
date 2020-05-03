@@ -5,7 +5,6 @@ import { ConfirmationPromptComponent } from "../../common/confirmation-prompt/co
 import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
 import { CaseApiService } from "src/app/services/api/case/case-api.service";
 import { ICaseResponse } from "src/app/models/api/response/supplier/case.interface";
-import { ActiveTestSuiteService } from "src/app/services/active-suite/active-test-suite.service";
 import { ActiveTestCaseService } from "src/app/services/active-test/active-test-case.service";
 
 @Component({
@@ -17,8 +16,17 @@ export class TestSuiteComponent implements OnInit {
 
   panelOpenState = false;
 
+  private _activeSuite: ISuiteResponse;
+
   @Input()
-  public activeSuite: ISuiteResponse;
+  public set activeSuite(value: ISuiteResponse) {
+    this._activeSuite = value;
+    this.fetchTestsForActiveSuite();
+  }
+
+  public get activeSuite(): ISuiteResponse {
+    return this._activeSuite;
+  }
 
   @Output()
   public suiteDeleted = new EventEmitter<string>();
@@ -35,20 +43,10 @@ export class TestSuiteComponent implements OnInit {
     private readonly dialogService: NbDialogService,
     private readonly testSuiteApiService: TestSuiteApiService,
     private readonly testApiService: CaseApiService,
-    private readonly activeTestSuiteService: ActiveTestSuiteService,
     private readonly activeTestCaseService: ActiveTestCaseService
   ) { }
 
   async ngOnInit(): Promise<void> {
-    this.activeTestSuiteService.getSubject().subscribe((suite) => {
-      this.updateActiveSuite(suite);
-    });
-
-    // NOTE: this will catch the race condition where this component initialises
-    // after the on-init active suite has been set by the parent project component.
-    if (!this.activeSuite) {
-      this.updateActiveSuite(this.activeTestSuiteService.getCurrentSuite());
-    }
   }
 
   public getSuiteId(): number | string {
@@ -57,11 +55,6 @@ export class TestSuiteComponent implements OnInit {
 
   public getSuiteName(): string {
     return this.activeSuite ? this.activeSuite.title : "";
-  }
-
-  private async updateActiveSuite(suite: ISuiteResponse) {
-    this.activeSuite = suite;
-    this.fetchTestsForActiveSuite();
   }
 
   public promptDeleteSuite() {

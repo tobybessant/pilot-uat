@@ -1,0 +1,24 @@
+nb-card {
+  width: 90vw;
+  max-width: 500px;
+}
+
+nb-card-header {
+  display :flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-buttons {
+  width: 100%;
+  display :flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#close-dialog-button {
+  padding: 8px;
+  margin: 0;
+}

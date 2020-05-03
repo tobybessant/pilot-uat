@@ -45,7 +45,7 @@
     *ngFor="let client of getClientsToShow()"
     [class.user-focused]="getClientsToShow().length === 1"
   >
-    {{ client.firstName + " " + client.lastName }}
+    {{ client.firstName }}<br>{{ client.lastName }}
   </h6>
 </div>
 
@@ -70,7 +70,7 @@
       *ngFor="let client of getClientsToShow()"
       [class.user-focused]="getClientsToShow().length === 1"
     >
-      {{ client.firstName + " " + client.lastName }}
+    {{ client.firstName }}<br>{{ client.lastName }}
     </h6>
   </div>
   <div

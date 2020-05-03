@@ -1,0 +1,22 @@
+<nb-card>
+  <nb-card-header>
+    {{ getHeaderText() }}
+    <button
+      id="close-dialog-button"
+      nbButton
+      ghost
+      status="basic"
+      (click)="close()"
+    >
+      <nb-icon icon="close-outline"></nb-icon>
+    </button>
+  </nb-card-header>
+  <nb-card-body>{{ caseName }}</nb-card-body>
+  <nb-card-footer>
+    <div class="action-buttons">
+      <button nbButton status="primary" (click)="backToProject()">
+        <nb-icon icon="arrow-back-outline"></nb-icon> Back to Project
+      </button>
+    </div>
+  </nb-card-footer>
+</nb-card>
