@@ -10,9 +10,12 @@ import { filter, map } from "rxjs/operators";
 })
 export class TestSuiteListComponent implements OnInit, OnDestroy {
 
+  public suitesMenuItems: NbMenuItem[] = [];
+
   @Input()
-  public set suitesData(data: ISuiteResponse[]) {
-    this.mapAndAddSuitesToItems(data);
+  public set setMenuItems(value: NbMenuItem[]) {
+    console.log("setting: ", value);
+    this.suitesMenuItems = value;
   }
 
   @Output()
@@ -22,8 +25,6 @@ export class TestSuiteListComponent implements OnInit, OnDestroy {
   public suiteAdded = new EventEmitter<string>();
 
   public newSuiteName: string = "";
-  public suites: NbMenuItem[] = [];
-
   private alive: boolean = true;
   private isAddingSuite: boolean = false;
 
@@ -47,17 +48,6 @@ export class TestSuiteListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.alive = false;
-  }
-
-  private mapAndAddSuitesToItems(suites: ISuiteResponse[] = []) {
-    const suiteItems = suites.map(s => ({
-      title: s.title,
-      data: {
-        id: s.id
-      }
-    }) as NbMenuItem);
-
-    this.suites = suiteItems;
   }
 
   public getIsAddingSuite(): boolean {

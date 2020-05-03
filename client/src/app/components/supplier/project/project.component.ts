@@ -3,7 +3,7 @@ import { Location } from "@angular/common";
 import { ProjectApiService } from "src/app/services/api/project/project-api.service";
 import { NbMenuItem, NbTabComponent } from "@nebular/theme";
 import { IProjectResponse } from "src/app/models/api/response/supplier/project.interface";
-import { ActivatedRoute, Router, Params, UrlSegment } from "@angular/router";
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
 import { TestSuiteApiService } from "src/app/services/api/suite/test-suite-api.service";
 import { ISuiteResponse } from "src/app/models/api/response/supplier/suite.interface";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
@@ -20,6 +20,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public fetchAttemptComplete = false;
   public activeSuite: ISuiteResponse;
   public projectSettings: NbMenuItem[] = [];
+  public suiteMenuItems: NbMenuItem[] = [];
 
   constructor(
     private router: Router,
@@ -76,13 +77,14 @@ export class ProjectComponent implements OnInit, OnDestroy {
       projectId: this.project.id
     });
     await this.fetchSuites();
+    this.setActiveSuite(this.project.suites[this.project.suites.length - 1]);
   }
 
   public async suiteDeleted(suiteId: string) {
     const deletedIndex = this.project.suites.findIndex(suite => suite.id === suiteId);
     await this.fetchSuites();
 
-    // asume not at the end
+    // assume not at the end
     let newSelectedIndex = deletedIndex;
 
     // if at end, decrement
@@ -95,6 +97,19 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   private setActiveSuite(suite: ISuiteResponse) {
     this.activeSuite = suite;
+    this.mapAndAddSuitesToItems(this.project.suites);
+  }
+
+  private mapAndAddSuitesToItems(suites: ISuiteResponse[] = []) {
+    const suiteItems = suites.map((s) => ({
+      title: s.title,
+      data: {
+        id: s.id
+      },
+      selected: s.id === this.activeSuite.id
+    }) as NbMenuItem);
+
+    this.suiteMenuItems = suiteItems;
   }
 
   public updateUrlParameter(tab: NbTabComponent) {

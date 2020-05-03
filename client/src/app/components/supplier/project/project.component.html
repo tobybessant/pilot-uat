@@ -13,7 +13,7 @@
       >
         <div class="tab-content">
           <app-test-suite-list
-            [suitesData]="project.suites"
+            [setMenuItems]="suiteMenuItems"
             (suiteSelected)="updateActiveSuite($event)"
             (suiteAdded)="addSuiteToProject($event)"
           >
