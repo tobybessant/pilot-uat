@@ -1,6 +1,6 @@
 <nb-card>
   <nb-card-header>
-    Case Complete! 🎉
+    {{ getHeaderText() }}
     <button
       id="close-dialog-button"
       nbButton
@@ -11,7 +11,7 @@
       <nb-icon icon="close-outline"></nb-icon>
     </button>
   </nb-card-header>
-  <nb-card-body>Case {{ caseName }} has been tested</nb-card-body>
+  <nb-card-body>{{ caseName }}</nb-card-body>
   <nb-card-footer>
     <div class="action-buttons">
       <button nbButton status="primary" (click)="backToProject()">

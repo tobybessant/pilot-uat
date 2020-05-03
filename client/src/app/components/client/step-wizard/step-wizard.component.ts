@@ -62,9 +62,9 @@ export class StepWizardComponent implements OnInit {
     const routes = route.pathFromRoot.filter(r => r.url.length > 0);
     const paths = routes.map(p => p.url);
 
-    if (paths.length > 0) {
-      const currentUrl = paths[0];
-      return currentUrl[0] + "/" + currentUrl[1];
+    if (paths[0]?.length >= 2) {
+      const segs = paths[0];
+      return segs[0] + "/" + segs[1];
     }
   }
 
@@ -209,7 +209,8 @@ export class StepWizardComponent implements OnInit {
   private openFinishDialog(): void {
     this.dialogService.open(FinishCaseDialogComponent, {
       context: {
-        projectUrl: this.getResolvedUrl(this.route.snapshot)[0]
+        projectUrl: this.getResolvedUrl(this.route.snapshot),
+        caseName: this.getCaseTitle()
       }
     });
   }

@@ -24,6 +24,11 @@ export class FinishCaseDialogComponent {
 
   public backToProject(): void {
     this.close();
+    console.log(this.projectUrl);
     this.router.navigate([this.projectUrl]);
+  }
+
+  public getHeaderText(): string {
+    return "Case Finished";
   }
 }
