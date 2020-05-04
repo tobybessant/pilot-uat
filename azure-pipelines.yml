@@ -18,8 +18,21 @@ steps:
     workingDir: 'server'
 
 - task: Npm@1
-  displayName: 'Server Code Coverage'
+  displayName: 'Server Unit Tests'
   inputs:
     command: 'custom'
     workingDir: 'server'
+    customCommand: 'run coverage'
+
+- task: Npm@1
+  displayName: 'Installing Client Dependencies'
+  inputs:
+    command: 'install'
+    workingDir: 'client'
+
+- task: Npm@1
+  displayName: 'Client Unit Tests'
+  inputs:
+    command: 'custom'
+    workingDir: 'client'
     customCommand: 'run coverage'
