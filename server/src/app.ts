@@ -13,7 +13,7 @@ async function main() {
   await database.openConnection();
 
   const server: UATPlatformServer = new UATPlatformServer(container);
-  server.start(8080);
+  server.start(Number(process.env.PORT) || 8080);
 }
 
 main();
