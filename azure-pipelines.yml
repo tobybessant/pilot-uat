@@ -36,3 +36,15 @@ steps:
     command: 'custom'
     workingDir: 'client'
     customCommand: 'run coverage'
+
+- task: Npm@1
+  displayName: 'Building Server'
+  inputs:
+    command: 'custom'
+    workingDir: 'server'
+    customCommand: 'run build'
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Server.CurrentWorkingDirectory)/server/dist'
+    artifact: 'Server Build'
+    publishLocation: 'pipeline'
