@@ -68,7 +68,7 @@ steps:
 - task: PublishPipelineArtifact@1
   displayName: 'Publishing build artifact'
   inputs:
-    targetPath: '$(System.DefaultWorkingDirectory)/client/dist'
+    targetPath: '$(System.DefaultWorkingDirectory)/client/dist/client'
     artifact: 'Client Build'
     publishLocation: 'pipeline'
 
