@@ -47,6 +47,13 @@ steps:
 - task: PublishPipelineArtifact@1
   displayName: 'Publishing build artifact'
   inputs:
-    targetPath: '$(System.DefaultWorkingDirectory)/server/dist'
+    targetPath: '$(System.DefaultWorkingDirectory)/server/dist/src'
     artifact: 'Server Build'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing package.json artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/server/package.json'
+    artifact: 'Server Package.JSON'
     publishLocation: 'pipeline'
