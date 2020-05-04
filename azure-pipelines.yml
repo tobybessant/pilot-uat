@@ -57,3 +57,24 @@ steps:
     targetPath: '$(System.DefaultWorkingDirectory)/server/package.json'
     artifact: 'Server Package.JSON'
     publishLocation: 'pipeline'
+
+- task: Npm@1
+  displayName: 'Building Client'
+  inputs:
+    command: 'custom'
+    workingDir: 'client'
+    customCommand: 'run build'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing build artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/client/dist'
+    artifact: 'Client Build'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing package.json artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/client/package.json'
+    artifact: 'Client Package.JSON'
+    publishLocation: 'pipeline'
