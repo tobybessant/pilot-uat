@@ -4,12 +4,9 @@ import UATPlatformServer from "./server";
 import { MSSQLDatabase } from "./database";
 import { container } from "tsyringe";
 
-interface ILogger {
-  log: () => void;
-}
+dotenv.config();
 
 async function main() {
-  dotenv.config();
 
   const database = container.resolve<MSSQLDatabase>(MSSQLDatabase);
   await database.openConnection();
