@@ -1,10 +1,11 @@
 import "reflect-metadata";
+
 import * as dotenv from "dotenv";
+dotenv.config();
+
 import UATPlatformServer from "./server";
 import { MSSQLDatabase } from "./database";
 import { container } from "tsyringe";
-
-dotenv.config();
 
 async function main() {
 
