@@ -43,8 +43,10 @@ steps:
     command: 'custom'
     workingDir: 'server'
     customCommand: 'run build'
+
 - task: PublishPipelineArtifact@1
+  displayName: 'Publishing build artifact'
   inputs:
-    targetPath: '$(Server.CurrentWorkingDirectory)/server/dist'
+    targetPath: '$(System.DefaultWorkingDirectory)/server/dist'
     artifact: 'Server Build'
     publishLocation: 'pipeline'
