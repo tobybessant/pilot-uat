@@ -1,5 +1,9 @@
 import "reflect-metadata";
-import { container } from "tsyringe";
+import { container } from "tsyringe"
+
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import { MSSQLDatabase } from "../";
 
 import { getConnection } from "typeorm";
