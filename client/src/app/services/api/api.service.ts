@@ -1,3 +1,4 @@
+import { environment } from "../../../environments/environment";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { IApiResponse } from "src/app/models/api/response/api-response.interface";
@@ -7,7 +8,7 @@ import { NbToastrService } from "@nebular/theme";
   providedIn: "root"
 })
 export class ApiService {
-  public static readonly root: string = "http://localhost:8080/api/v1";
+  public static readonly root: string = environment.apiRootUrl;
 
   constructor(private httpClient: HttpClient, private toastrService: NbToastrService) { }
 

@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+
+  apiRootUrl: "https://api.pilot-uat.com/api/v1"
 };
