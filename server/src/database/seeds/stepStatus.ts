@@ -9,7 +9,7 @@ import { MSSQLDatabase } from "..";
 import { getConnection } from "typeorm";
 import { Logger } from "@overnightjs/logger";
 
-import { TABLE_NAME, StepStatus, StepStatusDbo } from "../entities/stepStatusDbo";
+import { TABLE_NAME, StepStatus } from "../entities/stepStatusDbo";
 let database: MSSQLDatabase;
 
 const records = [
