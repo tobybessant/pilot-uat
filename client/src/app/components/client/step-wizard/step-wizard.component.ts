@@ -86,10 +86,6 @@ export class StepWizardComponent implements OnInit {
   }
 
   public async nextStep(idx?: number): Promise<void> {
-    if (this.stepFeedbackChanged()) {
-      await this.addStepFeedback();
-    }
-
     if (idx !== undefined && idx < this.steps.length && idx + 1 > 0) {
       this.activeStepIndex = idx;
       this.activeStepFeedbackNotes = "";
@@ -198,7 +194,11 @@ export class StepWizardComponent implements OnInit {
     return this.activeStepIndex + 1 === this.steps.length;
   }
 
-  public nextAction(): void {
+  public async nextAction(): Promise<void> {
+    if (this.stepFeedbackChanged()) {
+      await this.addStepFeedback();
+    }
+
     if (this.activeStepIndex + 1 === this.steps.length) {
       return this.openFinishDialog();
     }
