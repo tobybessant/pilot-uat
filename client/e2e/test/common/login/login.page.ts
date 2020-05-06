@@ -1,6 +1,6 @@
-import { browser, ElementFinder } from "protractor";
-import { By, WebElement, WebElementPromise } from "selenium-webdriver";
-import { NavElement } from "../../elements/nav.page";
+import { browser } from "protractor";
+import { By, WebElementPromise } from "selenium-webdriver";
+import { NavElement } from "../../../utils/elements/nav.page";
 
 export class LoginPage {
   public static readonly PAGE_URN: string = "login";
@@ -28,5 +28,16 @@ export class LoginPage {
 
   public getCreateAccountRedirect(): WebElementPromise {
     return browser.findElement(By.linkText("here"));
+  }
+
+  public getLoginButton(): WebElementPromise {
+    return browser.findElement(By.css(".buttons button:first-child"));
+  }
+
+  public async login(email: string, password: string): Promise<void> {
+    this.getEmailInput().sendKeys(email);
+    this.getPasswordInput().sendKeys(email);
+
+    // await this.getLoginButton().click();
   }
 }

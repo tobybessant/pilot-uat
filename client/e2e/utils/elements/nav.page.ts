@@ -1,5 +1,5 @@
 import { browser } from "protractor";
-import { By, WebElementPromise } from "selenium-webdriver";
+import { By } from "selenium-webdriver";
 
 export class NavElement {
   public async getNavHeadingText(): Promise<string> {

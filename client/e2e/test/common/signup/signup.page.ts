@@ -1,6 +1,6 @@
 import { browser } from "protractor";
 import { By, WebElementPromise } from "selenium-webdriver";
-import { NavElement } from "../../elements/nav.page";
+import { NavElement } from "../../../utils/elements/nav.page";
 
 export class SignupPage {
   public static readonly PAGE_URN: string = "signup";

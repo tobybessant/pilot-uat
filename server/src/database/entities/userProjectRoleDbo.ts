@@ -1,7 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from "typeorm";
 import { UserDbo } from "./userDbo";
 import { ProjectDbo } from "./projectDbo";
-import { ProjectController } from "../../controllers";
 
 export const TABLE_NAME: string = "UserProjectRole";
 @Entity({
