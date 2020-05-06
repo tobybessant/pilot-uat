@@ -22,14 +22,14 @@ export class ApiService {
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "close-square-outline",
+          });
+        });
         return response;
       }
-      response.errors.push("Something went wrong...");
-    }
-    if (response.statusCode >= 400) {
-      response.errors.forEach(error => {
-        this.toastrService.danger(error, "ERROR");
-      });
     }
     return response;
   }
@@ -41,20 +41,22 @@ export class ApiService {
 
     try {
       response = await this.httpClient.post<IApiResponse<T>>(ApiService.root + endpoint, body, { withCredentials: true }).toPromise();
+      console.log(response);
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
         response.errors.forEach(error => {
-          this.toastrService.danger(error, "Error", {
-            duration: 10000,
-            icon: "close-square-outline",
-          });
+          console.log(response.statusCode);
+          if (response.statusCode !== 401) {
+            this.toastrService.danger(error, "Error", {
+              duration: 10000,
+              icon: "close-square-outline",
+            });
+          }
         });
         return response;
       }
-      response.errors.push("Something went wrong...");
     }
-
     return response;
   }
 
@@ -68,14 +70,14 @@ export class ApiService {
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "close-square-outline",
+          });
+        });
         return response;
       }
-      response.errors.push("Something went wrong...");
-    }
-    if (response.statusCode >= 400) {
-      response.errors.forEach(error => {
-        this.toastrService.danger(error, "ERROR");
-      });
     }
     return response;
   }
@@ -90,14 +92,14 @@ export class ApiService {
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "close-square-outline",
+          });
+        });
         return response;
       }
-      response.errors.push("Something went wrong...");
-    }
-    if (response.statusCode >= 400) {
-      response.errors.forEach(error => {
-        this.toastrService.danger(error, "ERROR");
-      });
     }
     return response;
   }

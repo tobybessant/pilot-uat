@@ -1,14 +1,16 @@
-import * as joi from "joi";
+import * as jf from "joiful";
 
-export const LoginSchema = joi.object({
-  email: joi
-    .string()
+export class LogIn {
+
+  @jf.string()
     .label("Email")
     .email()
-    .required(),
+    .required()
+  email!: string;
 
-  password: joi
-    .string()
+  @jf.string()
     .label("Password")
-    .required(),
-});
+    .required()
+  password!: string;
+
+}

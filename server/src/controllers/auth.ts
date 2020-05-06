@@ -1,4 +1,3 @@
-import { OK } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, Middleware, Get, Post } from "@overnightjs/core";
 import * as passport from "passport";
@@ -9,7 +8,6 @@ import { Bcrypt } from "../services/utils/bcryptHash";
 import { CreateUser } from "../services/middleware/joi/schemas/createUser";
 import { UserDbo } from "../database/entities/userDbo";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
-import { IUserToken } from "../dto/response/common/userToken";
 import { ICreateUserRequest } from "../dto/request/common/createUser";
 import { BaseController } from "./baseController";
 import { IUserResponse } from "../dto/response/common/user";
@@ -18,6 +16,8 @@ import { OrganisationRepository } from "../repositories/organisationRepository";
 import { UserRepository } from "../repositories/userRepository";
 import { UserTypeRepository } from "../repositories/userTypeRepository";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { ApiError } from "../services/apiError";
+import { LogIn } from "../services/middleware/joi/schemas/login";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/auth`)
@@ -97,11 +97,15 @@ export class AuthController extends BaseController {
   }
 
   @Post("login")
-  @Middleware([
-    passport.authenticate("local")
-  ])
+  @Middleware(new BodyMatches(new Validator()).schema(LogIn))
   public login(req: Request, res: Response) {
-    this.OK<IUserToken>(res, req.user);
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return this.serverError(res, new ApiError("Invalid email or password", 401));
+      }
+      req.login(user, () => {});
+      return this.OK(res);
+    })(req, res);
   }
 
   @Get("logout")
