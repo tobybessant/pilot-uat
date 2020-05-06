@@ -93,6 +93,9 @@ export abstract class BaseController {
   protected errorResponse<T>(res: Response, statusCode: number, response: Partial<IApiResponse<T>>, redirectToErrorPage?: boolean): void {
 
     res.status(statusCode || response.statusCode || 500);
+    if(!response.statusCode) {
+      response.statusCode = statusCode;
+    }
 
     if (redirectToErrorPage) {
       let url = this.clientUrl;

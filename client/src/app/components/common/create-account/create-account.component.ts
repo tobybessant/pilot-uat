@@ -34,6 +34,8 @@ export class CreateAccountComponent {
     if (createdAccount.errors.length > 0) {
       this.errors = createdAccount.errors;
       return;
+    } else {
+      this.errors = [];
     }
 
     this.accountCreated = true;

@@ -3,6 +3,7 @@ import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interface";
 import { Router, ActivatedRoute } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
+import { SessionService } from "src/app/services/session/session.service";
 
 @Component({
   selector: "app-login",
@@ -13,13 +14,13 @@ export class LoginComponent implements OnInit {
 
   public email: string;
   public password: string;
-  public errors: string[];
   public redirectUrl?: string;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private sessionService: SessionService,
     @Inject(DOCUMENT) private document: Document
   ) { }
 
@@ -29,6 +30,15 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit() {
+    console.log(this.sessionService.getCurrentUser());
+    
+    if (this.sessionService.getCurrentUser()) {
+      console.log(" I am supposed to redirect rn")
+      this.router.navigate(["/"]);
+    }
+  }
+
   async submit() {
     const response = await this.authService.login({
       email: this.email,
@@ -36,7 +46,6 @@ export class LoginComponent implements OnInit {
     } as ISignInRequest);
 
     if (response.errors.length > 0) {
-      this.errors = response.errors;
       return;
     }
 

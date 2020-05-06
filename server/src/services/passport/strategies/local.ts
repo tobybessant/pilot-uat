@@ -6,6 +6,7 @@ import { Bcrypt } from "../../utils/bcryptHash";
 import { UserDbo } from "../../../database/entities/userDbo";
 import { RepositoryService } from "../../repositoryService";
 import { IUserToken } from "../../../dto/response/common/userToken";
+import { ApiError } from "../../apiError";
 
 @injectable()
 export class Local {
@@ -44,8 +45,8 @@ export class Local {
           return done(null, u);
         }
 
-        // wrong password
-        return done(null, false);
+        // wrong credentials
+        return done(new ApiError("Incorrect login details", 401), false);
       }
     ));
 	}
