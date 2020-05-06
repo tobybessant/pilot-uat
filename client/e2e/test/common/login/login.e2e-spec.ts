@@ -28,6 +28,14 @@ describe("Login", () => {
     page.getPasswordInput();
   });
 
+  it("should take a supplier to their projects page when they successfully log in and redirect to root url", async () => {
+    page.get();
+    await page.login("hey2@me.com", "password1");
+    await browser.waitForAngular();
+
+    expect(browser.getCurrentUrl()).toEqual(browser.baseUrl);
+  });
+
   describe("Signup redirect link", async () => {
     it("should be present on the login page", async () => {
       page.get();

@@ -36,8 +36,8 @@ export class LoginPage {
 
   public async login(email: string, password: string): Promise<void> {
     this.getEmailInput().sendKeys(email);
-    this.getPasswordInput().sendKeys(email);
+    this.getPasswordInput().sendKeys(password);
 
-    // await this.getLoginButton().click();
+    await this.getLoginButton().click();
   }
 }
