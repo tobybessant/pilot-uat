@@ -1,54 +1,109 @@
-<div class="alert-container">
-  <nb-alert class="centered small" status="danger" *ngFor="let err of errors">
-    {{ err }}
-  </nb-alert>
-</div>
-
 <nb-card class="centered medium">
   <nb-card-header>
     <h6>Sign Up</h6>
   </nb-card-header>
   <nb-card-body class="form-inputs" *ngIf="!accountCreated">
-    <div class="name-fields">
+    <form>
+      <div class="name-fields">
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          placeholder="First name"
+          [(ngModel)]="firstName"
+          [ngModelOptions]="{ standalone: true }"
+          autocomplete="given-name"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          placeholder="Last name"
+          [(ngModel)]="lastName"
+          [ngModelOptions]="{ standalone: true }"
+          autocomplete="family-name"
+        />
+      </div>
+
       <input
         type="text"
         nbInput
         fullWidth
-        placeholder="First name"
-        [(ngModel)]="firstName"
+        placeholder="Organisation Name"
+        [(ngModel)]="organisation"
+        [ngModelOptions]="{ standalone: true }"
+        autocomplete="organization"
       />
+
       <input
         type="text"
         nbInput
         fullWidth
-        placeholder="Last name"
-        [(ngModel)]="lastName"
+        placeholder="Email"
+        [(ngModel)]="email"
+        [ngModelOptions]="{ standalone: true }"
+        autocomplete="email"
       />
+
+      <input
+        type="password"
+        nbInput
+        fullWidth
+        placeholder="Password"
+        [(ngModel)]="password"
+        [ngModelOptions]="{ standalone: true }"
+        nbPopoverTrigger="noop"
+        nbPopoverPlacement="right"
+        [nbPopover]="passwordProtocolTooltip"
+        (focus)="showPasswordProtocols(true)"
+        (blur)="showPasswordProtocols(false)"
+        autocomplete="new-password"
+      />
+
+      <input
+        type="password"
+        nbInput
+        fullWidth
+        placeholder="Confirm Password"
+        [(ngModel)]="confirmPassword"
+        [ngModelOptions]="{ standalone: true }"
+        nbPopoverTrigger="noop"
+        nbPopoverPlacement="right"
+        [nbPopover]="passwordProtocolTooltip"
+        (focus)="showPasswordProtocols(true)"
+        (blur)="showPasswordProtocols(false)"
+        autocomplete="new-password"
+      />
+    </form>
+    <div
+      class="zxcvbn-result"
+      *ngIf="
+        zxcvbnCheck() &&
+        getZxcvbnCheckResult().score < ZXCVBN_RESULT_SCORE_WARNING
+      "
+      [style]="getZxcvbnCheckStyle()"
+    >
+      <div class="warning-title">
+        <nb-icon [icon]="getZxcvbnCheckIcon()"></nb-icon>
+        <h6>Warning</h6>
+      </div>
+      <div class="content">
+        <p>
+          <b>{{ getZxcvbnCheckText() }}</b>
+        </p>
+        <p *ngIf="getZxcvbnCheckResult().feedback.warning">
+          <li>{{ getZxcvbnCheckResult().feedback.warning }}</li>
+        </p>
+        <div *ngIf="getZxcvbnCheckResult().feedback.suggestions.length > 0">
+          <p><b>Suggestions:</b></p>
+          <p *ngFor="let s of getZxcvbnCheckResult().feedback.suggestions">
+            <li>
+              {{ s }}
+            </li>
+          </p>
+        </div>
+      </div>
     </div>
-
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Organisation Name"
-      [(ngModel)]="organisation"
-    />
-
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Email"
-      [(ngModel)]="email"
-    />
-
-    <input
-      type="password"
-      nbInput
-      fullWidth
-      placeholder="Password"
-      [(ngModel)]="password"
-    />
 
     <div class="buttons">
       <button nbButton status="primary" (click)="submit()">
@@ -61,7 +116,9 @@
   <nb-card-body *ngIf="accountCreated">
     <div>
       <h3>Welcome, {{ firstName }}.</h3>
-      <button nbButton status="primary" (click)="goToDashboard()">Proceed to Dashboard</button>
+      <button nbButton status="primary" (click)="goToDashboard()">
+        Proceed to Dashboard
+      </button>
     </div>
   </nb-card-body>
 
@@ -69,3 +126,24 @@
     Already signed up? Log in <a routerLink="/login">here</a>.
   </nb-card-footer>
 </nb-card>
+
+<ng-template #passwordProtocolTooltip>
+  <div class="password-protocols">
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(password.length >= 8)"
+        [style.color]="getPasswordProtocolIconColour(password.length >= 8)"
+      ></nb-icon>
+      Must be at least 8 characters long.
+    </div>
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(password === confirmPassword)"
+        [style.color]="
+          getPasswordProtocolIconColour(password === confirmPassword)
+        "
+      ></nb-icon>
+      Passwords must match.
+    </div>
+  </div>
+</ng-template>

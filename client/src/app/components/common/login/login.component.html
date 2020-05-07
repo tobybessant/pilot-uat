@@ -4,21 +4,27 @@
   </nb-card-header>
 
   <nb-card-body class="form-inputs" (keydown)="keyDownFunction($event)">
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Email"
-      [(ngModel)]="email"
-    />
+    <form>
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Email"
+        [(ngModel)]="email"
+        [ngModelOptions]="{standalone: true}"
+        autocomplete="email"
+      />
 
-    <input
-      type="password"
-      nbInput
-      fullWidth
-      placeholder="Password"
-      [(ngModel)]="password"
-    />
+      <input
+        type="password"
+        nbInput
+        fullWidth
+        placeholder="Password"
+        [(ngModel)]="password"
+        [ngModelOptions]="{standalone: true}"
+        autocomplete="current-password"
+      />
+    </form>
 
     <div class="buttons">
       <button nbButton status="primary" (click)="submit()">Log In</button>

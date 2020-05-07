@@ -106,7 +106,7 @@ import { FinishCaseDialogComponent } from './components/client/finish-case-dialo
     ProjectTabsComponent,
     StepWizardComponent,
     BasicNavButtonComponent,
-    FinishCaseDialogComponent
+    FinishCaseDialogComponent,
   ],
   imports: [
     /* Angular */

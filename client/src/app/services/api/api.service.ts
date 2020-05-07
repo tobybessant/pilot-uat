@@ -50,7 +50,7 @@ export class ApiService {
           if (response.statusCode !== 401) {
             this.toastrService.danger(error, "Error", {
               duration: 10000,
-              icon: "close-square-outline",
+              icon: "alert-circle-outline",
             });
           }
         });
@@ -73,7 +73,7 @@ export class ApiService {
         response.errors.forEach(error => {
           this.toastrService.danger(error, "Error", {
             duration: 10000,
-            icon: "close-square-outline",
+            icon: "alert-circle-outline",
           });
         });
         return response;
@@ -95,7 +95,7 @@ export class ApiService {
         response.errors.forEach(error => {
           this.toastrService.danger(error, "Error", {
             duration: 10000,
-            icon: "close-square-outline",
+            icon: "alert-circle-outline",
           });
         });
         return response;

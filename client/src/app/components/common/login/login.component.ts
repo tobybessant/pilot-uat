@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, AfterViewInit } from "@angular/core";
 import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interface";
 import { Router, ActivatedRoute } from "@angular/router";
@@ -10,7 +10,7 @@ import { SessionService } from "src/app/services/session/session.service";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   public email: string;
   public password: string;
@@ -31,10 +31,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.sessionService.getCurrentUser());
-    
     if (this.sessionService.getCurrentUser()) {
-      console.log(" I am supposed to redirect rn")
       this.router.navigate(["/"]);
     }
   }
