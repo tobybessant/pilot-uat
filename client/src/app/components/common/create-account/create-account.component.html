@@ -83,7 +83,10 @@
       "
       [style]="getZxcvbnCheckStyle()"
     >
-      <nb-icon [icon]="getZxcvbnCheckIcon()"></nb-icon>
+      <div class="warning-title">
+        <nb-icon [icon]="getZxcvbnCheckIcon()"></nb-icon>
+        <h6>Warning</h6>
+      </div>
       <div class="content">
         <p>
           <b>{{ getZxcvbnCheckText() }}</b>
@@ -126,33 +129,6 @@
 
 <ng-template #passwordProtocolTooltip>
   <div class="password-protocols">
-    <!-- <div class="protocol">
-      <nb-icon
-        [icon]="getPasswordProtocolIcon(passwordDoesContainLowercase())"
-        [style.color]="
-          getPasswordProtocolIconColour(passwordDoesContainLowercase())
-        "
-      ></nb-icon>
-      Must contain at least one lowercase letter.
-    </div>
-    <div class="protocol">
-      <nb-icon
-        [icon]="getPasswordProtocolIcon(passwordDoesContainUppercase())"
-        [style.color]="
-          getPasswordProtocolIconColour(passwordDoesContainUppercase())
-        "
-      ></nb-icon>
-      Must contain at least one UPPERCASE letter.
-    </div>
-    <div class="protocol">
-      <nb-icon
-        [icon]="getPasswordProtocolIcon(passwordDoesContainNumber())"
-        [style.color]="
-          getPasswordProtocolIconColour(passwordDoesContainNumber())
-        "
-      ></nb-icon>
-      Must contain at least one number.
-    </div> -->
     <div class="protocol">
       <nb-icon
         [icon]="getPasswordProtocolIcon(password.length >= 8)"

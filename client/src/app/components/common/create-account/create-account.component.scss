@@ -56,6 +56,7 @@ input {
 
 .zxcvbn-result {
   display: flex;
+  flex-direction: column;
   border-radius: var(--border-radius);
   padding: 10px;
   margin: 10px 0;
@@ -73,5 +74,15 @@ input {
     font-size: 2em;
     height: 40px;
     margin-right: 12px;
+  }
+}
+
+.warning-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  h6 {
+    margin: 0;
   }
 }

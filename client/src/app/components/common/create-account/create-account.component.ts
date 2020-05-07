@@ -84,21 +84,6 @@ export class CreateAccountComponent {
     this.router.navigate(["/"]);
   }
 
-  public passwordDoesContainUppercase(): boolean {
-    const r = /[A-Z]/;
-    return r.test(this.password);
-  }
-
-  public passwordDoesContainLowercase(): boolean {
-    const r = /[a-z]/;
-    return r.test(this.password);
-  }
-
-  public passwordDoesContainNumber(): boolean {
-    const r = /[0-9]/;
-    return r.test(this.password);
-  }
-
   public getPasswordProtocolIcon(valid: boolean): string {
     return valid ? "checkmark-circle-2-outline" : "close-outline";
   }
@@ -109,9 +94,6 @@ export class CreateAccountComponent {
 
   public passwordPassesProtocols(): boolean {
     return this.password === this.confirmPassword
-      // this.passwordDoesContainLowercase()
-      // && this.passwordDoesContainUppercase()
-      // && this.passwordDoesContainNumber()
       && this.password.length >= 8;
   }
 
@@ -139,8 +121,8 @@ export class CreateAccountComponent {
 
     // warning
     return {
-      backgroundColor: "var(--color-warning-100)",
-      color: "#67512b",
+      backgroundColor: "#fcf8e4",
+      color: "#a27c45",
       border: "1px solid #67512b"
     };
   }
@@ -150,7 +132,7 @@ export class CreateAccountComponent {
       return "This password is too weak. Please enter a stronger password.";
     }
 
-    return "You will be able to proceed with this password - but it is considered weak. Please consider using a stronger password.";
+    return "You will be able to proceed with this password - but it is weak. Please consider using a stronger password.";
   }
 
   public getZxcvbnCheckIcon(): string {
