@@ -3,7 +3,7 @@ import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
 import { Router } from "@angular/router";
 import * as zxcvbn from "zxcvbn";
-import { NbPopoverDirective } from "@nebular/theme";
+import { NbPopoverDirective, NbToastrService } from "@nebular/theme";
 
 @Component({
   selector: "app-create-account",
@@ -16,6 +16,7 @@ export class CreateAccountComponent {
   public lastName: string = "";
   public email: string = "";
   public password: string = "";
+  public confirmPassword: string = "";
   public organisation: string = "";
 
   public zxcvbnResult: zxcvbn.ZXCVBNResult;
@@ -26,7 +27,7 @@ export class CreateAccountComponent {
 
   public accountCreated: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private toasterService: NbToastrService) { }
 
   public showPasswordProtocols(show: boolean): void {
     show ?
@@ -35,11 +36,31 @@ export class CreateAccountComponent {
   }
 
   public async submit() {
+    if (!this.firstName || !this.lastName || !this.organisation || !this.email || !this.password) {
+      this.toasterService.danger("One or more empty fields.", "Error", {
+        icon: "alert-circle-outline",
+        hasIcon: false
+      });
+      return;
+    }
+
+    if (this.password !== this.confirmPassword) {
+      this.toasterService.danger("Passwords do not match", "Error", {
+        icon: "alert-circle-outline",
+        hasIcon: false
+      });
+      return;
+    }
+
     if (
       !this.passwordPassesProtocols()
       || !this.zxcvbnResult
       || this.zxcvbnResult.score < this.ZXCVBN_RESULT_SCORE_FAIL
     ) {
+      this.toasterService.danger("Invalid or insecure password.", "Error", {
+        icon: "alert-circle-outline",
+        hasIcon: false
+      });
       return;
     }
 
@@ -87,9 +108,10 @@ export class CreateAccountComponent {
   }
 
   public passwordPassesProtocols(): boolean {
-    return this.passwordDoesContainLowercase()
-      && this.passwordDoesContainUppercase()
-      && this.passwordDoesContainNumber()
+    return this.password === this.confirmPassword
+      // this.passwordDoesContainLowercase()
+      // && this.passwordDoesContainUppercase()
+      // && this.passwordDoesContainNumber()
       && this.password.length >= 8;
   }
 
@@ -133,7 +155,7 @@ export class CreateAccountComponent {
 
   public getZxcvbnCheckIcon(): string {
     if (this.zxcvbnResult.score < this.ZXCVBN_RESULT_SCORE_FAIL) {
-      return "close-circle-outline";
+      return "shield-off-outline";
     }
 
     return "alert-triangle-outline";
