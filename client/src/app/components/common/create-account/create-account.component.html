@@ -42,62 +42,29 @@
       fullWidth
       placeholder="Password"
       [(ngModel)]="password"
+      nbPopoverTrigger="noop"
+      nbPopoverPlacement="right"
+      [nbPopover]="passwordProtocolTooltip"
+      (focus)="showPasswordProtocols(true)"
+      (blur)="showPasswordProtocols(false)"
     />
 
-    <div class="password-protocols">
-      <div class="protocol">
-        <nb-icon
-          [icon]="getPasswordProtocolIcon(passwordDoesContainLowercase())"
-          [style.color]="
-            getPasswordProtocolIconColour(passwordDoesContainLowercase())
-          "
-        ></nb-icon>
-        Must contain at least one lowercase letter.
-      </div>
-      <div class="protocol">
-        <nb-icon
-          [icon]="getPasswordProtocolIcon(passwordDoesContainUppercase())"
-          [style.color]="
-            getPasswordProtocolIconColour(passwordDoesContainUppercase())
-          "
-        ></nb-icon>
-        Must contain at least one UPPERCASE letter.
-      </div>
-      <div class="protocol">
-        <nb-icon
-          [icon]="getPasswordProtocolIcon(passwordDoesContainNumber())"
-          [style.color]="
-            getPasswordProtocolIconColour(passwordDoesContainNumber())
-          "
-        ></nb-icon>
-        Must contain at least one number.
-      </div>
-      <div class="protocol">
-        <nb-icon
-          [icon]="getPasswordProtocolIcon(password.length >= 8)"
-          [style.color]="getPasswordProtocolIconColour(password.length >= 8)"
-        ></nb-icon>
-        Must be at least 8 characters long.
-      </div>
-
-      <div
-        class="zxcvbn-result"
-        *ngIf="
-          passwordPassesProtocols() &&
-          zxcvbnCheck() &&
-          getZxcvbnCheckResult().score < ZXCVBN_RESULT_SCORE_WARNING
-        "
-        [style]="getZxcvbnCheckStyle()"
-      >
-        <nb-icon [icon]="getZxcvbnCheckIcon()"></nb-icon>
-        <div class="content">
-          <p>
-            <b>{{ getZxcvbnCheckText() }}</b>
-          </p>
-          <p *ngIf="getZxcvbnCheckResult().feedback.warning">
-            <li>{{ getZxcvbnCheckResult().feedback.warning }}</li>
-          </p>
-        </div>
+    <div
+      class="zxcvbn-result"
+      *ngIf="
+        zxcvbnCheck() &&
+        getZxcvbnCheckResult().score < ZXCVBN_RESULT_SCORE_WARNING
+      "
+      [style]="getZxcvbnCheckStyle()"
+    >
+      <nb-icon [icon]="getZxcvbnCheckIcon()"></nb-icon>
+      <div class="content">
+        <p>
+          <b>{{ getZxcvbnCheckText() }}</b>
+        </p>
+        <p *ngIf="getZxcvbnCheckResult().feedback.warning">
+          <li>{{ getZxcvbnCheckResult().feedback.warning }}</li>
+        </p>
       </div>
     </div>
 
@@ -122,3 +89,42 @@
     Already signed up? Log in <a routerLink="/login">here</a>.
   </nb-card-footer>
 </nb-card>
+
+<ng-template #passwordProtocolTooltip>
+  <div class="password-protocols">
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(passwordDoesContainLowercase())"
+        [style.color]="
+          getPasswordProtocolIconColour(passwordDoesContainLowercase())
+        "
+      ></nb-icon>
+      Must contain at least one lowercase letter.
+    </div>
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(passwordDoesContainUppercase())"
+        [style.color]="
+          getPasswordProtocolIconColour(passwordDoesContainUppercase())
+        "
+      ></nb-icon>
+      Must contain at least one UPPERCASE letter.
+    </div>
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(passwordDoesContainNumber())"
+        [style.color]="
+          getPasswordProtocolIconColour(passwordDoesContainNumber())
+        "
+      ></nb-icon>
+      Must contain at least one number.
+    </div>
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(password.length >= 8)"
+        [style.color]="getPasswordProtocolIconColour(password.length >= 8)"
+      ></nb-icon>
+      Must be at least 8 characters long.
+    </div>
+  </div>
+</ng-template>

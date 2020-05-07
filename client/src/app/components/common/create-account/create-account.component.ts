@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
 import { Router } from "@angular/router";
 import * as zxcvbn from "zxcvbn";
+import { NbPopoverDirective } from "@nebular/theme";
 
 @Component({
   selector: "app-create-account",
@@ -21,13 +22,21 @@ export class CreateAccountComponent {
   private readonly ZXCVBN_RESULT_SCORE_FAIL: number = 2;
   public readonly ZXCVBN_RESULT_SCORE_WARNING: number = 3;
 
+  @ViewChild(NbPopoverDirective) passwordProtocolPopover: NbPopoverDirective;
+
   public accountCreated: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) { }
 
+  public showPasswordProtocols(show: boolean): void {
+    show ?
+      this.passwordProtocolPopover.show() :
+      this.passwordProtocolPopover.hide();
+  }
+
   public async submit() {
     if (
-         !this.passwordPassesProtocols()
+      !this.passwordPassesProtocols()
       || !this.zxcvbnResult
       || this.zxcvbnResult.score < this.ZXCVBN_RESULT_SCORE_FAIL
     ) {

@@ -28,6 +28,7 @@ export class CreateUser implements ICreateUserRequest {
   @jf.string()
     .label("Password")
     .min(8)
+    .max(64)
     .regex(/[a-z]/)
     .regex(/[A-Z]/)
     .regex(/[0-9]/)
