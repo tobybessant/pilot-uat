@@ -3,52 +3,63 @@
     <h6>Sign Up</h6>
   </nb-card-header>
   <nb-card-body class="form-inputs" *ngIf="!accountCreated">
-    <div class="name-fields">
+    <form>
+      <div class="name-fields">
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          placeholder="First name"
+          [(ngModel)]="firstName"
+          [ngModelOptions]="{standalone: true}"
+          autocomplete="given-name"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          placeholder="Last name"
+          [(ngModel)]="lastName"
+          [ngModelOptions]="{standalone: true}"
+          autocomplete="family-name"
+        />
+      </div>
+
       <input
         type="text"
         nbInput
         fullWidth
-        placeholder="First name"
-        [(ngModel)]="firstName"
+        placeholder="Organisation Name"
+        [(ngModel)]="organisation"
+        [ngModelOptions]="{standalone: true}"
+        autocomplete="organization"
       />
+
       <input
         type="text"
         nbInput
         fullWidth
-        placeholder="Last name"
-        [(ngModel)]="lastName"
+        placeholder="Email"
+        [(ngModel)]="email"
+        [ngModelOptions]="{standalone: true}"
+        autocomplete="email"
       />
-    </div>
 
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Organisation Name"
-      [(ngModel)]="organisation"
-    />
-
-    <input
-      type="text"
-      nbInput
-      fullWidth
-      placeholder="Email"
-      [(ngModel)]="email"
-    />
-
-    <input
-      type="password"
-      nbInput
-      fullWidth
-      placeholder="Password"
-      [(ngModel)]="password"
-      nbPopoverTrigger="noop"
-      nbPopoverPlacement="right"
-      [nbPopover]="passwordProtocolTooltip"
-      (focus)="showPasswordProtocols(true)"
-      (blur)="showPasswordProtocols(false)"
-    />
-
+      <input
+        type="password"
+        nbInput
+        fullWidth
+        placeholder="Password"
+        [(ngModel)]="password"
+        [ngModelOptions]="{standalone: true}"
+        nbPopoverTrigger="noop"
+        nbPopoverPlacement="right"
+        [nbPopover]="passwordProtocolTooltip"
+        (focus)="showPasswordProtocols(true)"
+        (blur)="showPasswordProtocols(false)"
+        autocomplete="new-password"
+      />
+    </form>
     <div
       class="zxcvbn-result"
       *ngIf="
