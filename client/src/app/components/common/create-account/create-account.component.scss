@@ -12,7 +12,6 @@ nb-alert.small {
 }
 
 nb-card.medium {
-  height: 420px;
   max-width: 500px;
 }
 
@@ -20,6 +19,10 @@ nb-card-body.form-inputs {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+}
+
+input {
+  margin: 6px 0;
 }
 
 .name-fields {
@@ -37,4 +40,45 @@ nb-card-body.form-inputs {
 
 .buttons > button:last-child {
   margin-right: 0px;
+}
+
+.password-protocols {
+  margin-top: 10px;
+}
+
+.protocol {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 4px;
+  color: #909090;
+  height: 20px;
+  
+  nb-icon {
+    color: red;
+  }
+}
+
+.zxcvbn-result {
+  display: flex;
+  border-radius: var(--border-radius);
+  padding: 10px;
+  margin: 10px 0;
+
+  p {
+    margin: 2px 0;
+  }
+
+  li {
+    margin: 2px 0;
+  }
+
+  nb-icon {
+    flex-shrink: 0;
+    font-size: 2em;
+    height: 40px;
+    margin-right: 8px;
+  }
 }
