@@ -14,6 +14,7 @@ interface ITableSettings {
   minified: boolean;
   viewingUser: string;
   userColumns: string[];
+  pristineColumns: boolean;
 }
 
 @Component({
@@ -30,7 +31,8 @@ export class ResultsComponent implements OnInit {
   public tableSettings: ITableSettings = {
     minified: false,
     viewingUser: "none",
-    userColumns: []
+    userColumns: [],
+    pristineColumns: true
   };
   public showStickyHeader: boolean = false;
 
@@ -140,8 +142,15 @@ export class ResultsComponent implements OnInit {
   }
 
   public loadTableSettings() {
-    const existingTableSettings = this.localStorageService.get(this.TABLE_SETTINGS_KEY);
+    const existingTableSettings: ITableSettings = this.localStorageService.get(this.TABLE_SETTINGS_KEY);
     if (existingTableSettings) {
+      if (existingTableSettings.pristineColumns) {
+        this.tableSettings = {
+          ...existingTableSettings,
+          userColumns: this.tableSettings.userColumns
+        };
+        return;
+      }
       this.tableSettings = existingTableSettings;
     } else {
       this.saveTableSettings();
@@ -169,7 +178,10 @@ export class ResultsComponent implements OnInit {
       }
     }).onClose.subscribe((selectedColumns: string[]) => {
       this.tableSettings.userColumns = selectedColumns;
-      this.saveTableSettings();
+      if (this.tableSettings.userColumns !== selectedColumns) {
+        this.tableSettings.pristineColumns = false;
+        this.saveTableSettings();
+      }
     });
   }
 }
