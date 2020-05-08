@@ -33,7 +33,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe((urlParameters) => this.fetchProjectById(urlParameters.id));
-
     this.navbarService.setActiveButton({
       component: BasicNavButtonComponent,
       data: {
@@ -115,9 +114,6 @@ export class ProjectComponent implements OnInit, OnDestroy {
   public updateUrlParameter(tab: NbTabComponent) {
     const urlSegs: UrlSegment[] = this.activeRoute.snapshot.url;
     const tabUrl: string = tab.tabTitle.toLocaleLowerCase();
-
-    if (urlSegs.length === 2 || urlSegs.length === 3 && urlSegs[2].path !== tabUrl) {
-      this.location.replaceState(`${urlSegs[0].path}/${urlSegs[1].path}/${tabUrl}`);
-    }
+    this.location.replaceState(`${urlSegs[0].path}/${urlSegs[1].path}/${tabUrl}`);
   }
 }

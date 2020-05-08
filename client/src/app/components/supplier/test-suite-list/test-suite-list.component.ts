@@ -14,7 +14,6 @@ export class TestSuiteListComponent implements OnInit, OnDestroy {
 
   @Input()
   public set setMenuItems(value: NbMenuItem[]) {
-    console.log("setting: ", value);
     this.suitesMenuItems = value;
   }
 
