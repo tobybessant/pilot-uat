@@ -108,7 +108,8 @@ p {
   border-bottom: 1px solid grey;
 
   h6 {
-    margin: 8px 0 8px 0;
+    margin: 6px 0 6px 0;
+    font-size: 1em;;
 
     &.user-focused {
       margin-right: 70px;
@@ -166,4 +167,11 @@ h6 {
   .headings.sticky {
     max-width: calc(100% - 66px);
   }
+}
+
+.heading-text-container {
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
