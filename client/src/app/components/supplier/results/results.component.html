@@ -43,7 +43,7 @@
   <h6
     class="client-column"
     *ngFor="let client of getClientsToShow()"
-    [class.user-focused]="getClientsToShow().length === 1"
+    [class.user-focused]="userIsSelected()"
   >
     {{ client.firstName }}<br>{{ client.lastName }}
   </h6>
@@ -68,7 +68,7 @@
     <h6
       class="client-column"
       *ngFor="let client of getClientsToShow()"
-      [class.user-focused]="getClientsToShow().length === 1"
+      [class.user-focused]="userIsSelected()"
     >
     {{ client.firstName }}<br>{{ client.lastName }}
     </h6>
