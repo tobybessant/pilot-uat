@@ -11,11 +11,15 @@ import { DependencyContainer } from "tsyringe";
 import { Passport } from "./services/passport/passport";
 import { catchMalformedJson } from "./services/middleware/catchMalformedJson";
 
+// tslint:disable-next-line: no-var-requires
+const MongoDbStore = require("connect-mongodb-session")(session);
+
 class UATPlatformServer extends Server {
 
   private readonly SERVER_STARTED = "Server started on port: ";
   private readonly COOKIE_EXPIRY_DAYS = 7;
   private readonly COOKIE_EXPIRY_DURATION = (1000 * 60 * 60 * 24) * this.COOKIE_EXPIRY_DAYS;
+
 
   constructor(container: DependencyContainer) {
     super(true);
@@ -36,8 +40,13 @@ class UATPlatformServer extends Server {
       resave: false,
       saveUninitialized: true,
       cookie: {
-        maxAge: this.COOKIE_EXPIRY_DURATION
-      }
+        maxAge: this.COOKIE_EXPIRY_DURATION,
+        secure: process.env.NODE_ENV === "Production"
+      },
+      store: new MongoDbStore({
+        uri: process.env.MONGO_CONNECTION_STR,
+        collection: process.env.MONGO_COLLECTION_NAME
+      })
     }));
 
     // configure passport
