@@ -18,6 +18,7 @@ export class CreateAccountComponent {
   public password: string = "";
   public confirmPassword: string = "";
   public organisation: string = "";
+  public acceptedTerms: boolean = false;
 
   public zxcvbnResult: zxcvbn.ZXCVBNResult;
   private readonly ZXCVBN_RESULT_SCORE_FAIL: number = 2;
@@ -37,18 +38,12 @@ export class CreateAccountComponent {
 
   public async submit() {
     if (!this.firstName || !this.lastName || !this.organisation || !this.email || !this.password) {
-      this.toasterService.danger("One or more empty fields.", "Error", {
-        icon: "alert-circle-outline",
-        hasIcon: false
-      });
+      this.formErrorToast("One or more empty fields");
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      this.toasterService.danger("Passwords do not match", "Error", {
-        icon: "alert-circle-outline",
-        hasIcon: false
-      });
+      this.formErrorToast("Passwords do not match");
       return;
     }
 
@@ -57,10 +52,12 @@ export class CreateAccountComponent {
       || !this.zxcvbnResult
       || this.zxcvbnResult.score < this.ZXCVBN_RESULT_SCORE_FAIL
     ) {
-      this.toasterService.danger("Invalid or insecure password.", "Error", {
-        icon: "alert-circle-outline",
-        hasIcon: false
-      });
+      this.formErrorToast("Invalid or insecure password");
+      return;
+    }
+
+    if (!this.acceptedTerms) {
+      this.formErrorToast("You must accept the terms of service");
       return;
     }
 
@@ -72,8 +69,9 @@ export class CreateAccountComponent {
       organisationName: this.organisation,
       type: "Supplier"
     } as ICreateAccountRequest);
-
-    if (createdAccount.errors.length > 0) {
+    console.log(createdAccount);
+    if (createdAccount.errors.length > 0 || createdAccount.statusCode !== 201) {
+      this.formErrorToast("There was an error creating your account");
       return;
     }
 
@@ -142,4 +140,10 @@ export class CreateAccountComponent {
 
     return "alert-triangle-outline";
   }
+
+  private formErrorToast(errorMessage: string): void {
+    this.toasterService.danger(errorMessage, "Form Error", {
+      icon: "alert-circle-outline"
+    });
+  };
 }
