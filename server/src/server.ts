@@ -19,8 +19,6 @@ class UATPlatformServer extends Server {
   private readonly SERVER_STARTED = "Server started on port: ";
   private readonly COOKIE_EXPIRY_DAYS = 7;
   private readonly COOKIE_EXPIRY_DURATION = (1000 * 60 * 60 * 24) * this.COOKIE_EXPIRY_DAYS;
-
-
   constructor(container: DependencyContainer) {
     super(true);
 
