@@ -34,16 +34,6 @@ export class UserRepository extends TypeORMRepository<UserDbo> {
       .getOne();
   }
 
-  public async getOrganisationsForUser(email: string): Promise<OrganisationDbo[] | undefined> {
-    const user: UserDbo | undefined = await this.getBaseRepo()
-      .createQueryBuilder("user")
-      .leftJoinAndSelect("user.organisations", "orgs")
-      .where("user.email = :email", { email })
-      .getOne();
-
-    return user?.organisations;
-  }
-
   public async addUser(user: Partial<UserDbo>): Promise<UserDbo> {
     return this.getBaseRepo().save(user);
   }

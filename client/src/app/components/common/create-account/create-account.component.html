@@ -74,6 +74,16 @@
         (blur)="showPasswordProtocols(false)"
         autocomplete="new-password"
       />
+      <div id="terms-check">
+        <nb-checkbox
+          [(ngModel)]="acceptedTerms"
+          [ngModelOptions]="{ standalone: true }"
+          >By signing up I agree to Pilot's
+          <a target="_blank" routerLink="/terms"
+            >Terms of Service & Privacy Policy</a
+          ></nb-checkbox
+        >
+      </div>
     </form>
     <div
       class="zxcvbn-result"

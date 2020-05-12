@@ -65,6 +65,7 @@ import { ProjectTabsComponent } from "./components/client/project-tabs/project-t
 import { StepWizardComponent } from "./components/client/step-wizard/step-wizard.component";
 import { BasicNavButtonComponent } from './components/common/nav/basic-nav-button/basic-nav-button.component';
 import { FinishCaseDialogComponent } from './components/client/finish-case-dialog/finish-case-dialog.component';
+import { TermsComponent } from './components/common/terms/terms.component';
 
 @NgModule({
   declarations: [
@@ -107,6 +108,7 @@ import { FinishCaseDialogComponent } from './components/client/finish-case-dialo
     StepWizardComponent,
     BasicNavButtonComponent,
     FinishCaseDialogComponent,
+    TermsComponent,
   ],
   imports: [
     /* Angular */
