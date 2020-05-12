@@ -1,0 +1,177 @@
+:host {
+  width: 100%;
+  padding: 15px;
+}
+
+.results-matrix {
+  width: 100%;
+  min-width: 1105px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  border: 1px solid grey;
+  border-bottom: 2px solid grey;
+
+  .suite {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+
+    .row {
+      background: var(--color-basic-transparent-600);
+
+      &:hover {
+        background: rgba(148, 51, 255, 0.5);
+      }
+    }
+
+    p {
+      padding-left: 15px;
+    }
+  }
+
+  .case {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+
+    p {
+      padding-left: 30px;
+    }
+
+    .row {
+      background: var(--color-basic-transparent-300);
+
+      &:hover {
+        background: rgba(148, 51, 255, 0.3);
+      }
+    }
+
+    .step {
+      P {
+        padding-left: 72px;
+      }
+
+      &.row {
+        background: var(--card-background-color);
+
+        &:hover {
+          background: var(--color-primary-transparent-200);
+        }
+
+        &:hover button.details-button.appearance-ghost.size-small {
+          visibility: visible;
+        }
+      }
+    }
+  }
+}
+
+p {
+  margin: 0;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--divider-color);
+  border-top: 1px solid var(--divider-color);
+  margin: -1px 0 -1px 0;
+  box-sizing: border-box;
+  padding: 4px 0;
+
+  ::selection {
+    color: none;
+    background: none;
+  }
+  /* For Mozilla Firefox */
+  ::-moz-selection {
+    color: none;
+    background: none;
+  }
+}
+.client-column {
+  min-width: 120px;
+}
+.step-column {
+  min-width: 500px;
+  text-align: left;
+  flex: 2;
+}
+
+.headings {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  max-height: 60px;
+  border-bottom: 1px solid grey;
+
+  h6 {
+    margin: 6px 0 6px 0;
+    font-size: 1em;;
+
+    &.user-focused {
+      margin-right: 70px;
+    }
+  }
+
+  &.sticky {
+    background: var(--card-background-color);
+    max-width: calc(100% - 34px);
+    display: flex;
+    text-align: center;
+    flex-direction: row;
+    box-shadow: 0 3px 12px 0 rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+  }
+}
+
+.center {
+  width: 100%;
+  text-align: center;
+}
+
+.table-settings {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 20px 0;
+
+  nb-select {
+    width: 300px;
+  }
+}
+
+.notes {
+  margin-right: 10px;
+}
+
+button.details-button.appearance-ghost.size-small {
+  padding: 3px 10px;
+  visibility: hidden;
+}
+
+h6 {
+  margin: 0 0 10px 0;
+}
+
+@media (max-width: 991.98px) {
+  .headings.sticky {
+    max-width: calc(100% - 82px);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .headings.sticky {
+    max-width: calc(100% - 66px);
+  }
+}
+
+.heading-text-container {
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,48 @@
+<div *ngIf="stepSelected() && stickyStepModal" class="step-placeholder"></div>
+<div
+  *ngIf="stepSelected()"
+  [ngClass]="{'sticky': stickyStepModal}"
+  class="step"
+>
+  <div class="header">
+    <h6>Step Feedback</h6>
+    <button
+      nbButton
+      ghost
+      size="large"
+      status="basic"
+      (click)="closeStepPanel()"
+    >
+      <nb-icon icon="close-outline"></nb-icon>
+    </button>
+  </div>
+  <div class="content">
+    <div class="description">
+      {{ getStepDescription() }}
+    </div>
+    <div>
+      <nb-select fullWidth [(ngModel)]="status">
+        <nb-option value="Not Started">Not Started</nb-option>
+        <nb-option value="Failed">Failed</nb-option>
+        <nb-option value="Passed">Passed</nb-option>
+      </nb-select>
+    </div>
+    <textarea
+      nbInput
+      fullWidth
+      fieldSize="small"
+      placeholder="Add notes... (optional)"
+      [(ngModel)]="notes"
+    ></textarea>
+  </div>
+  <div class="footer">
+    <button
+      nbButton
+      fullWidth
+      status="primary"
+      (click)="addFeedbackAndCloseStepPanel()"
+    >
+      Save & Close
+    </button>
+  </div>
+</div>

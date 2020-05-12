@@ -1,0 +1,13 @@
+{
+  "include": [
+    "src/**"
+  ],
+  "exclude": [
+    "src/database/**/*",
+    "src/repositories/**/*",
+    "src/dto/**/*",
+    "tests/**/*",
+    "src/services/middleware/joi/schemas/*"
+  ],
+  "excludeNodeModules": true
+}

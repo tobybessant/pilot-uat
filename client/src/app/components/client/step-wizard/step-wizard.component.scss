@@ -1,0 +1,83 @@
+textarea,
+nb-select {
+  max-width: 200px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  max-width: 100%;
+}
+
+.case {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.step {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+nb-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h5 {
+    margin: 0;
+  }
+}
+.status-overview {
+  max-width: 800px;
+  margin: 10px auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0;
+}
+
+.step-data {
+  width: 100%;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed rgba(0.8,0.8,0.8,0.4);
+}
+
+h5 {
+  margin: 0 0 10px 0;
+}
+
+h6 {
+  margin: 0 0 5px 0;
+  color: rgba(0.8,0.8,0.8,0.4);
+}
+
+.step-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.current-step {
+  padding: 5px;
+  border-radius: var(--border-radius);
+  border: 2px solid var(--color-basic-600);
+  transition: 500;
+}
+
+.next-action-button {
+  width: 150px;
+}
+
+.status-inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+}

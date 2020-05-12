@@ -1,0 +1,3 @@
+<div class="status-chip" [class.minified]="minified" [style]="getStyle()">
+  <span *ngIf="!minified" [@fade] class="status-label">{{ status.label }}</span>
+</div>

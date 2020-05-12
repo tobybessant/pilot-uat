@@ -183,3 +183,6 @@ $RECYCLE.BIN/
 
 # database migrations
 server/src/database/migration
+
+# Angular e2e peripherals
+client/e2e/peripherals

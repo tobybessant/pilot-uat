@@ -1,0 +1,25 @@
+<div class="test-case">
+  <ng-container *ngIf="case">
+    <div class="details">
+      <div>
+        <div class="heading"></div>
+      </div>
+      <app-test-step-list
+        [steps]="steps"
+        (stepAdded)="caseStepAdded($event)"
+        (stepUpdated)="fetchStepsForCase()"
+        (stepDeleted)="fetchStepsForCase()"
+      ></app-test-step-list>
+      <div class="action-buttons">
+        <button nbButton ghost status="primary" (click)="promptEditTest()">
+          <nb-icon icon="edit-2-outline"></nb-icon>
+          Edit Case
+        </button>
+        <button nbButton ghost status="danger" (click)="promptDeleteTest()">
+          <nb-icon icon="trash-2-outline"></nb-icon>
+          Delete Case
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>

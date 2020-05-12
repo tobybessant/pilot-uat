@@ -1,6 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { UserTypeDbo } from "./userTypeDbo";
 import { OrganisationDbo } from "./organisationDbo";
+import { ProjectDbo } from "./projectDbo";
+import { UserProjectRoleDbo } from "./userProjectRoleDbo";
+import { StepFeedbackDbo } from "./stepFeedbackDbo";
 
 
 export const TABLE_NAME: string = "User";
@@ -27,9 +30,15 @@ export class UserDbo {
     @JoinColumn()
     userType!: UserTypeDbo;
 
-    @ManyToMany(type => OrganisationDbo)
-    @JoinTable()
+    @ManyToMany(type => OrganisationDbo, org => org.users)
+    @JoinTable({ name: "UserOrganisation" })
     organisations!: OrganisationDbo[];
+
+    @OneToMany(type => UserProjectRoleDbo, role => role.user)
+    projects!: UserProjectRoleDbo[];
+
+    @OneToMany(type => StepFeedbackDbo, step => step.user)
+    stepFeedback!: StepFeedbackDbo[];
 
     @CreateDateColumn()
     createdDate!: Date;

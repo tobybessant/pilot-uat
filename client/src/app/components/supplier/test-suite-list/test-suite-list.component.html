@@ -1,0 +1,20 @@
+<div id="suites-list-container">
+  <div class="add-suite-container">
+    <span *ngIf="!getIsAddingSuite()">
+      <button nbButton status="basic" (click)="setIsAddingSuite(true)">Add Suite</button>
+    </span>
+    <span *ngIf="getIsAddingSuite()">
+      <input
+        #suiteNameInput
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Enter Suite Name"
+        [(ngModel)]="newSuiteName"
+        (blur)="setIsAddingSuite(false)"
+        (keyup.enter)="addSuite()"
+        />
+    </span>
+  </div>
+  <nb-menu tag="test-suites" [items]="suitesMenuItems" id="suites-list"></nb-menu>
+</div>

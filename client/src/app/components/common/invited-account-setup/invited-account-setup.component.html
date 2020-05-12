@@ -1,0 +1,105 @@
+<div class="setup-form-container">
+  <p>
+    You don't appear to have an account, enter a password and we will set one up
+    for you!
+  </p>
+  <div class="setup-form">
+    <div class="name-fields">
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="First name"
+        [(ngModel)]="firstName"
+      />
+      <input
+        type="text"
+        nbInput
+        fullWidth
+        placeholder="Last name"
+        [(ngModel)]="lastName"
+      />
+    </div>
+    <input
+      nbInput
+      fullWidth
+      type="password"
+      placeholder="Enter password"
+      [(ngModel)]="password"
+      [ngModelOptions]="{ standalone: true }"
+      nbPopoverTrigger="noop"
+      nbPopoverPlacement="right"
+      [nbPopover]="passwordProtocolTooltip"
+      (focus)="showPasswordProtocols(true)"
+      (blur)="showPasswordProtocols(false)"
+      autocomplete="new-password"
+    />
+
+    <input
+      nbInput
+      fullWidth
+      type="password"
+      placeholder="Confirm password"
+      [(ngModel)]="confirmPassword"
+      [ngModelOptions]="{ standalone: true }"
+      nbPopoverTrigger="noop"
+      nbPopoverPlacement="right"
+      [nbPopover]="passwordProtocolTooltip"
+      (focus)="showPasswordProtocols(true)"
+      (blur)="showPasswordProtocols(false)"
+      autocomplete="new-password"
+    />
+    <div
+      class="zxcvbn-result"
+      *ngIf="
+        zxcvbnCheck() &&
+        getZxcvbnCheckResult().score < ZXCVBN_RESULT_SCORE_WARNING
+      "
+      [style]="getZxcvbnCheckStyle()"
+    >
+      <div class="warning-title">
+        <nb-icon [icon]="getZxcvbnCheckIcon()"></nb-icon>
+        <h6>Warning</h6>
+      </div>
+      <div class="content">
+        <p>
+          <b>{{ getZxcvbnCheckText() }}</b>
+        </p>
+        <p *ngIf="getZxcvbnCheckResult().feedback.warning">
+          <li>{{ getZxcvbnCheckResult().feedback.warning }}</li>
+        </p>
+        <div *ngIf="getZxcvbnCheckResult().feedback.suggestions.length > 0">
+          <p><b>Suggestions:</b></p>
+          <p *ngFor="let s of getZxcvbnCheckResult().feedback.suggestions">
+            <li>
+              {{ s }}
+            </li>
+          </p>
+        </div>
+      </div>
+    </div>
+    <button class="submit-button" nbButton status="primary" (click)="setup()">Continue</button>
+  </div>
+</div>
+
+
+<ng-template #passwordProtocolTooltip>
+  <div class="password-protocols">
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(password.length >= 8)"
+        [style.color]="getPasswordProtocolIconColour(password.length >= 8)"
+      ></nb-icon>
+      Must be at least 8 characters long.
+    </div>
+    <div class="protocol">
+      <nb-icon
+        [icon]="getPasswordProtocolIcon(password === confirmPassword)"
+        [style.color]="
+          getPasswordProtocolIconColour(password === confirmPassword)
+        "
+      ></nb-icon>
+      Passwords must match.
+    </div>
+  </div>
+</ng-template>

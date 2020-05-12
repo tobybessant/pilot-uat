@@ -1,50 +1,21 @@
 import "reflect-metadata";
-import { container } from "tsyringe";
-import { MSSQLDatabase } from "../";
+import { DatabaseSeeder } from "./databaseSeeder";
+import { TABLE_NAME, UserTypeDbo } from "../entities/userTypeDbo";
 
-import { getConnection } from "typeorm";
-import { Logger } from "@overnightjs/logger";
+const seeder: DatabaseSeeder = new DatabaseSeeder();
 
-import { TABLE_NAME } from "../entities/userTypeDbo";
-let database: MSSQLDatabase;
 
-const records = [
+const records: Partial<UserTypeDbo>[] = [
   { type: "Supplier" },
   { type: "Client" }
-]
+];
 
-async function seed() {
+// tslint:disable-next-line: no-unused-expression
+(async () => {
   try {
-    // remove records
-    await getConnection().createQueryBuilder()
-      .delete()
-      .from(TABLE_NAME)
-      .where("id IS NOT NULL")
-      .execute()
-
-    // seed records
-    await getConnection().createQueryBuilder()
-      .insert()
-      .into(TABLE_NAME)
-      .values(records)
-      .execute();
-
-  } catch (ex) {
-    Logger.Err(`Error seeding ${TABLE_NAME}: `, ex);
+    await seeder.connect();
+    await seeder.seedTable<UserTypeDbo>(TABLE_NAME, records);
+  } finally {
+    process.exit(0);
   }
-}
-
-async function main() {
-  Logger.Info(`Seeding ${TABLE_NAME}...`);
-  database = container.resolve<MSSQLDatabase>(MSSQLDatabase);
-  await database.openConnection();
-  await seed();
-
-  Logger.Info(`Sucessfully seeded ${TABLE_NAME} with: \n`);
-  // tslint:disable-next-line: no-console
-  console.log(records);
-
-  process.exit(0);
-}
-
-main();
+})();

@@ -6,36 +6,45 @@ import * as cors from "cors";
 
 import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
-import { DependencyContainer } from "tsyringe"
+import { DependencyContainer } from "tsyringe";
 
 import { Passport } from "./services/passport/passport";
+import { catchMalformedJson } from "./services/middleware/catchMalformedJson";
+
+// tslint:disable-next-line: no-var-requires
+const MongoDbStore = require("connect-mongodb-session")(session);
 
 class UATPlatformServer extends Server {
 
   private readonly SERVER_STARTED = "Server started on port: ";
   private readonly COOKIE_EXPIRY_DAYS = 7;
   private readonly COOKIE_EXPIRY_DURATION = (1000 * 60 * 60 * 24) * this.COOKIE_EXPIRY_DAYS;
-
   constructor(container: DependencyContainer) {
     super(true);
 
-    // configure express∏
+    // configure express
     this.app.use(bodyParser.json());
+    this.app.use(catchMalformedJson);
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
     this.app.use(cors({
       credentials: true,
-      origin: "http://localhost:4200"
+      origin: process.env.CLIENT_URL || "http://localhost:4200"
     }));
 
     this.app.use(session({
-      secret: "keyboard cat",
+      secret: process.env.SESSION_SECRET || "i am secret",
       resave: false,
       saveUninitialized: true,
       cookie: {
-        maxAge: this.COOKIE_EXPIRY_DURATION
-      }
+        maxAge: this.COOKIE_EXPIRY_DURATION,
+        secure: process.env.NODE_ENV === "Production"
+      },
+      store: new MongoDbStore({
+        uri: process.env.MONGO_CONNECTION_STR,
+        collection: process.env.MONGO_COLLECTION_NAME
+      })
     }));
 
     // configure passport

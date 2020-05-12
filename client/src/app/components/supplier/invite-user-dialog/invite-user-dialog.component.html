@@ -1,0 +1,32 @@
+<nb-card>
+  <nb-card-header>Enter Client Emails</nb-card-header>
+  <nb-card-body>
+    <mat-form-field *ngIf="ready">
+      <mat-chip-list #emailChipList>
+        <mat-chip
+          #chips
+          *ngFor="let email of emailList"
+          [removable]="true"
+          (removed)="remove(email)"
+        >
+          {{ email }}
+          <nb-icon matChipRemove icon="close-outline"></nb-icon>
+        </mat-chip>
+      </mat-chip-list>
+      <input
+          nbInput
+          fullWidth
+          placeholder="Enter email and press tab"
+          [matChipInputFor]="emailChipList"
+          [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+          (matChipInputTokenEnd)="add($event)"
+        />
+    </mat-form-field>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="sendInvites()">
+      <nb-icon icon="paper-plane-outline"></nb-icon>Send Invites
+    </button>
+    <button nbButton status="basic" (click)="close()">Cancel</button>
+  </nb-card-footer>
+</nb-card>

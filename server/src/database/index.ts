@@ -8,7 +8,7 @@ export class MSSQLDatabase {
 
   private connection!: Connection;
 
-  public async openConnection(): Promise<void> {
+  public async openConnection(configOverwrite?: ConnectionOptions): Promise<void> {
       try {
         this.connection = await createConnection(DBConfig);
         Logger.Info("Database connection established...");

@@ -1,0 +1,67 @@
+<nb-card class="case">
+  <nb-card-body>
+    <h5>Case</h5>
+    <p>{{ getCaseTitle() }}</p>
+  </nb-card-body>
+</nb-card>
+<div class="status-overview">
+  <app-step-status-chip
+    *ngFor="let step of steps; index as i"
+    [class.current-step]="isCurrentStep(step)"
+    [minified]="true"
+    [status]="getFeedbackStatusForStep(step.id)"
+    (click)="nextStep(i)"
+  ></app-step-status-chip>
+</div>
+<nb-card class="step">
+  <nb-card-body>
+    <div class="step-data">
+      <h6>Step {{ getCurrentStepIndex() }}/{{ getTotalSteps() }}</h6>
+      {{ getActiveStepDescription() }}
+    </div>
+    <div class="step-feedback">
+      <h5>Your Feedback</h5>
+      <h6>Status</h6>
+      <div class="status-inputs">
+        <nb-select fullWidth [(ngModel)]="activeStepFeedbackStatus">
+          <nb-option value="Not Started">Not Started</nb-option>
+          <nb-option value="Failed">Failed</nb-option>
+          <nb-option value="Passed">Passed</nb-option>
+        </nb-select>
+        <button
+          *ngIf="activeStepFeedbackStatus === 'Failed' && !allRemainingStepsFailed()"
+          nbButton
+          outline
+          status="danger"
+          (click)="failRemainingTests()"
+        >
+          Fail Remaining Tests
+        </button>
+      </div>
+      <h6>Notes</h6>
+      <textarea
+        nbInput
+        fullWidth
+        fieldSize="small"
+        placeholder="Add notes... (optional)"
+        [(ngModel)]="activeStepFeedbackNotes"
+      ></textarea>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="step-controls">
+      <button nbButton status="basic" (click)="prevStep()">
+        <nb-icon icon="arrow-ios-back-outline"></nb-icon>Previous Step
+      </button>
+      <button
+        class="next-action-button"
+        nbButton
+        status="primary"
+        (click)="nextAction()"
+      >
+        {{ getNextButtonText() }}
+        <nb-icon icon="arrow-ios-forward-outline"></nb-icon>
+      </button>
+    </div>
+  </nb-card-footer>
+</nb-card>

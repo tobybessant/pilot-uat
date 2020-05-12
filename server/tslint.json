@@ -2,14 +2,16 @@
   "extends": "tslint:recommended",
   "rules": {
     "max-line-length": {
-      "options": [140]
+      "options": [ 140 ]
     },
     "object-literal-sort-keys": false,
     "ordered-imports": false,
-    "quotemark": [true, "double"],
-    "only-arrow-functions": false
+    "quotemark": [ true, "double" ],
+    "only-arrow-functions": false,
+    "semicolon": true,
+    "prefer-for-of": false
   },
   "linterOptions": {
-    "exclude": ["src/database/migration/1582135410777-Migration.ts"]  
+    "exclude": [ "src/database/migration/**/*.ts" ]
   }
 }

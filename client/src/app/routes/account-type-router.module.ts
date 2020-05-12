@@ -1,7 +1,7 @@
 import { Routes, RouterModule, ROUTES, Router } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { SessionService } from "../services/session.service";
+import { SessionService } from "../services/session/session.service";
 
 @NgModule({
   declarations: [],
@@ -22,16 +22,16 @@ export class HandlerModule { }
 
 export function getRouterForAccountType(sessionService: SessionService, router: Router) {
   let routes: Routes = [];
-  const user = sessionService.getLoggedInUser();
+  const user = sessionService.getCurrentUser();
   if (!user) {
     router.navigate(["/login"]);
-    return;
+    return routes;
   }
 
-  if (user.userType === "Supplier") {
+  if (user.type === "Supplier") {
     routes = [
       {
-        path: "", loadChildren: () => import("./supplier-routes.module").then(mod => mod.SupplierRoutingModule)
+        path: "", loadChildren: () => import("./supplier-routes.module").then(mod => mod.SupplierRoutingModule),
       }
     ];
   } else {

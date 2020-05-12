@@ -1,125 +1,118 @@
-import { OK, BAD_REQUEST, CREATED } from "http-status-codes";
 import { Request, Response } from "express";
 import { Controller, Middleware, Get, Post } from "@overnightjs/core";
-import { Logger } from "@overnightjs/logger";
 import * as passport from "passport";
 import { checkAuthentication } from "../services/middleware/checkAuthentication";
-import { BodyMatches } from "../services/middleware/bodyMatches";
+import { BodyMatches } from "../services/middleware/joi/bodyMatches";
 import { injectable } from "tsyringe";
-import { Repository } from "typeorm";
-import { Bcrypt } from "../services/utils/bcrypt-hash";
-import { ICreateUserRequest } from "../models/request/createuser";
-import { ILoginRequest } from "../models/request/login";
-import { IApiResponse } from "../models/response/apiresponse";
+import { Bcrypt } from "../services/utils/bcryptHash";
+import { CreateUser } from "../services/middleware/joi/schemas/createUser";
 import { UserDbo } from "../database/entities/userDbo";
-import { RepositoryService } from "../services/repositoryservice";
 import { UserTypeDbo } from "../database/entities/userTypeDbo";
-import { IUserToken } from "../models/response/userToken";
-import { ICreateUserResponse } from "../models/response/createUser";
-import { OrganisationDbo } from "../database/entities/organisationDbo";
+import { ICreateUserRequest } from "../dto/request/common/createUser";
+import { BaseController } from "./baseController";
+import { IUserResponse } from "../dto/response/common/user";
+import { Validator } from "joiful";
+import { OrganisationRepository } from "../repositories/organisationRepository";
+import { UserRepository } from "../repositories/userRepository";
+import { UserTypeRepository } from "../repositories/userTypeRepository";
+import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
+import { ApiError } from "../services/apiError";
+import { LogIn } from "../services/middleware/joi/schemas/login";
 
 @injectable()
-@Controller("auth")
-export class AuthController {
-
-  private userRepository: Repository<UserDbo>
-  private userTypeRepository: Repository<UserTypeDbo>
-  private organisationRepository: Repository<OrganisationDbo>;
+@Controller(`${BASE_ENDPOINT}/auth`)
+export class AuthController extends BaseController {
 
   constructor(
-    private repositoryService: RepositoryService,
+    private userRepository: UserRepository,
+    private userTypeRepository: UserTypeRepository,
+    private organisationRepository: OrganisationRepository,
     private bcrypt: Bcrypt
   ) {
-    this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
-    this.userTypeRepository = repositoryService.getRepositoryFor<UserTypeDbo>(UserTypeDbo);
-    this.organisationRepository = repositoryService.getRepositoryFor<OrganisationDbo>(OrganisationDbo);
+    super();
   }
 
   @Post("createaccount")
-  @Middleware(BodyMatches.modelSchema(ICreateUserRequest))
+  @Middleware(new BodyMatches(new Validator()).schema(CreateUser))
   public async createAccount(req: Request, res: Response) {
 
-    // extract details and hash password
-    const { email, password, firstName, lastName, organisationName, type } = req.body;
+    // extract details
+    const model: ICreateUserRequest = req.body;
 
     // save user details to database
     try {
       // query for existing user
-      const exists: number = await this.userRepository.count({ email });
+      const exists: boolean = await this.userRepository.accountDoesExist(model.email);
       if (exists) {
-        throw new Error("Account already exists with that email");
+        return this.badRequest(res, ["Account already exists with that email"]);
       }
 
-      // add organisation
-      const organisation = await this.organisationRepository.save({ organisationName });
+      // add organisation if set
+      const organisations = [];
+      if (model.organisationName) {
+        const newOrganisation = await this.organisationRepository.createOrganisation(model.organisationName);
+        organisations.push(newOrganisation);
+      }
 
       // add user credentials
-      const userType: UserTypeDbo | undefined = await this.userTypeRepository.findOne({ type });
+      const userType: UserTypeDbo | undefined = await this.userTypeRepository.getTypeByType(model.type);
+      if (!userType) {
+        return this.badRequest(res, ["Invalid user type"]);
+      }
 
       // hash password
-      const passwordHash = this.bcrypt.hash(password);
-      const user: UserDbo = await this.userRepository.save({
-        email,
+      const passwordHash = this.bcrypt.hash(model.password);
+      const user: UserDbo = await this.userRepository.addUser({
+        email: model.email,
         passwordHash,
-        firstName,
-        lastName,
+        firstName: model.firstName,
+        lastName: model.lastName,
         userType,
-        organisations: [ organisation ]
+        organisations
       });
 
-      req.login(
-        {
-          email,
-          type: userType?.type
-        } as IUserToken,
+      req.login({
+        email: model.email,
+        type: user.userType.type
+      },
         function (err) {
           if (err) {
-            console.log(err);
+            // console.log(err);
           }
         }
       );
 
-      res.status(CREATED);
-      res.json({
-        errors: [],
-        payload: {
-          email: user.email,
-          firstName: user.firstName,
-          type: userType?.type
-        }
-      } as IApiResponse<ICreateUserResponse>);
+      this.created<IUserResponse>(res, {
+        id: user.id,
+        createdDate: user.createdDate,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        type: user.userType.type
+      });
+
     } catch (error) {
-      res.status(BAD_REQUEST);
-      res.json({
-        errors: [error.message]
-      } as IApiResponse<ICreateUserResponse>);
+      this.serverError(res, error);
     }
   }
 
   @Post("login")
-  @Middleware([
-    BodyMatches.modelSchema(ILoginRequest),
-    passport.authenticate("local")
-  ])
+  @Middleware(new BodyMatches(new Validator()).schema(LogIn))
   public login(req: Request, res: Response) {
-    res.status(OK);
-    res.json({
-      errors: [],
-      payload: {
-        ...req.user as any
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        return this.serverError(res, new ApiError("Invalid email or password", 401));
       }
-    } as IApiResponse<IUserToken>);
+      req.login(user, () => {});
+      return this.OK(res);
+    })(req, res);
   }
 
   @Get("logout")
   @Middleware(checkAuthentication)
-  public logout(req: Request, res: Response) {
-    Logger.Info("Logging out");
+  public async logout(req: Request, res: Response) {
     req.logOut();
-
-    res.status(OK)
-    res.json({
-      message: "Logged out"
-    });
+    req.user = undefined;
+    return res.redirect("/");
   }
 }

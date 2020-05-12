@@ -22,4 +22,59 @@ steps:
   inputs:
     command: 'custom'
     workingDir: 'server'
-    customCommand: 'run test'
+    customCommand: 'run coverage'
+
+- task: Npm@1
+  displayName: 'Installing Client Dependencies'
+  inputs:
+    command: 'install'
+    workingDir: 'client'
+
+- task: Npm@1
+  displayName: 'Client Unit Tests'
+  inputs:
+    command: 'custom'
+    workingDir: 'client'
+    customCommand: 'run coverage'
+
+- task: Npm@1
+  displayName: 'Building Server'
+  inputs:
+    command: 'custom'
+    workingDir: 'server'
+    customCommand: 'run build'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing build artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/server/dist'
+    artifact: 'Server Build'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing package.json artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/server/package.json'
+    artifact: 'Server Package.JSON'
+    publishLocation: 'pipeline'
+
+- task: Npm@1
+  displayName: 'Building Client'
+  inputs:
+    command: 'custom'
+    workingDir: 'client'
+    customCommand: 'run build'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing build artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/client/dist/client'
+    artifact: 'Client Build'
+    publishLocation: 'pipeline'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publishing package.json artifact'
+  inputs:
+    targetPath: '$(System.DefaultWorkingDirectory)/client/package.json'
+    artifact: 'Client Package.JSON'
+    publishLocation: 'pipeline'

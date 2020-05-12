@@ -1,14 +1,16 @@
+import { environment } from "../../../environments/environment";
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { IApiResponse } from "src/app/models/response/api-response.interface";
+import { HttpClient } from "@angular/common/http";
+import { IApiResponse } from "src/app/models/api/response/api-response.interface";
+import { NbToastrService } from "@nebular/theme";
 
 @Injectable({
   providedIn: "root"
 })
 export class ApiService {
-  private readonly root: string = "http://localhost:8080";
+  public static readonly root: string = environment.apiRootUrl;
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private toastrService: NbToastrService) { }
 
   public async get<T>(endpoint: string): Promise<IApiResponse<T>> {
     let response = {
@@ -16,15 +18,19 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.get<IApiResponse<T>>(this.root + endpoint, { withCredentials: true }).toPromise();
+      response = await this.httpClient.get<IApiResponse<T>>(ApiService.root + endpoint, { withCredentials: true }).toPromise();
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "close-square-outline",
+          });
+        });
         return response;
       }
-      response.errors.push("Something went wrong...");
     }
-
     return response;
   }
 
@@ -34,13 +40,66 @@ export class ApiService {
     } as IApiResponse<T>;
 
     try {
-      response = await this.httpClient.post<IApiResponse<T>>(this.root + endpoint, body, { withCredentials: true }).toPromise();
+      response = await this.httpClient.post<IApiResponse<T>>(ApiService.root + endpoint, body, { withCredentials: true }).toPromise();
+      console.log(response);
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          console.log(response.statusCode);
+          if (response.statusCode !== 401) {
+            this.toastrService.danger(error, "Error", {
+              duration: 10000,
+              icon: "alert-circle-outline",
+            });
+          }
+        });
         return response;
       }
-      response.errors.push("Something went wrong...");
+    }
+    return response;
+  }
+
+  public async delete<T>(endpoint: string): Promise<IApiResponse<T>> {
+    let response = {
+      errors: []
+    } as IApiResponse<T>;
+
+    try {
+      response = await this.httpClient.delete<IApiResponse<T>>(ApiService.root + endpoint, { withCredentials: true }).toPromise();
+    } catch (ex) {
+      if (ex.error?.errors) {
+        response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "alert-circle-outline",
+          });
+        });
+        return response;
+      }
+    }
+    return response;
+  }
+
+  public async patch<T>(endpoint: string, payload: any): Promise<IApiResponse<T>> {
+    let response = {
+      errors: []
+    } as IApiResponse<T>;
+
+    try {
+      response = await this.httpClient.patch<IApiResponse<T>>(ApiService.root + endpoint, payload, { withCredentials: true }).toPromise();
+    } catch (ex) {
+      if (ex.error?.errors) {
+        response.errors.push(ex.error?.errors);
+        response.errors.forEach(error => {
+          this.toastrService.danger(error, "Error", {
+            duration: 10000,
+            icon: "alert-circle-outline",
+          });
+        });
+        return response;
+      }
     }
     return response;
   }

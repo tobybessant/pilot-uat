@@ -1,0 +1,146 @@
+p {
+  margin: 0;
+}
+
+/* The actual timeline (the vertical ruler) */
+.timeline {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* The actual timeline (the vertical ruler) */
+.timeline::after {
+  content: "";
+  left: 31px;
+  position: absolute;
+  width: 2px;
+  background-color: var(--divider-color);
+  top: 0;
+  bottom: 0;
+  margin-left: -3px;
+}
+
+/* The circles on the timeline */
+.container::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border: 2px solid var(--divider-color);
+  top: 34%;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* The actual content */
+.content {
+  padding: 0px 50px;
+  position: relative;
+}
+
+/* Full-width containers */
+.container {
+  width: 100%;
+  left: 50%;
+}
+
+.existing-step .content p {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.existing-step {
+  border: 1px solid transparent;
+}
+
+.existing-step .content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.existing-step:hover {
+  z-index: 3;
+  cursor: pointer;
+  background: var(--color-primary-transparent-100);
+  border: 1px solid var(--color-primary-transparent-200);
+  border-radius: var(--border-radius);
+
+  #hover-arrow {
+    visibility: visible;
+  }
+}
+
+.existing-step.container:hover::after {
+  background: var(--color-primary-300);
+  border: 2px solid var(--color-primary-300);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Make sure all circles are at the same spot */
+.left::after,
+.right::after {
+  left: 22px;
+}
+
+.new-step-input {
+  padding-top: 14px;
+
+  .container::after {
+    top: 50%;
+  }
+}
+
+.new-step-input.timeline::after {
+  content: "";
+  left: 31px;
+  position: absolute;
+  width: 2px;
+  background-color: var(--divider-color);
+  top: 0;
+  bottom: 50%;
+  margin-left: -3px;
+}
+
+#step-actions > button {
+  margin: 0;
+  padding: 8px 10px;
+}
+
+#step-actions {
+  width: 100px;
+  display: flex;
+  justify-content: space-between;
+  visibility: hidden;
+}
+
+#hover-arrow {
+  color: var(--color-primary-500);
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.existing-step:hover #step-actions {
+  visibility: visible;
+}
+
+.step-details {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.step-description {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 8px 0;
+}

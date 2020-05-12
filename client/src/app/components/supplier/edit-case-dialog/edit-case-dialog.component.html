@@ -1,0 +1,18 @@
+<nb-card>
+  <nb-card-header>Edit Step</nb-card-header>
+  <nb-card-body>
+    <input
+      nbInput
+      fullWidth
+      type="text"
+      [(ngModel)]="caseTitleInput"
+      (keyup.enter)="saveCase()"
+    />
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="saveCase()">
+      <nb-icon icon="checkmark-square-outline"></nb-icon>Save Changes
+    </button>
+    <button nbButton status="basic" (click)="close()">Cancel</button>
+  </nb-card-footer>
+</nb-card>

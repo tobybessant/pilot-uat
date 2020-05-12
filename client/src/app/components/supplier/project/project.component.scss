@@ -1,0 +1,60 @@
+:host {
+  height: 100%;
+}
+
+.project-container {
+  height: 100%;
+}
+
+.project-subnav {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.project-subnav-left {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.project-subnav-left > h2 {
+  margin: 0;
+}
+
+#back-button {
+  margin-right: 20px;
+}
+
+.tabs-view {
+  height:100%;
+  background: var(--background-basic-color-1);
+  border-radius: var(--border-radius);
+}
+
+.no-h-padding {
+  height: calc(100% - 52px);
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.tab-content {
+  max-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.test-suite {
+  width: 100%;
+  position: relative;
+}
+
+.project-not-found {
+  width: 100%;
+  text-align: center;
+}

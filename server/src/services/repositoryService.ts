@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Repository, AbstractRepository, ObjectType } from "typeorm";
 import { injectable } from "tsyringe";
 import { MSSQLDatabase } from "../database";
 
@@ -10,7 +10,11 @@ export class RepositoryService {
   ) { }
 
   public getRepositoryFor<T>(dbo: any): Repository<T> {
-    return this.database.getConnection().getRepository<T>(dbo)
+    return this.database.getConnection().getRepository<T>(dbo);
+  }
+
+  public getCustomRepositoryFor<T>(customRepository: ObjectType<T>): T {
+    return this.database.getConnection().getCustomRepository<T>(customRepository);
   }
 
 }

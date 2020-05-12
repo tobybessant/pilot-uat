@@ -1,11 +1,12 @@
 import { Strategy } from "passport-local";
-import { Repository, AdvancedConsoleLogger } from "typeorm";
+import { Repository } from "typeorm";
 import { injectable } from "tsyringe";
 
-import { Bcrypt } from "../../utils/bcrypt-hash";
+import { Bcrypt } from "../../utils/bcryptHash";
 import { UserDbo } from "../../../database/entities/userDbo";
-import { RepositoryService } from "../../repositoryservice";
-import { IUserToken } from "../../../models/response/usertoken";
+import { RepositoryService } from "../../repositoryService";
+import { IUserToken } from "../../../dto/response/common/userToken";
+import { ApiError } from "../../apiError";
 
 @injectable()
 export class Local {
@@ -19,7 +20,7 @@ export class Local {
     this.userRepository = repositoryService.getRepositoryFor<UserDbo>(UserDbo);
   }
 
-	public init (this: Local, _passport: any): any {
+	public init(this: Local, _passport: any): any {
     const userRepository = this.userRepository;
     const bcrypt = this.bcrypt;
 
@@ -40,12 +41,12 @@ export class Local {
           const u: IUserToken = {
             email: user.email,
             type: user.userType.type
-          }
+          };
           return done(null, u);
         }
 
-        // wrong password
-        return done(null, false);
+        // wrong credentials
+        return done(new ApiError("Incorrect login details", 401), false);
       }
     ));
 	}
