@@ -216,10 +216,11 @@ export class StepWizardComponent implements OnInit {
   }
 
   public async failRemainingTests(): Promise<void> {
-    const startIdx = this.activeStepIndex;
+    this.addStepFeedback();
+    const startIdx = this.activeStepIndex + 1;
     for (let i = startIdx; i < this.steps.length; i++) {
-      const stepId = this.steps[i].id;
-      await this.stepFeedbackApiService.addFeedbackForStep(stepId, "", "Failed");
+      const step = this.steps[i];
+      await this.stepFeedbackApiService.addFeedbackForStep(step.id, this.feedback.get(step.id)?.notes || "", "Failed");
     }
 
     this.fetchSteps(this.caseData.id);
