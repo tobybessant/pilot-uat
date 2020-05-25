@@ -3,6 +3,7 @@ import * as cookieParser from "cookie-parser";
 import * as controllers from "./controllers";
 import * as session from "express-session";
 import * as cors from "cors";
+import path = require("path");
 
 import { Server } from "@overnightjs/core";
 import { Logger } from "@overnightjs/logger";
@@ -68,8 +69,13 @@ class UATPlatformServer extends Server {
   }
 
   public start(port: number): void {
+    this.app.get("/api/v1/licenses", (req, res) => {
+      res.sendFile(path.resolve(__dirname + "/assets/3rd-party-licenses.txt"));
+    });
+
     this.app.get("*", (req, res) => {
-      res.send(this.SERVER_STARTED + port);
+      res.send("broken");
+      // res.redirect(process.env.CLIENT_URL || "");
     });
 
     this.app.listen(port, () => {
