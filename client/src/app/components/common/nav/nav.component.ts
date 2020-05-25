@@ -23,13 +23,17 @@ export class NavComponent implements OnInit {
   public user: IUserResponse = null;
   public fullName = "";
 
-  public userContextMenuItems: any[] = [{ title: "Logout", icon: "log-out-outline" }];
+  public userContextMenuItems: any[] = [
+    { title: "Logout", icon: "log-out-outline" },
+    { title: "Terms", icon: "info-outline"     }
+  ];
   private readonly userContextMenuActions: Map<string, () => void> = new Map<string, () => void>();
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private cdr: ChangeDetectorRef,
     private sessionService: SessionService,
+    private router: Router,
     private authService: AuthService,
     private nbMenuService: NbMenuService,
     public navbarService: NavbarService
@@ -39,15 +43,8 @@ export class NavComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userContextMenuActions.set("Logout", async () => {
-      this.authService.logout().then(() => {
-        this.navbarService.resetHeader();
-
-        // NOTE: Completely reload to the login page - clearing any role-based
-        // session state i.e. routes.
-        window.location.assign(`${window.location.hostname}/login`);
-      });
-    });
+    // setup menu actions
+    this.setUserMenuActions();
 
     // subscribe to logged in user changes
     this.sessionService.getSubject().subscribe(user => {
@@ -84,5 +81,21 @@ export class NavComponent implements OnInit {
       this.fullName = `${user.firstName} ${user.lastName}`;
     }
     this.user = user;
+  }
+
+  private setUserMenuActions(): void {
+    this.userContextMenuActions.set("Logout", async () => {
+      this.authService.logout().then(() => {
+        this.navbarService.resetHeader();
+
+        // NOTE: Completely reload to the login page - clearing any role-based
+        // session state i.e. routes.
+        window.location.assign(`${window.location.hostname}/login`);
+      });
+    });
+
+    this.userContextMenuActions.set("Terms", () => {
+      this.router.navigate(["/terms"]);
+    });
   }
 }

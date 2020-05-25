@@ -9,3 +9,11 @@
   flex-direction: row;
   align-items: center;
 }
+
+a {
+  text-decoration: none;
+
+  &:hover {
+    color: #7d1ad3;
+  }
+}

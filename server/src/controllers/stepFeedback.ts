@@ -16,7 +16,6 @@ import { IStepFeedbackResponse } from "../dto/response/client/feedback";
 import { StepFeedbackDbo } from "../database/entities/stepFeedbackDbo";
 import { UserDbo } from "../database/entities/userDbo";
 import { IUserStepFeedbackResponse } from "../dto/response/supplier/userStepFeedback";
-import { Dictionary } from "tsyringe/dist/typings/types";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/feedback`)
