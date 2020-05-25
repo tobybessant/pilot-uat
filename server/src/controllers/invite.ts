@@ -75,8 +75,6 @@ export class InviteController extends BaseController {
   @Get(":token")
   public async inviteResponse(req: Request, res: Response): Promise<void> {
     const token = req.params.token;
-
-    // TODO: check token validity
     try {
       const decodedInvite = this.inviteService.decodeInviteToken(token);
       const invite = await this.projectInviteRepository.getInviteById(decodedInvite.id);
