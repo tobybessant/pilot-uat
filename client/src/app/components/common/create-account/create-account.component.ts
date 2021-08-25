@@ -1,9 +1,11 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, Inject, ViewChild } from "@angular/core";
 import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
 import { Router } from "@angular/router";
 import * as zxcvbn from "zxcvbn";
-import { NbPopoverDirective, NbToastrService } from "@nebular/theme";
+import { NbDialogService, NbPopoverDirective, NbToastrService } from "@nebular/theme";
+import { DemoAccountSelectionPromptComponent } from "../demo-account-selection-prompt/demo-account-selection-prompt.component";
+import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
 
 @Component({
   selector: "app-create-account",
@@ -28,7 +30,12 @@ export class CreateAccountComponent {
 
   public accountCreated: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router, private toasterService: NbToastrService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toasterService: NbToastrService,
+    private dialogService: NbDialogService,
+    private localStorage: LocalStorageService) { }
 
   public showPasswordProtocols(show: boolean): void {
     show ?
@@ -75,6 +82,7 @@ export class CreateAccountComponent {
       return;
     }
 
+    this.localStorage.set("demo_account", "false");
     this.accountCreated = true;
   }
 
@@ -139,6 +147,31 @@ export class CreateAccountComponent {
     }
 
     return "alert-triangle-outline";
+  }
+
+  public createDemoAccount(): void {
+    this.dialogService.open(DemoAccountSelectionPromptComponent).onClose.subscribe(async accountType => {
+
+      if (!accountType) {
+        return;
+      }
+
+      // NOT SECURE. Used for demo-account creation only.
+      const randomEmail = Math.floor(Math.random() * 99999);
+      const randomPass = Math.floor(Math.random() * 99999);
+
+      await this.authService.createUser({
+        email: `demo-${accountType}-${randomEmail}@pilot-uat.com`,
+        password: `a1!uafg3-${randomPass}`,
+        firstName: "John",
+        lastName: "Last",
+        organisationName: `DemoOrg-${randomEmail}`,
+        type: accountType
+      } as ICreateAccountRequest);
+
+      this.localStorage.set("demo_account", "true");
+      this.accountCreated = true;
+    });
   }
 
   private formErrorToast(errorMessage: string): void {

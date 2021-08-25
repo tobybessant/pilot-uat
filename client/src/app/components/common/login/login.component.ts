@@ -4,6 +4,7 @@ import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interf
 import { Router, ActivatedRoute } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { SessionService } from "src/app/services/session/session.service";
+import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
 
 @Component({
   selector: "app-login",
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private sessionService: SessionService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private localStorage: LocalStorageService
   ) { }
 
   ngOnInit(): void {
@@ -45,6 +47,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (response.errors.length > 0) {
       return;
     }
+
+    this.localStorage.set("demo_account", "false");
 
     if (this.redirectUrl) {
       this.navigateToRedirect(this.redirectUrl);

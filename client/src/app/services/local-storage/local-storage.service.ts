@@ -21,4 +21,8 @@ export class LocalStorageService {
       this.localStorage.setItem(key, value);
     }
   }
+
+  public remove(key: string) {
+    this.localStorage.removeItem(key);
+  }
 }

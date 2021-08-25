@@ -7,6 +7,7 @@ import { Router } from "@angular/router";
 import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { NavbarService } from "src/app/services/navbar/navbar.service";
 import { LeftNavButton } from "./nav-left-button";
+import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
 
 @Component({
   selector: "app-nav",
@@ -36,7 +37,8 @@ export class NavComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private nbMenuService: NbMenuService,
-    public navbarService: NavbarService
+    public navbarService: NavbarService,
+    private localStorage: LocalStorageService
   ) {
     const user = this.sessionService.getCurrentUser();
     this.setDetails(user);
@@ -87,7 +89,7 @@ export class NavComponent implements OnInit {
     this.userContextMenuActions.set("Logout", async () => {
       this.authService.logout().then(() => {
         this.navbarService.resetHeader();
-
+        this.localStorage.remove("demo_account");
         // NOTE: Completely reload to the login page - clearing any role-based
         // session state i.e. routes.
         window.location.assign(`${window.location.hostname}/login`);
