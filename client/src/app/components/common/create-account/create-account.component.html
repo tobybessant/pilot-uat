@@ -137,9 +137,18 @@
   </nb-card-footer>
 </nb-card>
 
-<button nbButton status="primary" (click)="createDemoAccount()">
-  Create me a demo account
-</button>
+<nb-card class="centered medium" *ngIf="!accountCreated">
+  <nb-card-header>
+    Not ready to sign up?
+  </nb-card-header>
+  <nb-card-body>
+    <p>Try playing around with some temporary demo data - see what you think!</p>
+    <button nbButton status="primary" (click)="createDemoAccount()">
+      start a demo session
+    </button>
+  </nb-card-body>
+</nb-card>
+
 
 <ng-template #passwordProtocolTooltip>
   <div class="password-protocols">
