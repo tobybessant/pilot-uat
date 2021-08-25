@@ -11,6 +11,7 @@ import { DependencyContainer } from "tsyringe";
 
 import { Passport } from "./services/passport/passport";
 import { catchMalformedJson } from "./services/middleware/catchMalformedJson";
+import express = require("express");
 
 // tslint:disable-next-line: no-var-requires
 const MongoDbStore = require("connect-mongodb-session")(session);
@@ -29,6 +30,8 @@ class UATPlatformServer extends Server {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
+    this.app.use("/", express.static(path.resolve(__dirname, "public")));
+
     this.app.use(cors({
       credentials: true,
       origin: process.env.CLIENT_URL || "http://localhost:4200"
@@ -42,10 +45,13 @@ class UATPlatformServer extends Server {
         maxAge: this.COOKIE_EXPIRY_DURATION,
         secure: process.env.NODE_ENV === "Production"
       },
-      store: new MongoDbStore({
-        uri: process.env.MONGO_CONNECTION_STR,
-        collection: process.env.MONGO_COLLECTION_NAME
-      })
+      store:
+          process.env.NODE_ENV === "Production"
+            ? new MongoDbStore({
+                uri: process.env.MONGO_CONNECTION_STR,
+                collection: process.env.MONGO_COLLECTION_NAME,
+              })
+            : new session.MemoryStore()
     }));
 
     // configure passport
@@ -74,8 +80,7 @@ class UATPlatformServer extends Server {
     });
 
     this.app.get("*", (req, res) => {
-      res.send("broken");
-      // res.redirect(process.env.CLIENT_URL || "");
+      res.sendFile(path.resolve(__dirname, "public", "index.html"));
     });
 
     this.app.listen(port, () => {

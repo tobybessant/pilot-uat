@@ -1,12 +1,12 @@
 import { Repository, AbstractRepository, ObjectType } from "typeorm";
 import { injectable } from "tsyringe";
-import { MSSQLDatabase } from "../database";
+import { Database } from "../database";
 
 @injectable()
 export class RepositoryService {
 
   constructor(
-    public database: MSSQLDatabase
+    public database: Database
   ) { }
 
   public getRepositoryFor<T>(dbo: any): Repository<T> {

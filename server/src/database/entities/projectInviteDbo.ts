@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, Column } from "typeorm";
-import { ProjectDbo } from "./projectDbo";
 
 export const TABLE_NAME: string = "ProjectInvite";
 @Entity({
@@ -10,7 +9,7 @@ export class ProjectInviteDbo {
   id!: number;
 
   @Column({ default: "Pending" })
-  status!: "Pending" | "Accepted"
+  status!: "Pending" | "Accepted";
 
   @Column()
   userEmail!: string;
