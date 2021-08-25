@@ -6,3 +6,4 @@ export * from "./case";
 export * from "./step";
 export * from "./invite";
 export * from "./stepFeedback";
+export * from "./demoAccount";

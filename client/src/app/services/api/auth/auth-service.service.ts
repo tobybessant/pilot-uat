@@ -6,6 +6,8 @@ import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interf
 import { ISignInResponse } from "src/app/models/api/response/common/sign-in.interface";
 import { ICreateAccountResponse } from "src/app/models/api/response/common/create-account.interface";
 import { SessionService } from "../../session/session.service";
+import { ICreateDemoAccountsResponse } from "src/app/models/api/response/common/create-demo-accounts.interface";
+import { LocalStorageService } from "../../local-storage/local-storage.service";
 
 @Injectable({
   providedIn: "root"
@@ -16,7 +18,8 @@ export class AuthService {
 
   constructor(
     protected apiService: ApiService,
-    protected sessionService: SessionService
+    protected sessionService: SessionService,
+    protected localStorage: LocalStorageService
     ) { }
 
   public async createUser(user: ICreateAccountRequest): Promise<IApiResponse<ICreateAccountResponse>> {
@@ -28,6 +31,18 @@ export class AuthService {
     }
 
     return response;
+  }
+
+  public async createDemoUser(accountType: string): Promise<IApiResponse<ISignInResponse>> {
+    const response =  await this.apiService.post<ICreateDemoAccountsResponse>("/demoaccount/initialise");
+
+    this.localStorage.set("demo_account", response.payload);
+
+    if (accountType === "Supplier") {
+      return this.login(response.payload.supplier);
+    } else {
+      return this.login(response.payload.client);
+    }
   }
 
   public async login(credentials: ISignInRequest): Promise<IApiResponse<ISignInResponse>> {

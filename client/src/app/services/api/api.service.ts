@@ -34,7 +34,7 @@ export class ApiService {
     return response;
   }
 
-  public async post<T>(endpoint: string, body: any): Promise<IApiResponse<T>> {
+  public async post<T>(endpoint: string, body?: any): Promise<IApiResponse<T>> {
     let response = {
       errors: []
     } as IApiResponse<T>;

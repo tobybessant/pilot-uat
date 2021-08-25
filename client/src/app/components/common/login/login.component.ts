@@ -48,8 +48,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.localStorage.set("demo_account", "false");
-
     if (this.redirectUrl) {
       this.navigateToRedirect(this.redirectUrl);
       return;

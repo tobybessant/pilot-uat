@@ -34,8 +34,7 @@ export class CreateAccountComponent {
     private authService: AuthService,
     private router: Router,
     private toasterService: NbToastrService,
-    private dialogService: NbDialogService,
-    private localStorage: LocalStorageService) { }
+    private dialogService: NbDialogService) { }
 
   public showPasswordProtocols(show: boolean): void {
     show ?
@@ -83,7 +82,6 @@ export class CreateAccountComponent {
       return;
     }
 
-    this.localStorage.set("demo_account", "false");
     this.accountCreated = true;
   }
 
@@ -157,21 +155,8 @@ export class CreateAccountComponent {
         return;
       }
 
-      // NOT SECURE. Used for demo-account creation only.
-      const randomEmail = Math.floor(Math.random() * 99999);
-      const randomPass = Math.floor(Math.random() * 99999);
+      await this.authService.createDemoUser(accountType);
 
-      await this.authService.createUser({
-        email: `demo-${accountType}-${randomEmail}@pilot-uat.com`,
-        password: `a1!uafg3-${randomPass}`,
-        firstName: "John",
-        lastName: "Last",
-        organisationName: `DemoOrg-${randomEmail}`,
-        type: accountType,
-        demoAccount: true
-      } as ICreateAccountRequest);
-
-      this.localStorage.set("demo_account", "true");
       this.accountCreated = true;
     });
   }

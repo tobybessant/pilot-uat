@@ -5,5 +5,4 @@ export interface ICreateUserRequest {
   lastName: string;
   type: string;
   organisationName?: string;
-  demoAccount: boolean;
 }
