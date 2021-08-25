@@ -18,6 +18,7 @@ import { UserTypeRepository } from "../repositories/userTypeRepository";
 import { BASE_ENDPOINT } from "./BASE_ENDPOINT";
 import { ApiError } from "../services/apiError";
 import { LogIn } from "../services/middleware/joi/schemas/login";
+import { DemoAccountService } from "../services/utils/demoAccountService";
 
 @injectable()
 @Controller(`${BASE_ENDPOINT}/auth`)
@@ -27,7 +28,8 @@ export class AuthController extends BaseController {
     private userRepository: UserRepository,
     private userTypeRepository: UserTypeRepository,
     private organisationRepository: OrganisationRepository,
-    private bcrypt: Bcrypt
+    private bcrypt: Bcrypt,
+    private demoAccountService: DemoAccountService
   ) {
     super();
   }
@@ -70,6 +72,10 @@ export class AuthController extends BaseController {
         userType,
         organisations
       });
+
+      if (model.demoAccount) {
+        await this.demoAccountService.seedDemoAccountData(user.id);
+      }
 
       req.login({
         email: model.email,

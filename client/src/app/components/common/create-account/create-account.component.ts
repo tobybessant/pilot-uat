@@ -74,7 +74,8 @@ export class CreateAccountComponent {
       firstName: this.firstName,
       lastName: this.lastName,
       organisationName: this.organisation,
-      type: "Supplier"
+      type: "Supplier",
+      demoAccount: false
     } as ICreateAccountRequest);
     console.log(createdAccount);
     if (createdAccount.errors.length > 0 || createdAccount.statusCode !== 201) {
@@ -166,7 +167,8 @@ export class CreateAccountComponent {
         firstName: "John",
         lastName: "Last",
         organisationName: `DemoOrg-${randomEmail}`,
-        type: accountType
+        type: accountType,
+        demoAccount: true
       } as ICreateAccountRequest);
 
       this.localStorage.set("demo_account", "true");

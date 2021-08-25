@@ -5,4 +5,5 @@ export interface ICreateAccountRequest {
   lastName: string;
   organisationName: string;
   type: "Supplier" | "Client";
+  demoAccount: boolean;
 }

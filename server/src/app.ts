@@ -6,7 +6,7 @@ dotenv.config();
 import UATPlatformServer from "./server";
 import { Database } from "./database";
 import { container } from "tsyringe";
-import { seedDemoData } from "./database/seeds/seedDemoData";
+import { seedDemoData } from "./database/seeds/seedConstants";
 
 async function main() {
 
