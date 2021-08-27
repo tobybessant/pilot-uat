@@ -1,4 +1,5 @@
 export interface IAccountCredentials {
+  firstName: string;
   email: string;
   password: string;
 }

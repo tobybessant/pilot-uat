@@ -32,10 +32,9 @@ export class DemoSwitchComponent implements OnInit {
     const user = this.sessionService.getCurrentUser();
 
     this.alternateAccountType = user.type === "Supplier" ? "Client" : "Supplier";
+    await this.authService.logout(true);
 
     setTimeout(async () => {
-      await this.authService.logout(true);
-
       if (user.type === "Supplier") {
         await this.authService.login(accounts.client);
       } else {

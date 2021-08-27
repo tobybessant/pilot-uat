@@ -155,8 +155,8 @@ export class CreateAccountComponent {
         return;
       }
 
-      await this.authService.createDemoUser(accountType);
-
+      const [firstName] = await this.authService.createDemoUser(accountType);
+      this.firstName = firstName;
       this.accountCreated = true;
     });
   }

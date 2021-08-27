@@ -95,6 +95,6 @@ export class DemoAccountController extends BaseController {
       organisations: [newOrganisation]
     });
 
-    return [account, { email: account.email, password: passwordPlaintext }]
+    return [account, { firstName, email: account.email, password: passwordPlaintext }]
   }
 }

@@ -19,3 +19,7 @@ $mat-app-components-theme:   mat-light-theme($mat-app-components-primary, $mat-a
 [tabindex="-1"]:focus {
   outline: 0!important;
 }
+
+[nbButton] {
+  letter-spacing: 1px;
+}

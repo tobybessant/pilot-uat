@@ -59,6 +59,8 @@ export class NavComponent implements OnInit {
       this.isDemoAccount = !!this.localStorage.get("demo_account");
     });
 
+    this.isDemoAccount = !!this.localStorage.get("demo_account");
+
     // subscribe to profile menu events
     this.nbMenuService.onItemClick()
       .pipe(
@@ -101,8 +103,8 @@ export class NavComponent implements OnInit {
     this.userContextMenuActions.set("Logout", async () => {
       this.authService.logout().then(() => {
         this.navbarService.resetHeader();
-        this.localStorage.remove("demo_account");
-        // NOTE: Completely reload to the login page - clearing any role-based
+        this.clearDemoAccount();
+        // NOTE: Completely reload to the signup page - clearing any role-based
         // session state i.e. routes.
         window.location.assign(`${window.location.hostname}/signup`);
       });
@@ -123,5 +125,10 @@ export class NavComponent implements OnInit {
     }
 
     window.location.assign(`/demo-account-switch?demoAccountSwitchRedirectUrl=${url}`);
+  }
+
+  private clearDemoAccount(): void {
+    this.localStorage.remove("demo_account");
+    this.isDemoAccount = false;
   }
 }

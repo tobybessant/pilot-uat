@@ -33,15 +33,17 @@ export class AuthService {
     return response;
   }
 
-  public async createDemoUser(accountType: string): Promise<IApiResponse<ISignInResponse>> {
+  public async createDemoUser(accountType: string): Promise<[string, IApiResponse<ISignInResponse>]> {
     const response =  await this.apiService.post<ICreateDemoAccountsResponse>("/demoaccount/initialise");
 
     this.localStorage.set("demo_account", response.payload);
 
+    const { supplier, client } = response.payload;
+
     if (accountType === "Supplier") {
-      return this.login(response.payload.supplier);
+      return [supplier.firstName, await this.login(supplier)];
     } else {
-      return this.login(response.payload.client);
+      return [client.firstName, await this.login(client)];
     }
   }
 
