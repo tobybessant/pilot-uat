@@ -79,7 +79,7 @@ class UATPlatformServer extends Server {
       res.sendFile(path.resolve(__dirname + "/assets/3rd-party-licenses.txt"));
     });
 
-    this.app.get("*.*", (req, res) => {
+    this.app.get("*", (req, res) => {
       res.sendFile(path.resolve(__dirname, "public", "index.html"));
     });
 
