@@ -7,6 +7,14 @@ nb-card.medium {
   max-width: 500px;
 }
 
+.demo-notice {
+  margin-top: 0;
+}
+
+.sign-up-header {
+  color: grey;
+}
+
 nb-card-body.form-inputs {
   display: flex;
   flex-direction: column;
@@ -47,7 +55,7 @@ input {
   margin-bottom: 4px;
   color: #909090;
   height: 20px;
-  
+
   nb-icon {
     color: red;
     margin-right: 4px;

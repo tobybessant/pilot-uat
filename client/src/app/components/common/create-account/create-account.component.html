@@ -1,11 +1,27 @@
+<nb-card class="centered medium" *ngIf="!accountCreated">
+  <nb-card-header>
+    <h6>Open a Demo Account</h6>
+  </nb-card-header>
+  <nb-card-body>
+    <p class="demo-notice">
+      Pilot is not currently available for commercial use, but you can still open a demo account to see its capabilities.
+      Try playing around with some temporary demo data - see what you think!
+    </p>
+    <button nbButton status="primary" (click)="createDemoAccount()">
+      start a demo session
+    </button>
+  </nb-card-body>
+</nb-card>
+
 <nb-card class="centered medium">
   <nb-card-header>
-    <h6>Sign Up</h6>
+    <h6 class="sign-up-head">Sign Up</h6>
   </nb-card-header>
   <nb-card-body class="form-inputs" *ngIf="!accountCreated">
     <form>
       <div class="name-fields">
         <input
+          disabled
           type="text"
           nbInput
           fullWidth
@@ -15,6 +31,7 @@
           autocomplete="given-name"
         />
         <input
+          disabled
           type="text"
           nbInput
           fullWidth
@@ -26,6 +43,7 @@
       </div>
 
       <input
+        disabled
         type="text"
         nbInput
         fullWidth
@@ -36,6 +54,7 @@
       />
 
       <input
+        disabled
         type="text"
         nbInput
         fullWidth
@@ -46,6 +65,7 @@
       />
 
       <input
+        disabled
         type="password"
         nbInput
         fullWidth
@@ -61,6 +81,7 @@
       />
 
       <input
+        disabled
         type="password"
         nbInput
         fullWidth
@@ -76,6 +97,7 @@
       />
       <div id="terms-check">
         <nb-checkbox
+          disabled
           [(ngModel)]="acceptedTerms"
           [ngModelOptions]="{ standalone: true }"
           >By signing up I agree to Pilot's
@@ -116,10 +138,10 @@
     </div>
 
     <div class="buttons">
-      <button nbButton status="primary" (click)="submit()">
+      <button nbButton  disabled status="primary" (click)="submit()">
         Create Account
       </button>
-      <button nbButton status="basic">Cancel</button>
+      <button nbButton disabled status="basic">Cancel</button>
     </div>
   </nb-card-body>
 
@@ -136,19 +158,6 @@
     Already signed up? Log in <a routerLink="/login">here</a>.
   </nb-card-footer>
 </nb-card>
-
-<nb-card class="centered medium" *ngIf="!accountCreated">
-  <nb-card-header>
-    Not ready to sign up?
-  </nb-card-header>
-  <nb-card-body>
-    <p>Try playing around with some temporary demo data - see what you think!</p>
-    <button nbButton status="primary" (click)="createDemoAccount()">
-      start a demo session
-    </button>
-  </nb-card-body>
-</nb-card>
-
 
 <ng-template #passwordProtocolTooltip>
   <div class="password-protocols">

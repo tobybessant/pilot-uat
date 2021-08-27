@@ -112,7 +112,7 @@ import { DemoSwitchComponent } from './components/common/demo-switch/demo-switch
     FinishCaseDialogComponent,
     TermsComponent,
     DemoAccountSelectionPromptComponent,
-    DemoSwitchComponent,
+    DemoSwitchComponent
   ],
   imports: [
     /* Angular */
