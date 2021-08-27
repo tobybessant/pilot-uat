@@ -41,7 +41,6 @@ export class ApiService {
 
     try {
       response = await this.httpClient.post<IApiResponse<T>>(ApiService.root + endpoint, body, { withCredentials: true }).toPromise();
-      console.log(response);
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);

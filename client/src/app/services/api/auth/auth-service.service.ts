@@ -56,9 +56,9 @@ export class AuthService {
     return response;
   }
 
-  public async logout(): Promise<void> {
+  public async logout(skipRedirect: boolean = false): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      await this.apiService.get<void>(this.baseUrl + "/logout");
+      await this.apiService.get<void>(`${this.baseUrl}/logout?skipRedirect=${skipRedirect}`);
       this.sessionService.logout();
       resolve();
     });

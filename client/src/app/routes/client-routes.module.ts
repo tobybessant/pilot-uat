@@ -24,7 +24,7 @@ const routes: Routes = [
     path: "project/:id/:tab",
     component: ProjectTabsComponent,
     pathMatch: "full"
-  },
+  }
 ];
 
 @NgModule({

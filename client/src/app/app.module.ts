@@ -67,6 +67,7 @@ import { BasicNavButtonComponent } from './components/common/nav/basic-nav-butto
 import { FinishCaseDialogComponent } from './components/client/finish-case-dialog/finish-case-dialog.component';
 import { TermsComponent } from './components/common/terms/terms.component';
 import { DemoAccountSelectionPromptComponent } from './components/common/demo-account-selection-prompt/demo-account-selection-prompt.component';
+import { DemoSwitchComponent } from './components/common/demo-switch/demo-switch.component';
 
 @NgModule({
   declarations: [
@@ -111,6 +112,7 @@ import { DemoAccountSelectionPromptComponent } from './components/common/demo-ac
     FinishCaseDialogComponent,
     TermsComponent,
     DemoAccountSelectionPromptComponent,
+    DemoSwitchComponent,
   ],
   imports: [
     /* Angular */

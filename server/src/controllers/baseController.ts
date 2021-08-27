@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND, SERVICE_UNAVAILABLE, FORBIDDEN } from "http-status-codes";
+import { OK, INTERNAL_SERVER_ERROR, BAD_REQUEST, CREATED, NOT_FOUND, SERVICE_UNAVAILABLE, FORBIDDEN, NO_CONTENT } from "http-status-codes";
 import { IApiResponse } from "../dto/response/common/apiResponse";
 import { Logger } from "@overnightjs/logger";
 import { ApiError } from "../services/apiError";
@@ -35,6 +35,11 @@ export abstract class BaseController {
 
     res.status(response.statusCode!);
     res.json(response);
+  }
+
+  protected noContent(res: Response): void {
+    res.status(NO_CONTENT);
+    res.send();
   }
 
   protected badRequest(res: Response, errors: string[], redirectToErrorPage?: boolean): void {

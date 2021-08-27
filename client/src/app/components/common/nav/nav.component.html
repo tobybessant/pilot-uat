@@ -7,11 +7,17 @@
   />
   <h3><a routerLink="/">{{ navbarService.getHeader() }}</a></h3>
 </div>
-<nb-user
-  *ngIf="user"
-  shape="rectangle"
-  [nbContextMenu]="userContextMenuItems"
-  [name]="fullName"
-  nbContextMenuTag="user-menu"
-  [title]="user.type"
-></nb-user>
+<div class="right">
+  <button nbButton outline status="primary" class="switch-account-button" *ngIf="isDemoAccount && isViewingProject" (click)="switchDemoAccountType()">
+   View Project as {{ alternateAccountType }}
+   <nb-icon icon="people-outline"></nb-icon>
+  </button>
+  <nb-user
+    *ngIf="user"
+    shape="rectangle"
+    [nbContextMenu]="userContextMenuItems"
+    [name]="fullName"
+    nbContextMenuTag="user-menu"
+    [title]="user.type"
+  ></nb-user>
+</div>
