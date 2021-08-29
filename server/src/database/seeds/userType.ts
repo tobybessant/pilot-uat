@@ -4,7 +4,6 @@ import { TABLE_NAME, UserTypeDbo } from "../entities/userTypeDbo";
 
 const seeder: DatabaseSeeder = new DatabaseSeeder();
 
-
 const records: Partial<UserTypeDbo>[] = [
   { type: "Supplier" },
   { type: "Client" }

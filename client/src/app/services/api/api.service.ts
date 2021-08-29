@@ -34,14 +34,13 @@ export class ApiService {
     return response;
   }
 
-  public async post<T>(endpoint: string, body: any): Promise<IApiResponse<T>> {
+  public async post<T>(endpoint: string, body?: any): Promise<IApiResponse<T>> {
     let response = {
       errors: []
     } as IApiResponse<T>;
 
     try {
       response = await this.httpClient.post<IApiResponse<T>>(ApiService.root + endpoint, body, { withCredentials: true }).toPromise();
-      console.log(response);
     } catch (ex) {
       if (ex.error?.errors) {
         response.errors.push(ex.error?.errors);

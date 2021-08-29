@@ -4,5 +4,5 @@ export interface ICreateAccountRequest {
   firstName: string;
   lastName: string;
   organisationName: string;
-  type: string;
+  type: "Supplier" | "Client";
 }

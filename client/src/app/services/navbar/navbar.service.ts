@@ -14,7 +14,7 @@ export class NavbarService {
 
   private header: string = this.DEFAULT_HEADER;
 
-  constructor() { 
+  constructor() {
     this.leftButtonSubject = new Subject<LeftNavButton>();
   }
 

@@ -6,6 +6,8 @@ import { ISignInRequest } from "src/app/models/api/request/common/sign-in.interf
 import { ISignInResponse } from "src/app/models/api/response/common/sign-in.interface";
 import { ICreateAccountResponse } from "src/app/models/api/response/common/create-account.interface";
 import { SessionService } from "../../session/session.service";
+import { ICreateDemoAccountsResponse } from "src/app/models/api/response/common/create-demo-accounts.interface";
+import { LocalStorageService } from "../../local-storage/local-storage.service";
 
 @Injectable({
   providedIn: "root"
@@ -16,7 +18,8 @@ export class AuthService {
 
   constructor(
     protected apiService: ApiService,
-    protected sessionService: SessionService
+    protected sessionService: SessionService,
+    protected localStorage: LocalStorageService
     ) { }
 
   public async createUser(user: ICreateAccountRequest): Promise<IApiResponse<ICreateAccountResponse>> {
@@ -30,6 +33,22 @@ export class AuthService {
     return response;
   }
 
+  public async createDemoUser(accountType: string): Promise<[string, IApiResponse<ISignInResponse>]> {
+    const response =  await this.apiService.post<ICreateDemoAccountsResponse>("/demoaccount/initialise");
+
+    const { client, supplier } = response.payload;
+    const clientCredentials = { email: client.email, password: client.password };
+    const supplierCredentials =  { email: supplier.email, password: supplier.password };
+
+    this.localStorage.set("demo_account", { client: clientCredentials, supplier: supplierCredentials });
+
+    if (accountType === "Supplier") {
+      return [supplier.firstName, await this.login(supplierCredentials)];
+    } else {
+      return [client.firstName, await this.login(clientCredentials)];
+    }
+  }
+
   public async login(credentials: ISignInRequest): Promise<IApiResponse<ISignInResponse>> {
     const response = await this.apiService.post<ISignInResponse>(this.baseUrl + "/login", credentials);
 
@@ -41,9 +60,9 @@ export class AuthService {
     return response;
   }
 
-  public async logout(): Promise<void> {
+  public async logout(skipRedirect: boolean = false): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      await this.apiService.get<void>(this.baseUrl + "/logout");
+      await this.apiService.get<void>(`${this.baseUrl}/logout?skipRedirect=${skipRedirect}`);
       this.sessionService.logout();
       resolve();
     });

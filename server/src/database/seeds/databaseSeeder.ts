@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import { container } from "tsyringe";
-import { MSSQLDatabase } from "..";
+import { Database } from "..";
 import { ConnectionOptions } from "typeorm";
 import { Logger } from "@overnightjs/logger";
 
@@ -28,10 +28,10 @@ const config: ConnectionOptions = {
 
 export class DatabaseSeeder {
 
-  private db: MSSQLDatabase;
+  private db: Database;
 
   constructor() {
-    this.db = container.resolve<MSSQLDatabase>(MSSQLDatabase);
+    this.db = container.resolve<Database>(Database);
   }
 
   public async connect(wipeExistingData: boolean = false): Promise<void> {

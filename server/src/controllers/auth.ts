@@ -113,6 +113,11 @@ export class AuthController extends BaseController {
   public async logout(req: Request, res: Response) {
     req.logOut();
     req.user = undefined;
+
+    if (req.query.skipRedirect) {
+      return this.noContent(res);
+    }
+
     return res.redirect("/");
   }
 }

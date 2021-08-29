@@ -8,6 +8,7 @@ import { NotFoundComponent } from "./components/common/not-found/not-found.compo
 import { InvitedAccountSetupComponent } from "./components/common/invited-account-setup/invited-account-setup.component";
 import { ErrorComponent } from "./components/common/error/error.component";
 import { TermsComponent } from "./components/common/terms/terms.component";
+import { DemoSwitchComponent } from "./components/common/demo-switch/demo-switch.component";
 
 const routes: Routes = [
   { path: "signup", component: CreateAccountComponent       },
@@ -15,6 +16,8 @@ const routes: Routes = [
   { path: "setup",  component: InvitedAccountSetupComponent },
   { path: "terms",  component: TermsComponent               },
   { path: "error",  component: ErrorComponent               },
+
+  { path: "demo-account-switch", component: DemoSwitchComponent },
 
   {
     path: "",

@@ -1,9 +1,11 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, Inject, ViewChild } from "@angular/core";
 import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
 import { Router } from "@angular/router";
 import * as zxcvbn from "zxcvbn";
-import { NbPopoverDirective, NbToastrService } from "@nebular/theme";
+import { NbDialogService, NbPopoverDirective, NbToastrService } from "@nebular/theme";
+import { DemoAccountSelectionPromptComponent } from "../demo-account-selection-prompt/demo-account-selection-prompt.component";
+import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
 
 @Component({
   selector: "app-create-account",
@@ -28,7 +30,11 @@ export class CreateAccountComponent {
 
   public accountCreated: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router, private toasterService: NbToastrService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toasterService: NbToastrService,
+    private dialogService: NbDialogService) { }
 
   public showPasswordProtocols(show: boolean): void {
     show ?
@@ -67,7 +73,8 @@ export class CreateAccountComponent {
       firstName: this.firstName,
       lastName: this.lastName,
       organisationName: this.organisation,
-      type: "Supplier"
+      type: "Supplier",
+      demoAccount: false
     } as ICreateAccountRequest);
     console.log(createdAccount);
     if (createdAccount.errors.length > 0 || createdAccount.statusCode !== 201) {
@@ -139,6 +146,19 @@ export class CreateAccountComponent {
     }
 
     return "alert-triangle-outline";
+  }
+
+  public createDemoAccount(): void {
+    this.dialogService.open(DemoAccountSelectionPromptComponent).onClose.subscribe(async accountType => {
+
+      if (!accountType) {
+        return;
+      }
+
+      const [firstName] = await this.authService.createDemoUser(accountType);
+      this.firstName = firstName;
+      this.accountCreated = true;
+    });
   }
 
   private formErrorToast(errorMessage: string): void {

@@ -1,0 +1,32 @@
+<nb-card>
+  <nb-card-header>Setup A Demo Account</nb-card-header>
+  <nb-card-body>
+    <div class="demo-explanation">
+      <p>
+        Open a demo account to see what Pilot has to offer. Proceeding will open a demo account filled with
+        demo test data. This will showcase the core features of Pilot in a temporary playground setup just
+        for you.
+      </p>
+      <p>
+        Want to see both client and supplier sides of Pilot? Do not fret! Once inside your demo account, you
+        can easily switch between a client and supplier account once inside a project.
+      </p>
+    </div>
+    <div class="type-overview">
+      <p>{{accountTypeOverview}}</p>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="button-container">
+      <button nbButton outline class="accout-selection-button"
+        (focus)="lastHoveredButton = 'Client'"
+        (mouseenter)="lastHoveredButton = 'Client'"
+        (click)="selectClient()">Client</button>
+
+      <button nbButton outline class="accout-selection-button"
+        (focus)="lastHoveredButton = 'Client'"
+        (mouseenter)="lastHoveredButton = 'Supplier'"
+        (click)="selectSupplier()">Supplier</button>
+    </div>
+  </nb-card-footer>
+</nb-card>

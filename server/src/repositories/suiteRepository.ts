@@ -17,7 +17,7 @@ export class TestSuiteRepository {
     return this.baseTestSuiteRepository.findOne({ id: Number(id) });
   }
 
-  public async addTestSuite(project: ProjectDbo, title: string): Promise<SuiteDbo | undefined> {
+  public async addTestSuite(project: ProjectDbo, title: string): Promise<SuiteDbo> {
     return this.baseTestSuiteRepository.save({
       project,
       title

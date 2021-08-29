@@ -2,6 +2,7 @@ import { Routes, RouterModule, ROUTES, Router } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { SessionService } from "../services/session/session.service";
+import { DemoSwitchComponent } from "../components/common/demo-switch/demo-switch.component";
 
 @NgModule({
   declarations: [],
@@ -24,7 +25,7 @@ export function getRouterForAccountType(sessionService: SessionService, router: 
   let routes: Routes = [];
   const user = sessionService.getCurrentUser();
   if (!user) {
-    router.navigate(["/login"]);
+    router.navigate(["/signup"]);
     return routes;
   }
 
@@ -41,5 +42,6 @@ export function getRouterForAccountType(sessionService: SessionService, router: 
       }
     ];
   }
+
   return routes;
 }

@@ -37,4 +37,7 @@ export class CreateUser implements ICreateUserRequest {
     .required()
   type!: string;
 
+  @jf.boolean()
+    .label("Demo Account")
+  demoAccount!: boolean;
 }

@@ -181,8 +181,11 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/node,vuejs,macos,windows,visualstudiocode
 
-# database migrations
+# Database migrations
 server/src/database/migration
+
+# Client build
+server/src/public
 
 # Angular e2e peripherals
 client/e2e/peripherals

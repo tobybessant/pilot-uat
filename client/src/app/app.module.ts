@@ -66,6 +66,8 @@ import { StepWizardComponent } from "./components/client/step-wizard/step-wizard
 import { BasicNavButtonComponent } from './components/common/nav/basic-nav-button/basic-nav-button.component';
 import { FinishCaseDialogComponent } from './components/client/finish-case-dialog/finish-case-dialog.component';
 import { TermsComponent } from './components/common/terms/terms.component';
+import { DemoAccountSelectionPromptComponent } from './components/common/demo-account-selection-prompt/demo-account-selection-prompt.component';
+import { DemoSwitchComponent } from './components/common/demo-switch/demo-switch.component';
 
 @NgModule({
   declarations: [
@@ -109,6 +111,8 @@ import { TermsComponent } from './components/common/terms/terms.component';
     BasicNavButtonComponent,
     FinishCaseDialogComponent,
     TermsComponent,
+    DemoAccountSelectionPromptComponent,
+    DemoSwitchComponent
   ],
   imports: [
     /* Angular */
