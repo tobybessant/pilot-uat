@@ -24,6 +24,8 @@ export const sqlJsDbConfig: ConnectionOptions = {
     __dirname + "/entities/*.ts",
     __dirname + "/entities/*.js", // get dist models for when project is built
   ],
+  autoSave: true,
+  location: "./database-content",
   synchronize: true,
   logging: process.env.db_logging ? true : false,
 };
