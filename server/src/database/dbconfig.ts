@@ -11,7 +11,7 @@ export const mssqlDbConfig: ConnectionOptions = {
     __dirname + "/entities/*.ts",
     __dirname + "/entities/*.js", // get dist models for when project is built
   ],
-  synchronize: false,
+  synchronize: true,
   options: {
     encrypt: true,
   },
