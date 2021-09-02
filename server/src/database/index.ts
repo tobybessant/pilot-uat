@@ -50,4 +50,4 @@ export class SQLJSDatabase implements IDatabase {
 // Hack to get around some container issues. Whichever implementation this class extends will be used.
 // tslint:disable-next-line: max-classes-per-file
 @singleton()
-export class Database extends SQLJSDatabase {}
+export class Database extends MSSQLDatabase {}
