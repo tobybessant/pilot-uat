@@ -1,5 +1,6 @@
+// tslint:disable: max-classes-per-file
 import { createConnection, Connection, ConnectionOptions } from "typeorm";
-import { mssqlDbConfig, sqlJsDbConfig } from "./dbconfig";
+import { mssqlDbConfig, mySqlDbConfig, sqlJsDbConfig } from "./dbconfig";
 import { Logger } from "@overnightjs/logger";
 import { singleton } from "tsyringe";
 
@@ -27,7 +28,6 @@ export class MSSQLDatabase implements IDatabase {
   }
 }
 
-// tslint:disable-next-line: max-classes-per-file
 export class SQLJSDatabase implements IDatabase {
   private connection!: Connection;
 
@@ -47,7 +47,25 @@ export class SQLJSDatabase implements IDatabase {
   }
 }
 
+export class MySQLDatabase implements IDatabase {
+  private connection!: Connection;
+
+  public async openConnection(
+    configOverwrite?: ConnectionOptions
+  ): Promise<void> {
+    try {
+      this.connection = await createConnection(mySqlDbConfig);
+      Logger.Info("MySQL Database connection established...");
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  public getConnection(): Connection {
+    return this.connection;
+  }
+}
+
 // Hack to get around some container issues. Whichever implementation this class extends will be used.
-// tslint:disable-next-line: max-classes-per-file
 @singleton()
-export class Database extends MSSQLDatabase {}
+export class Database extends MySQLDatabase {}
