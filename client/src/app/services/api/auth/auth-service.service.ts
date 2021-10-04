@@ -10,20 +10,24 @@ import { ICreateDemoAccountsResponse } from "src/app/models/api/response/common/
 import { LocalStorageService } from "../../local-storage/local-storage.service";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class AuthService {
-
   protected readonly baseUrl: string = "/auth";
 
   constructor(
     protected apiService: ApiService,
     protected sessionService: SessionService,
     protected localStorage: LocalStorageService
-    ) { }
+  ) {}
 
-  public async createUser(user: ICreateAccountRequest): Promise<IApiResponse<ICreateAccountResponse>> {
-    const response =  await this.apiService.post<ICreateAccountResponse>(this.baseUrl + "/createaccount", user);
+  public async createUser(
+    user: ICreateAccountRequest
+  ): Promise<IApiResponse<ICreateAccountResponse>> {
+    const response = await this.apiService.post<ICreateAccountResponse>(
+      this.baseUrl + "/createaccount",
+      user
+    );
 
     // if user successfully created account then log them in
     if (response.errors.length === 0) {
@@ -33,14 +37,29 @@ export class AuthService {
     return response;
   }
 
-  public async createDemoUser(accountType: string): Promise<[string, IApiResponse<ISignInResponse>]> {
-    const response =  await this.apiService.post<ICreateDemoAccountsResponse>("/demoaccount/initialise");
+  public async createDemoUser(
+    accountType: string
+  ): Promise<[string, IApiResponse<ISignInResponse>]> {
+    const response = await this.apiService.post<ICreateDemoAccountsResponse>(
+      "/demoaccount/initialise"
+    );
 
     const { client, supplier } = response.payload;
-    const clientCredentials = { email: client.email, password: client.password };
-    const supplierCredentials =  { email: supplier.email, password: supplier.password };
+    const clientCredentials = {
+      email: client.email,
+      password: client.password,
+    };
+    const supplierCredentials = {
+      email: supplier.email,
+      password: supplier.password,
+    };
 
-    this.localStorage.set("demo_account", { client: clientCredentials, supplier: supplierCredentials });
+    this.localStorage.set("demo_account", {
+      client: clientCredentials,
+      supplier: supplierCredentials,
+    });
+
+    await setTimeout(() => {}, 5000);
 
     if (accountType === "Supplier") {
       return [supplier.firstName, await this.login(supplierCredentials)];
@@ -49,8 +68,13 @@ export class AuthService {
     }
   }
 
-  public async login(credentials: ISignInRequest): Promise<IApiResponse<ISignInResponse>> {
-    const response = await this.apiService.post<ISignInResponse>(this.baseUrl + "/login", credentials);
+  public async login(
+    credentials: ISignInRequest
+  ): Promise<IApiResponse<ISignInResponse>> {
+    const response = await this.apiService.post<ISignInResponse>(
+      this.baseUrl + "/login",
+      credentials
+    );
 
     // if user successfully logged in
     if (response !== undefined) {
@@ -62,7 +86,9 @@ export class AuthService {
 
   public async logout(skipRedirect: boolean = false): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      await this.apiService.get<void>(`${this.baseUrl}/logout?skipRedirect=${skipRedirect}`);
+      await this.apiService.get<void>(
+        `${this.baseUrl}/logout?skipRedirect=${skipRedirect}`
+      );
       this.sessionService.logout();
       resolve();
     });

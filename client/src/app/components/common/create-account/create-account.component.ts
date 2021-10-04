@@ -3,17 +3,20 @@ import { AuthService } from "src/app/services/api/auth/auth-service.service";
 import { ICreateAccountRequest } from "src/app/models/api/request/common/create-account.interface";
 import { Router } from "@angular/router";
 import * as zxcvbn from "zxcvbn";
-import { NbDialogService, NbPopoverDirective, NbToastrService } from "@nebular/theme";
+import {
+  NbDialogService,
+  NbPopoverDirective,
+  NbToastrService,
+} from "@nebular/theme";
 import { DemoAccountSelectionPromptComponent } from "../demo-account-selection-prompt/demo-account-selection-prompt.component";
-import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: "app-create-account",
   templateUrl: "./create-account.component.html",
-  styleUrls: ["./create-account.component.scss"]
+  styleUrls: ["./create-account.component.scss"],
 })
 export class CreateAccountComponent {
-
   public firstName: string = "";
   public lastName: string = "";
   public email: string = "";
@@ -25,25 +28,35 @@ export class CreateAccountComponent {
   public zxcvbnResult: zxcvbn.ZXCVBNResult;
   private readonly ZXCVBN_RESULT_SCORE_FAIL: number = 2;
   public readonly ZXCVBN_RESULT_SCORE_WARNING: number = 3;
+  public readonly DEMO_ACCOUNT_SPINNER_NAME: string = "demo_account";
 
   @ViewChild(NbPopoverDirective) passwordProtocolPopover: NbPopoverDirective;
 
   public accountCreated: boolean = false;
+  public loadingDemoAccount: boolean = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private toasterService: NbToastrService,
-    private dialogService: NbDialogService) { }
+    private dialogService: NbDialogService,
+    private spinnerService: NgxSpinnerService
+  ) {}
 
   public showPasswordProtocols(show: boolean): void {
-    show ?
-      this.passwordProtocolPopover.show() :
-      this.passwordProtocolPopover.hide();
+    show
+      ? this.passwordProtocolPopover.show()
+      : this.passwordProtocolPopover.hide();
   }
 
   public async submit() {
-    if (!this.firstName || !this.lastName || !this.organisation || !this.email || !this.password) {
+    if (
+      !this.firstName ||
+      !this.lastName ||
+      !this.organisation ||
+      !this.email ||
+      !this.password
+    ) {
       this.formErrorToast("One or more empty fields");
       return;
     }
@@ -54,9 +67,9 @@ export class CreateAccountComponent {
     }
 
     if (
-      !this.passwordPassesProtocols()
-      || !this.zxcvbnResult
-      || this.zxcvbnResult.score < this.ZXCVBN_RESULT_SCORE_FAIL
+      !this.passwordPassesProtocols() ||
+      !this.zxcvbnResult ||
+      this.zxcvbnResult.score < this.ZXCVBN_RESULT_SCORE_FAIL
     ) {
       this.formErrorToast("Invalid or insecure password");
       return;
@@ -74,7 +87,7 @@ export class CreateAccountComponent {
       lastName: this.lastName,
       organisationName: this.organisation,
       type: "Supplier",
-      demoAccount: false
+      demoAccount: false,
     } as ICreateAccountRequest);
     console.log(createdAccount);
     if (createdAccount.errors.length > 0 || createdAccount.statusCode !== 201) {
@@ -98,8 +111,7 @@ export class CreateAccountComponent {
   }
 
   public passwordPassesProtocols(): boolean {
-    return this.password === this.confirmPassword
-      && this.password.length >= 8;
+    return this.password === this.confirmPassword && this.password.length >= 8;
   }
 
   public zxcvbnCheck(): boolean {
@@ -120,7 +132,7 @@ export class CreateAccountComponent {
       return {
         backgroundColor: "var(--color-danger-100)",
         color: "red",
-        border: "1px solid red"
+        border: "1px solid red",
       };
     }
 
@@ -128,7 +140,7 @@ export class CreateAccountComponent {
     return {
       backgroundColor: "#fcf8e4",
       color: "#a27c45",
-      border: "1px solid #67512b"
+      border: "1px solid #67512b",
     };
   }
 
@@ -149,21 +161,27 @@ export class CreateAccountComponent {
   }
 
   public createDemoAccount(): void {
-    this.dialogService.open(DemoAccountSelectionPromptComponent).onClose.subscribe(async accountType => {
+    this.dialogService
+      .open(DemoAccountSelectionPromptComponent)
+      .onClose.subscribe(async (accountType) => {
+        if (!accountType) {
+          return;
+        }
 
-      if (!accountType) {
-        return;
-      }
+        this.spinnerService.show(this.DEMO_ACCOUNT_SPINNER_NAME);
+        this.loadingDemoAccount = true;
+        console.log("hey");
+        const [firstName] = await this.authService.createDemoUser(accountType);
+        this.loadingDemoAccount = false;
 
-      const [firstName] = await this.authService.createDemoUser(accountType);
-      this.firstName = firstName;
-      this.accountCreated = true;
-    });
+        this.firstName = firstName;
+        this.accountCreated = true;
+      });
   }
 
   private formErrorToast(errorMessage: string): void {
     this.toasterService.danger(errorMessage, "Form Error", {
-      icon: "alert-circle-outline"
+      icon: "alert-circle-outline",
     });
-  };
+  }
 }

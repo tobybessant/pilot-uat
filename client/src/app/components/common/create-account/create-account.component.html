@@ -1,11 +1,22 @@
-<nb-card class="centered medium" *ngIf="!accountCreated">
+<nb-card class="demo-account centered medium" *ngIf="!accountCreated">
   <nb-card-header>
     <h6>Open a Demo Account</h6>
   </nb-card-header>
-  <nb-card-body>
+  <nb-card-body *ngIf="loadingDemoAccount">
+    <ngx-spinner
+      bdColor="rgba(0, 0, 0,0)"
+      size="medium"
+      color="rgba(148, 52, 255,0.5)"
+      type="line-scale"
+      [name]="DEMO_ACCOUNT_SPINNER_NAME"
+      [fullScreen]="false"
+    ></ngx-spinner>
+  </nb-card-body>
+  <nb-card-body *ngIf="!loadingDemoAccount">
     <p class="demo-notice">
-      Pilot is not currently available for commercial use, but you can still open a demo account to see its capabilities.
-      Try playing around with some temporary demo data - see what you think!
+      Pilot is not currently available for commercial use, but you can still
+      open a demo account to see its capabilities. Try playing around with some
+      temporary demo data - see what you think!
     </p>
     <button nbButton status="primary" (click)="createDemoAccount()">
       start a demo session
@@ -138,7 +149,7 @@
     </div>
 
     <div class="buttons">
-      <button nbButton  disabled status="primary" (click)="submit()">
+      <button nbButton disabled status="primary" (click)="submit()">
         Create Account
       </button>
       <button nbButton disabled status="basic">Cancel</button>
